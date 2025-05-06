@@ -9,13 +9,7 @@ export interface SiteHero {
   title: string;
   subtitle?: string;
   videoUrl?: string;
-  backgroundImage?: {
-    fields: {
-      file: {
-        url: string;
-      };
-    };
-  };
+  backgroundImage?: string | null;
 }
 
 // Function to get the hero content by fetching from our server API

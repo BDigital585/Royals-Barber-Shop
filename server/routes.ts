@@ -164,13 +164,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // If we're using include: 2, we already have the hero data resolved
       const heroEntry = heroRef;
       
-      // Format the response data
+      // Format the response data, using type assertions to help TypeScript
+      const heroEntryWithFields = heroEntry as any;
+      
       const heroData = {
-        title: heroEntry.fields.title,
-        subtitle: heroEntry.fields.subtitle,
-        videoUrl: heroEntry.fields.videoUrl,
-        backgroundImage: heroEntry.fields.backgroundImage 
-          ? `https:${heroEntry.fields.backgroundImage.fields.file.url}` 
+        title: heroEntryWithFields.fields?.title || 'Hero Title',
+        subtitle: heroEntryWithFields.fields?.subtitle || '',
+        videoUrl: heroEntryWithFields.fields?.videoUrl || '',
+        backgroundImage: heroEntryWithFields.fields?.backgroundImage?.fields?.file?.url
+          ? `https:${heroEntryWithFields.fields.backgroundImage.fields.file.url}` 
           : null
       };
       

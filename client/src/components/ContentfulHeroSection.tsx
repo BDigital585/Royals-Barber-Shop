@@ -49,19 +49,42 @@ const ContentfulHeroSection = () => {
     return null; // Don't show anything if there's an error or no content
   }
 
+  // Check for video URL
   const hasVideo = heroContent.videoUrl && heroContent.videoUrl.trim() !== '';
-  const hasImage = heroContent.backgroundImage && heroContent.backgroundImage.fields && 
-                 heroContent.backgroundImage.fields.file && heroContent.backgroundImage.fields.file.url;
-  
-  // If neither video nor image is available, don't display the section
-  if (!hasVideo && !hasImage) {
-    return null;
-  }
 
+  // Check for background image URL
+  const hasImage = heroContent.backgroundImage && 
+                  typeof heroContent.backgroundImage === 'string';
+  
+  // If we have neither video nor image, still show the section with just text
+  // This ensures the content appears even if media is missing
+  
+  // Prepare background style if image exists
   const backgroundStyle = hasImage 
-    ? { backgroundImage: `url(https:${heroContent.backgroundImage?.fields.file.url})` } 
+    ? { backgroundImage: `url(${heroContent.backgroundImage})` } 
     : {};
 
+  // If we have no media at all, show a simpler version of the section with just the text content
+  if (!hasVideo && !hasImage) {
+    return (
+      <section className="relative bg-gradient-to-r from-gray-900 to-black py-12 my-4">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col items-center justify-center text-center py-12">
+            <h2 className="text-3xl md:text-4xl font-heading text-white mb-4">
+              {heroContent.title}
+            </h2>
+            {heroContent.subtitle && (
+              <p className="text-lg md:text-xl text-white max-w-2xl">
+                {heroContent.subtitle}
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Otherwise, show the rich media version
   return (
     <section className="relative bg-white py-8">
       <div 
