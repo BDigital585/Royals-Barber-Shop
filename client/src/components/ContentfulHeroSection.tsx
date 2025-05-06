@@ -106,9 +106,9 @@ const ContentfulHeroSection = () => {
     );
   }
 
-  // Otherwise, show the rich media version
+  // Only show the video without any text overlay as requested
   return (
-    <section className="relative bg-white py-8">
+    <section className="relative bg-white">
       <div 
         className={`relative h-[40vh] overflow-hidden ${hasVideo ? '' : 'bg-cover bg-center'}`} 
         style={hasVideo ? {} : backgroundStyle}
@@ -125,22 +125,12 @@ const ContentfulHeroSection = () => {
             onLoadedData={handleVideoLoad}
           >
             <source src={heroContent.videoUrl} type="video/mp4" />
+            <source src={heroContent.videoUrl} type="video/quicktime" />
             Your browser does not support the video tag.
           </video>
         )}
         
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center px-4">
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-heading text-white mb-3">
-              {heroContent.title}
-            </h2>
-            {heroContent.subtitle && (
-              <p className="text-lg md:text-xl text-white">
-                {heroContent.subtitle}
-              </p>
-            )}
-          </div>
-        </div>
+        {/* No text overlay per client request */}
       </div>
     </section>
   );

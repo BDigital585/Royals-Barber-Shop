@@ -201,15 +201,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Try different possible paths for the video URL
       let videoUrl = '';
-      if (heroContent.fields?.videoUrl) {
+      
+      // Looking at the logs, we can see the actual structure is different
+      // The video URL is directly in heroContent.fields.file.url
+      if (heroContent.fields?.file && heroContent.fields.file.url) {
+        console.log('Found video file in direct file field');
+        const fileData = heroContent.fields.file;
+        
+        // For Contentful assets, we always want to use the file URL
+        // QuickTime video files (.MOV) are valid and should work in browsers
+        // Make sure we have a proper URL with https:
+        videoUrl = fileData.url.startsWith('//') 
+          ? `https:${fileData.url}` 
+          : fileData.url;
+        
+        console.log('Extracted video URL:', videoUrl);
+        console.log('Video content type:', fileData.contentType);
+        console.log('Video filename:', fileData.fileName);
+      } else if (heroContent.fields?.videoUrl) {
         // Direct videoUrl field
         videoUrl = heroContent.fields.videoUrl;
-      } else if (heroContent.fields?.file && heroContent.fields.file.fields && heroContent.fields.file.fields.file) {
-        // Video might be in a file field with a URL
-        const fileData = heroContent.fields.file.fields.file;
-        if (fileData.contentType && fileData.contentType.includes('video')) {
-          videoUrl = `https:${fileData.url}`;
-        }
       }
       console.log('Video URL:', videoUrl);
       
