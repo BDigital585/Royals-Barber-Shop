@@ -49,10 +49,12 @@ const ContentfulHeroSection = () => {
     return null; // Don't show anything if there's an error or no content
   }
 
-  // Check for video URL
+  // Check for video URL and log it for debugging
+  console.log('Content video URL:', heroContent.videoUrl);
   const hasVideo = heroContent.videoUrl && heroContent.videoUrl.trim() !== '';
 
   // Check for background image URL
+  console.log('Content background image:', heroContent.backgroundImage);
   const hasImage = heroContent.backgroundImage && 
                   typeof heroContent.backgroundImage === 'string';
   
@@ -98,6 +100,11 @@ const ContentfulHeroSection = () => {
             loop 
             muted 
             playsInline
+            onError={(e) => {
+              console.error('Error loading video:', e);
+              console.log('Video element:', e.currentTarget);
+              console.log('Video source URL:', heroContent.videoUrl);
+            }}
           >
             <source src={heroContent.videoUrl} type="video/mp4" />
             Your browser does not support the video tag.

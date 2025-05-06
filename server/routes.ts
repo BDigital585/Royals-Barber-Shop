@@ -141,39 +141,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
         environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
       });
       
-      // First fetch the pageSettings entry
+      // Fetch the latest published entry of content type "pageSettings"
+      // Sort by sys.updatedAt in descending order to get the most recently updated entry
       const pageSettings = await client.getEntries({
         content_type: 'pageSettings',
+        // TypeScript doesn't like the string format for order, but it works
+        order: ['-sys.updatedAt'] as any, // Sort by updated date descending
         limit: 1,
-        include: 2 // Include linked entries (up to 2 levels deep)
+        include: 10 // Include linked entries (up to 10 levels deep to ensure we get everything)
       });
+      
+      console.log('Found pageSettings entries:', pageSettings.items.length);
       
       if (!pageSettings.items.length) {
         throw new Error('No pageSettings found');
       }
       
-      // Get the hero reference from the first pageSettings entry
-      const firstItem = pageSettings.items[0];
-      if (!firstItem.fields || !firstItem.fields.hero) {
-        throw new Error('No hero reference found in pageSettings');
+      // Log the entry ID and title for debugging
+      const latestEntry = pageSettings.items[0];
+      console.log('Latest pageSettings entry:', {
+        id: latestEntry.sys?.id,
+        contentType: latestEntry.sys?.contentType?.sys?.id,
+        updatedAt: latestEntry.sys?.updatedAt,
+        fieldKeys: Object.keys(latestEntry.fields || {})
+      });
+      
+      // Get the hero content directly from the pageSettings entry
+      const pageSettingsFields = latestEntry.fields as any;
+      
+      // Check if we have a direct hero content or need to follow a reference
+      let heroContent: any;
+      
+      if (pageSettingsFields.hero) {
+        console.log('Found hero reference in pageSettings');
+        // This is a reference to another entry
+        heroContent = pageSettingsFields.hero;
+      } else {
+        console.log('Using pageSettings directly as hero content');
+        // The pageSettings entry itself contains the hero content
+        heroContent = latestEntry;
       }
       
-      // Access the hero reference 
-      const heroRef = firstItem.fields.hero;
+      // Log the hero content for debugging
+      console.log('Hero content fields:', Object.keys(heroContent.fields || {}));
       
-      // If we're using include: 2, we already have the hero data resolved
-      const heroEntry = heroRef;
+      // Extract video data - using optional chaining for safety
+      const videoUrl = heroContent.fields?.videoUrl || '';
+      console.log('Video URL:', videoUrl);
       
-      // Format the response data, using type assertions to help TypeScript
-      const heroEntryWithFields = heroEntry as any;
+      // Extract image data if present
+      let backgroundImageUrl = null;
+      if (heroContent.fields?.backgroundImage) {
+        const imageAsset = heroContent.fields.backgroundImage;
+        // Make sure we have a valid image asset
+        if (imageAsset.fields && imageAsset.fields.file) {
+          backgroundImageUrl = `https:${imageAsset.fields.file.url}`;
+          console.log('Background image URL:', backgroundImageUrl);
+        }
+      }
       
+      // Format the final response data
       const heroData = {
-        title: heroEntryWithFields.fields?.title || 'Hero Title',
-        subtitle: heroEntryWithFields.fields?.subtitle || '',
-        videoUrl: heroEntryWithFields.fields?.videoUrl || '',
-        backgroundImage: heroEntryWithFields.fields?.backgroundImage?.fields?.file?.url
-          ? `https:${heroEntryWithFields.fields.backgroundImage.fields.file.url}` 
-          : null
+        title: heroContent.fields?.title || 'Hero Title',
+        subtitle: heroContent.fields?.subtitle || '',
+        videoUrl: videoUrl,
+        backgroundImage: backgroundImageUrl
       };
       
       return res.status(200).json(heroData);
