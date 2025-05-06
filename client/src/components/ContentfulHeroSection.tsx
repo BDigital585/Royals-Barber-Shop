@@ -56,6 +56,12 @@ const ContentfulHeroSection = () => {
             </div>
           </div>
         </div>
+        {/* Anniversary text below the hero section */}
+        <div className="py-3 bg-gradient-to-r from-gray-900 to-black">
+          <p className="text-center text-sm md:text-base font-medium text-white/80 italic">
+            Celebrating 10 years of exceptional service
+          </p>
+        </div>
       </section>
     );
   }
@@ -68,7 +74,7 @@ const ContentfulHeroSection = () => {
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center text-center">
               <h1 className="text-3xl sm:text-4xl md:text-6xl font-heading text-white mb-2 md:mb-4 text-center">
-                ROYALS BARBER SHOP
+                BATAVIA'S #1 BARBER SHOP
               </h1>
               <p className="text-white text-center text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-2">
                 Our barbers are committed to making every individual feel and look their best.
@@ -80,6 +86,12 @@ const ContentfulHeroSection = () => {
               )}
             </div>
           </div>
+        </div>
+        {/* Anniversary text below the hero section */}
+        <div className="py-3 bg-gradient-to-r from-gray-900 to-black">
+          <p className="text-center text-sm md:text-base font-medium text-white/80 italic">
+            Celebrating 10 years of exceptional service
+          </p>
         </div>
       </section>
     );
@@ -108,13 +120,19 @@ const ContentfulHeroSection = () => {
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center text-center">
               <h1 className="text-3xl sm:text-4xl md:text-6xl font-heading text-white mb-2 md:mb-4 text-center">
-                ROYALS BARBER SHOP
+                BATAVIA'S #1 BARBER SHOP
               </h1>
               <p className="text-white text-center text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-2">
                 Our barbers are committed to making every individual feel and look their best.
               </p>
             </div>
           </div>
+        </div>
+        {/* Anniversary text below the hero section */}
+        <div className="py-3 bg-gradient-to-r from-gray-900 to-black">
+          <p className="text-center text-sm md:text-base font-medium text-white/80 italic">
+            Celebrating 10 years of exceptional service
+          </p>
         </div>
       </section>
     );
@@ -155,6 +173,12 @@ const ContentfulHeroSection = () => {
             </p>
           </div>
         </div>
+      </div>
+      {/* Anniversary text below the hero section */}
+      <div className="py-3 bg-gradient-to-r from-gray-900 to-black">
+        <p className="text-center text-sm md:text-base font-medium text-white/80 italic">
+          Celebrating 10 years of exceptional service
+        </p>
       </div>
     </section>
   );
