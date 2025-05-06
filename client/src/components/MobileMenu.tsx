@@ -18,23 +18,9 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
           Book Now
         </Link>
         
-        {/* Hair Gallery with categories */}
-        <div className="flex flex-col items-center space-y-3">
-          <Link href="/#gallery" onClick={onClose} className="text-white text-xl font-medium hover:text-secondary text-center">
-            Hair Gallery
-          </Link>
-          <div className="flex flex-col space-y-2 items-center">
-            <Link href="/#gallery?category=fades" onClick={onClose} className="text-white text-lg font-medium hover:text-secondary text-center">
-              - Fades
-            </Link>
-            <Link href="/#gallery?category=beards" onClick={onClose} className="text-white text-lg font-medium hover:text-secondary text-center">
-              - Beards
-            </Link>
-            <Link href="/#gallery?category=kids" onClick={onClose} className="text-white text-lg font-medium hover:text-secondary text-center">
-              - Kids
-            </Link>
-          </div>
-        </div>
+        <Link href="/#gallery" onClick={onClose} className="text-white text-xl font-medium hover:text-secondary text-center">
+          Hair Gallery
+        </Link>
         
         <Link href="/#blog" onClick={onClose} className="text-white text-xl font-medium hover:text-secondary text-center">
           Blog

@@ -8,7 +8,7 @@ const Home = () => {
   return (
     <>
       <Header />
-      <main className="pt-20">
+      <main>
         <ContentfulHeroSection />
         <BookingSection />
         <NewsletterSection />

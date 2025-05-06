@@ -46,7 +46,7 @@ const ContentfulHeroSection = () => {
 
   if (loading) {
     return (
-      <section id="home" className="relative bg-gray-900">
+      <section id="home" className="relative bg-gray-900 pt-16">
         <div className="h-[35vh] md:h-[70vh] flex items-center justify-center">
           <div className="container mx-auto px-4">
             <div className="animate-pulse w-full max-w-2xl mx-auto text-center">
@@ -69,7 +69,7 @@ const ContentfulHeroSection = () => {
   if (error || !heroContent) {
     // Return the same layout but with an error message
     return (
-      <section id="home" className="relative bg-gradient-to-r from-gray-900 to-black">
+      <section id="home" className="relative bg-gradient-to-r from-gray-900 to-black pt-16">
         <div className="h-[35vh] md:h-[70vh] flex items-center justify-center">
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center text-center">
@@ -115,7 +115,7 @@ const ContentfulHeroSection = () => {
   // show a fallback with the same branding text but on a gradient background
   if ((!hasVideo && !hasImage) || (videoError && !hasImage)) {
     return (
-      <section id="home" className="relative bg-gradient-to-r from-gray-900 to-black">
+      <section id="home" className="relative bg-gradient-to-r from-gray-900 to-black pt-16">
         <div className="h-[35vh] md:h-[70vh] flex items-center justify-center">
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center text-center">
@@ -140,7 +140,7 @@ const ContentfulHeroSection = () => {
 
   // Show the video with the main branding text overlaid
   return (
-    <section id="home" className="relative bg-white">
+    <section id="home" className="relative bg-white pt-16">
       <div 
         className={`relative h-[35vh] md:h-[70vh] overflow-hidden ${hasVideo ? '' : 'bg-cover bg-center'}`} 
         style={hasVideo ? {} : backgroundStyle}
