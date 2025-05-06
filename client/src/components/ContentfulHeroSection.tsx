@@ -145,7 +145,7 @@ const ContentfulHeroSection = () => {
         )}
         
         {/* Text overlay with a dark semi-transparent background for better readability */}
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center px-2 sm:px-4">
+        <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-center items-center px-2 sm:px-4">
           <div className="text-center max-w-4xl">
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-heading text-white mb-2 md:mb-4 text-center">
               ROYALS BARBER SHOP

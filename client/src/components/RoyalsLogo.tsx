@@ -4,50 +4,9 @@ interface RoyalsLogoProps {
 
 const RoyalsLogo: React.FC<RoyalsLogoProps> = ({ className = '' }) => {
   return (
-    <svg 
-      width="300" 
-      height="100" 
-      viewBox="0 0 300 100" 
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <title>Royals Barber Shop Logo</title>
-      <g fill="#FFFFFF" stroke="#000000" strokeWidth="1">
-        <path d="M20,40 Q25,25 35,25 H45 Q55,25 55,35 Q55,45 45,50 L58,75 H48 L36,50 H30 V75 H20 V40 Z M30,30 V45 H40 Q45,45 45,37.5 Q45,30 40,30 H30 Z" />
-        <path d="M70,25 Q90,25 90,45 Q90,75 65,75 Q60,60 60,45 Q60,25 70,25 Z M70,35 Q70,35 70,50 Q70,65 70,65 Q80,65 80,50 Q80,35 70,35 Z" />
-        <path d="M95,25 H105 L120,55 V25 H130 V75 H120 L105,45 V75 H95 V25 Z" />
-        <path d="M135,25 H165 L165,35 H145 V45 H160 V55 H145 V65 H165 V75 H135 V25 Z" />
-        <path d="M170,25 H180 V65 H200 V75 H170 V25 Z" />
-        <path d="M205,40 Q205,25 220,25 Q235,25 235,40 V60 Q235,75 220,75 Q205,75 205,60 V40 Z M215,40 V60 Q215,65 220,65 Q225,65 225,60 V40 Q225,35 220,35 Q215,35 215,40 Z" />
-      </g>
-      
-      <g transform="translate(0, 15)" fill="#FFFFFF" stroke="#FFFFFF" strokeWidth="0.7">
-        <path d="M70,70 H75 V72 H72 V74 H75 V76 H72 V80 H70 V70 Z" />
-        <path d="M80,70 H90 Q95,70 95,75 Q95,80 90,80 H80 V70 Z M82,72 V78 H88 Q92,78 92,75 Q92,72 88,72 H82 Z" />
-        <path d="M100,70 H105 L108,76 L111,70 H116 V80 H114 V73 L110,80 H106 L102,73 V80 H100 V70 Z" />
-        <path d="M120,70 H125 L128,76 L131,70 H136 V80 H134 V73 L130,80 H126 L122,73 V80 H120 V70 Z" />
-        <path d="M140,70 H150 Q155,70 155,75 Q155,80 150,80 H140 V70 Z M142,72 V78 H148 Q152,78 152,75 Q152,72 148,72 H142 Z" />
-        <path d="M160,70 H170 Q175,70 175,73 Q175,75 172,76 Q175,77 175,80 H172 Q172,77 170,77 H162 V80 H160 V70 Z M162,72 V75 H168 Q172,75 172,73 Q172,72 168,72 H162 Z" />
-        
-        <path d="M185,70 H200 V72 H193.5 V80 H191.5 V72 H185 V70 Z" />
-        <path d="M205,70 H207 V76 Q207,78 209,78 Q211,78 211,76 V70 H213 V76 Q213,80 209,80 Q205,80 205,76 V70 Z" />
-        <path d="M218,70 H226 Q230,70 230,75 Q230,80 226,80 H218 V70 Z M220,72 V78 H224 Q228,78 228,75 Q228,72 224,72 H220 Z" />
-        <path d="M238,70 H240 V78 H248 V80 H238 V70 Z" />
-        <path d="M252,70 H260 Q264,70 264,75 Q264,80 260,80 H252 V70 Z M254,72 V78 H258 Q262,78 262,75 Q262,72 258,72 H254 Z" />
-      </g>
-      
-      <g transform="translate(60, 30)" fill="#FFFFFF" stroke="#FFFFFF" strokeWidth="0.5">
-        <path d="M50,70 H70 V72 H60 V74 H70 V76 H60 V78 H70 V80 H50 V70 Z" />
-        <path d="M75,70 H80 L87,80 H84 L83,78 H77 L76,80 H73 L75,70 Z M78,72 L77,76 H83 L82,72 Z" />
-        <path d="M92,70 H97 L100,76 L103,70 H108 V80 H106 V73 L102,80 H98 L94,73 V80 H92 V70 Z" />
-        <path d="M113,70 H118 L125,80 H122 L121,78 H115 L114,80 H111 L113,70 Z M116,72 L115,76 H121 L120,72 Z" />
-        <path d="M130,70 H132 V80 H130 V70 Z" />
-        <path d="M140,70 H150 Q154,70 154,74 Q154,76 152,77 L155,80 H152 L150,77 H142 V80 H140 V70 Z M142,72 V75 H148 Q152,75 152,73 Q152,72 148,72 H142 Z" />
-        <path d="M160,70 H170 Q174,70 174,74 Q174,76 172,77 L175,80 H172 L170,77 H162 V80 H160 V70 Z M162,72 V75 H168 Q172,75 172,73 Q172,72 168,72 H162 Z" />
-        <path d="M180,70 H186 Q190,70 190,74 Q190,80 186,80 H180 V70 Z M182,72 V78 H184 Q188,78 188,75 Q188,72 184,72 H182 Z" />
-        <path d="M210,70 H212 V80 H210 V70 Z" />
-      </g>
-    </svg>
+    <div className={`flex items-center ${className}`}>
+      <span className="text-xl font-bold text-white">Royals Barber Shop</span>
+    </div>
   );
 };
 
