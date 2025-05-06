@@ -47,12 +47,12 @@ const ContentfulHeroSection = () => {
   if (loading) {
     return (
       <section id="home" className="relative bg-gray-900">
-        <div className="h-[70vh] flex items-center justify-center">
+        <div className="h-[35vh] md:h-[70vh] flex items-center justify-center">
           <div className="container mx-auto px-4">
             <div className="animate-pulse w-full max-w-2xl mx-auto text-center">
-              <div className="h-12 bg-gray-700 rounded mb-6 mx-auto w-3/4"></div>
-              <div className="h-4 bg-gray-700 rounded mb-8 mx-auto w-1/2"></div>
-              <div className="h-32 bg-gray-800 rounded-lg w-full"></div>
+              <div className="h-8 md:h-12 bg-gray-700 rounded mb-3 md:mb-6 mx-auto w-3/4"></div>
+              <div className="h-3 md:h-4 bg-gray-700 rounded mb-4 md:mb-8 mx-auto w-1/2"></div>
+              <div className="h-24 md:h-32 bg-gray-800 rounded-lg w-full"></div>
             </div>
           </div>
         </div>
@@ -64,17 +64,17 @@ const ContentfulHeroSection = () => {
     // Return the same layout but with an error message
     return (
       <section id="home" className="relative bg-gradient-to-r from-gray-900 to-black">
-        <div className="h-[70vh] flex items-center justify-center">
+        <div className="h-[35vh] md:h-[70vh] flex items-center justify-center">
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center text-center">
-              <h1 className="text-4xl md:text-6xl font-heading text-white mb-4 text-center">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-heading text-white mb-2 md:mb-4 text-center">
                 ROYALS BARBER SHOP
               </h1>
-              <p className="text-white text-center text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white text-center text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-2">
                 Our barbers are committed to making every individual feel and look their best.
               </p>
               {error && (
-                <p className="mt-6 text-sm text-gray-400">
+                <p className="mt-3 md:mt-6 text-xs md:text-sm text-gray-400">
                   {error}
                 </p>
               )}
@@ -104,13 +104,13 @@ const ContentfulHeroSection = () => {
   if ((!hasVideo && !hasImage) || (videoError && !hasImage)) {
     return (
       <section id="home" className="relative bg-gradient-to-r from-gray-900 to-black">
-        <div className="h-[70vh] flex items-center justify-center">
+        <div className="h-[35vh] md:h-[70vh] flex items-center justify-center">
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center text-center">
-              <h1 className="text-4xl md:text-6xl font-heading text-white mb-4 text-center">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-heading text-white mb-2 md:mb-4 text-center">
                 ROYALS BARBER SHOP
               </h1>
-              <p className="text-white text-center text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white text-center text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-2">
                 Our barbers are committed to making every individual feel and look their best.
               </p>
             </div>
@@ -124,7 +124,7 @@ const ContentfulHeroSection = () => {
   return (
     <section id="home" className="relative bg-white">
       <div 
-        className={`relative h-[70vh] overflow-hidden ${hasVideo ? '' : 'bg-cover bg-center'}`} 
+        className={`relative h-[35vh] md:h-[70vh] overflow-hidden ${hasVideo ? '' : 'bg-cover bg-center'}`} 
         style={hasVideo ? {} : backgroundStyle}
       >
         {hasVideo && (
@@ -145,10 +145,12 @@ const ContentfulHeroSection = () => {
         )}
         
         {/* Text overlay with a dark semi-transparent background for better readability */}
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center px-4">
+        <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center px-2 sm:px-4">
           <div className="text-center max-w-4xl">
-            <h1 className="text-4xl md:text-6xl font-heading text-white mb-4 text-center">ROYALS BARBER SHOP</h1>
-            <p className="text-white text-center text-lg md:text-xl max-w-2xl mx-auto">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-heading text-white mb-2 md:mb-4 text-center">
+              ROYALS BARBER SHOP
+            </h1>
+            <p className="text-white text-center text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-2">
               Our barbers are committed to making every individual feel and look their best.
             </p>
           </div>
