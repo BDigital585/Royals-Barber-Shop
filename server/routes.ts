@@ -124,27 +124,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get Contentful hero content
   app.get(`${apiPrefix}/contentful/hero`, async (req, res) => {
     try {
-      // Import contentful here to avoid top-level issues
-      const contentful = require('contentful');
+      // Import directly at the top level in the main file
+      const { createClient } = await import('contentful');
       
-      // Create client with server environment variables
-      const contentfulClient = contentful.createClient({
+      // Print environment variables for debugging
+      console.log('Contentful environment variables check:', {
+        spaceId: process.env.CONTENTFUL_SPACE_ID ? 'exists' : 'missing',
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ? 'exists' : 'missing',
+        environment: process.env.CONTENTFUL_ENVIRONMENT ? 'exists' : 'missing'
+      });
+      
+      // Create client with environment variables
+      const client = createClient({
         space: process.env.CONTENTFUL_SPACE_ID || '',
         accessToken: process.env.CONTENTFUL_ACCESS_TOKEN || '',
         environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
       });
       
-      // Fetch the specific entry by ID as requested
-      const entryId = 'siteHero';
-      const entry = await contentfulClient.getEntry(entryId);
+      // First fetch the pageSettings entry
+      const pageSettings = await client.getEntries({
+        content_type: 'pageSettings',
+        limit: 1,
+        include: 2 // Include linked entries (up to 2 levels deep)
+      });
       
-      // Format the response in a clean way
+      if (!pageSettings.items.length) {
+        throw new Error('No pageSettings found');
+      }
+      
+      // Get the hero reference from the first pageSettings entry
+      const firstItem = pageSettings.items[0];
+      if (!firstItem.fields || !firstItem.fields.hero) {
+        throw new Error('No hero reference found in pageSettings');
+      }
+      
+      // Access the hero reference 
+      const heroRef = firstItem.fields.hero;
+      
+      // If we're using include: 2, we already have the hero data resolved
+      const heroEntry = heroRef;
+      
+      // Format the response data
       const heroData = {
-        title: entry.fields.title,
-        subtitle: entry.fields.subtitle,
-        videoUrl: entry.fields.videoUrl,
-        backgroundImage: entry.fields.backgroundImage 
-          ? `https:${entry.fields.backgroundImage.fields.file.url}` 
+        title: heroEntry.fields.title,
+        subtitle: heroEntry.fields.subtitle,
+        videoUrl: heroEntry.fields.videoUrl,
+        backgroundImage: heroEntry.fields.backgroundImage 
+          ? `https:${heroEntry.fields.backgroundImage.fields.file.url}` 
           : null
       };
       

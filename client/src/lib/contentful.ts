@@ -1,11 +1,8 @@
-import { createClient, Entry, EntrySkeletonType } from 'contentful';
-
-// Create a Contentful client instance
-export const contentfulClient = createClient({
-  space: import.meta.env.CONTENTFUL_SPACE_ID || '',
-  accessToken: import.meta.env.CONTENTFUL_ACCESS_TOKEN || '',
-  environment: import.meta.env.CONTENTFUL_ENVIRONMENT || 'master',
-});
+/**
+ * This file handles the client-side fetching of Contentful content.
+ * Instead of direct Contentful API calls, we now use our server API endpoint
+ * which has access to environment variables.
+ */
 
 // Types for the Hero Content from Contentful
 export interface SiteHero {
@@ -21,22 +18,22 @@ export interface SiteHero {
   };
 }
 
-// Function to get the hero content by ID
-export async function getHeroContent(entryId: string): Promise<SiteHero | null> {
+// Function to get the hero content by fetching from our server API
+export async function getHeroContent(): Promise<SiteHero | null> {
   try {
-    const entry = await contentfulClient.getEntry(entryId);
+    // Fetch content from our server endpoint instead of directly from Contentful
+    const response = await fetch('/api/contentful/hero');
     
-    // Safely cast the entry fields to our expected type
-    const heroData = {
-      title: entry.fields.title as string,
-      subtitle: entry.fields.subtitle as string | undefined,
-      videoUrl: entry.fields.videoUrl as string | undefined,
-      backgroundImage: entry.fields.backgroundImage as any,
-    };
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}: ${response.statusText}`);
+    }
     
-    return heroData;
+    const data = await response.json();
+    console.log('Contentful data from API:', data);
+    
+    return data;
   } catch (error) {
-    console.error('Error fetching hero content from Contentful:', error);
+    console.error('Error fetching hero content from API:', error);
     return null;
   }
 }

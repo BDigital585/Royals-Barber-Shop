@@ -1,14 +1,8 @@
 import { useEffect, useState } from 'react';
-
-interface HeroContent {
-  title: string;
-  subtitle?: string;
-  videoUrl?: string;
-  backgroundImage?: string | null;
-}
+import { SiteHero, getHeroContent } from '@/lib/contentful';
 
 const ContentfulHeroSection = () => {
-  const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
+  const [heroContent, setHeroContent] = useState<SiteHero | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,15 +10,14 @@ const ContentfulHeroSection = () => {
     const fetchHeroContent = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/contentful/hero');
-        
-        if (!response.ok) {
-          throw new Error(`API returned ${response.status}: ${response.statusText}`);
+        const content = await getHeroContent();
+        if (content) {
+          console.log('Contentful hero content fetched:', content);
+          setHeroContent(content);
+          setError(null);
+        } else {
+          throw new Error('No content returned from Contentful');
         }
-        
-        const data = await response.json();
-        setHeroContent(data);
-        setError(null);
       } catch (err) {
         console.error('Error fetching hero content:', err);
         setError('Failed to load content. Please try again later.');
@@ -57,7 +50,8 @@ const ContentfulHeroSection = () => {
   }
 
   const hasVideo = heroContent.videoUrl && heroContent.videoUrl.trim() !== '';
-  const hasImage = heroContent.backgroundImage && heroContent.backgroundImage !== null;
+  const hasImage = heroContent.backgroundImage && heroContent.backgroundImage.fields && 
+                 heroContent.backgroundImage.fields.file && heroContent.backgroundImage.fields.file.url;
   
   // If neither video nor image is available, don't display the section
   if (!hasVideo && !hasImage) {
@@ -65,7 +59,7 @@ const ContentfulHeroSection = () => {
   }
 
   const backgroundStyle = hasImage 
-    ? { backgroundImage: `url(${heroContent.backgroundImage})` } 
+    ? { backgroundImage: `url(https:${heroContent.backgroundImage?.fields.file.url})` } 
     : {};
 
   return (
