@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
+import ContentfulHeroSection from '@/components/ContentfulHeroSection';
 import BookingSection from '@/components/BookingSection';
 import GallerySection from '@/components/GallerySection';
 import BlogSection from '@/components/BlogSection';
@@ -12,6 +13,7 @@ const Home = () => {
       <Header />
       <main className="pt-20">
         <HeroSection />
+        <ContentfulHeroSection />
         <BookingSection />
         <GallerySection />
         <BlogSection />

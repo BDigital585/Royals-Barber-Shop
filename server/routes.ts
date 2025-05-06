@@ -121,6 +121,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get Contentful hero content
+  app.get(`${apiPrefix}/contentful/hero`, async (req, res) => {
+    try {
+      // Import contentful here to avoid top-level issues
+      const contentful = require('contentful');
+      
+      // Create client with server environment variables
+      const contentfulClient = contentful.createClient({
+        space: process.env.CONTENTFUL_SPACE_ID || '',
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN || '',
+        environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
+      });
+      
+      // Fetch the specific entry by ID as requested
+      const entryId = 'siteHero';
+      const entry = await contentfulClient.getEntry(entryId);
+      
+      // Format the response in a clean way
+      const heroData = {
+        title: entry.fields.title,
+        subtitle: entry.fields.subtitle,
+        videoUrl: entry.fields.videoUrl,
+        backgroundImage: entry.fields.backgroundImage 
+          ? `https:${entry.fields.backgroundImage.fields.file.url}` 
+          : null
+      };
+      
+      return res.status(200).json(heroData);
+    } catch (error) {
+      console.error("Error fetching Contentful hero content:", error);
+      return res.status(500).json({ 
+        message: "Failed to fetch Contentful content",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
