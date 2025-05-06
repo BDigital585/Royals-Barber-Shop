@@ -46,13 +46,13 @@ const ContentfulHeroSection = () => {
 
   if (loading) {
     return (
-      <section className="py-10 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="h-[40vh] flex items-center justify-center">
+      <section id="home" className="relative bg-gray-900">
+        <div className="h-[70vh] flex items-center justify-center">
+          <div className="container mx-auto px-4">
             <div className="animate-pulse w-full max-w-2xl mx-auto text-center">
-              <div className="h-8 bg-gray-200 rounded mb-4 mx-auto w-3/4"></div>
-              <div className="h-4 bg-gray-200 rounded mb-2 mx-auto w-1/2"></div>
-              <div className="h-24 bg-gray-200 rounded w-full"></div>
+              <div className="h-12 bg-gray-700 rounded mb-6 mx-auto w-3/4"></div>
+              <div className="h-4 bg-gray-700 rounded mb-8 mx-auto w-1/2"></div>
+              <div className="h-32 bg-gray-800 rounded-lg w-full"></div>
             </div>
           </div>
         </div>
@@ -61,11 +61,25 @@ const ContentfulHeroSection = () => {
   }
 
   if (error || !heroContent) {
-    // Return null or a minimal error state
+    // Return the same layout but with an error message
     return (
-      <section className="py-6 bg-white">
-        <div className="container mx-auto px-4 text-center text-gray-600">
-          {error ? 'Unable to load content. Please check back later.' : ''}
+      <section id="home" className="relative bg-gradient-to-r from-gray-900 to-black">
+        <div className="h-[70vh] flex items-center justify-center">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col items-center justify-center text-center">
+              <h1 className="text-4xl md:text-6xl font-heading text-white mb-4 text-center">
+                ROYALS BARBER SHOP
+              </h1>
+              <p className="text-white text-center text-lg md:text-xl max-w-2xl mx-auto">
+                Our barbers are committed to making every individual feel and look their best.
+              </p>
+              {error && (
+                <p className="mt-6 text-sm text-gray-400">
+                  {error}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       </section>
     );
@@ -86,31 +100,31 @@ const ContentfulHeroSection = () => {
     : {};
 
   // If we have no media at all or if video failed to load and no image is available,
-  // show a simpler version of the section with just the text content
+  // show a fallback with the same branding text but on a gradient background
   if ((!hasVideo && !hasImage) || (videoError && !hasImage)) {
     return (
-      <section className="relative bg-gradient-to-r from-gray-900 to-black py-12 my-4">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center justify-center text-center py-12">
-            <h2 className="text-3xl md:text-4xl font-heading text-white mb-4">
-              {heroContent.title}
-            </h2>
-            {heroContent.subtitle && (
-              <p className="text-lg md:text-xl text-white max-w-2xl">
-                {heroContent.subtitle}
+      <section id="home" className="relative bg-gradient-to-r from-gray-900 to-black">
+        <div className="h-[70vh] flex items-center justify-center">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col items-center justify-center text-center">
+              <h1 className="text-4xl md:text-6xl font-heading text-white mb-4 text-center">
+                ROYALS BARBER SHOP
+              </h1>
+              <p className="text-white text-center text-lg md:text-xl max-w-2xl mx-auto">
+                Our barbers are committed to making every individual feel and look their best.
               </p>
-            )}
+            </div>
           </div>
         </div>
       </section>
     );
   }
 
-  // Only show the video without any text overlay as requested
+  // Show the video with the main branding text overlaid
   return (
-    <section className="relative bg-white">
+    <section id="home" className="relative bg-white">
       <div 
-        className={`relative h-[40vh] overflow-hidden ${hasVideo ? '' : 'bg-cover bg-center'}`} 
+        className={`relative h-[70vh] overflow-hidden ${hasVideo ? '' : 'bg-cover bg-center'}`} 
         style={hasVideo ? {} : backgroundStyle}
       >
         {hasVideo && (
@@ -130,7 +144,15 @@ const ContentfulHeroSection = () => {
           </video>
         )}
         
-        {/* No text overlay per client request */}
+        {/* Text overlay with a dark semi-transparent background for better readability */}
+        <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center px-4">
+          <div className="text-center max-w-4xl">
+            <h1 className="text-4xl md:text-6xl font-heading text-white mb-4 text-center">ROYALS BARBER SHOP</h1>
+            <p className="text-white text-center text-lg md:text-xl max-w-2xl mx-auto">
+              Our barbers are committed to making every individual feel and look their best.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );
