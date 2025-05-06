@@ -59,22 +59,22 @@ const Header = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8">
-          <Link href="#home" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/" className="font-medium hover:text-secondary transition-colors">
             Home
           </Link>
-          <Link href="#book" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/#book" className="font-medium hover:text-secondary transition-colors">
             Book Now
           </Link>
-          <Link href="#gallery" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/#gallery" className="font-medium hover:text-secondary transition-colors">
             Hair Gallery
           </Link>
-          <Link href="#blog" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/#blog" className="font-medium hover:text-secondary transition-colors">
             Blog
           </Link>
-          <Link href="#newsletter" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/#newsletter" className="font-medium hover:text-secondary transition-colors">
             Newsletter
           </Link>
-          <Link href="#contact" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/contact" className="font-medium hover:text-secondary transition-colors">
             Contact
           </Link>
         </nav>

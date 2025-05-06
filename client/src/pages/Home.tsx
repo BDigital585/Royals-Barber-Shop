@@ -5,7 +5,6 @@ import BookingSection from '@/components/BookingSection';
 import GallerySection from '@/components/GallerySection';
 import BlogSection from '@/components/BlogSection';
 import NewsletterSection from '@/components/NewsletterSection';
-import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 
 const Home = () => {
@@ -19,7 +18,6 @@ const Home = () => {
         <GallerySection />
         <BlogSection />
         <NewsletterSection />
-        <ContactSection />
       </main>
       <Footer />
     </>
