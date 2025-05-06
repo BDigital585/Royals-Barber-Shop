@@ -65,9 +65,25 @@ const Header = () => {
           <Link href="/#book" className="font-medium hover:text-secondary transition-colors">
             Book Now
           </Link>
-          <Link href="/#gallery" className="font-medium hover:text-secondary transition-colors">
-            Hair Gallery
-          </Link>
+          
+          {/* Hair Gallery with dropdown */}
+          <div className="relative group">
+            <Link href="/#gallery" className="font-medium hover:text-secondary transition-colors">
+              Hair Gallery
+            </Link>
+            <div className="absolute left-0 mt-2 w-48 bg-primary shadow-lg rounded-md py-2 z-50 invisible group-hover:visible transition-all duration-300 opacity-0 group-hover:opacity-100">
+              <Link href="/#gallery?category=fades" className="block px-4 py-2 text-white hover:text-secondary hover:bg-gray-800">
+                Fades
+              </Link>
+              <Link href="/#gallery?category=beards" className="block px-4 py-2 text-white hover:text-secondary hover:bg-gray-800">
+                Beards
+              </Link>
+              <Link href="/#gallery?category=kids" className="block px-4 py-2 text-white hover:text-secondary hover:bg-gray-800">
+                Kids
+              </Link>
+            </div>
+          </div>
+          
           <Link href="/#blog" className="font-medium hover:text-secondary transition-colors">
             Blog
           </Link>

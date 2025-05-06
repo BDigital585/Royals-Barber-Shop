@@ -148,7 +148,7 @@ const ContentfulHeroSection = () => {
         <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-center items-center px-2 sm:px-4">
           <div className="text-center max-w-4xl">
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-heading text-white mb-2 md:mb-4 text-center">
-              ROYALS BARBER SHOP
+              BATAVIA'S #1 BARBER SHOP
             </h1>
             <p className="text-white text-center text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-2">
               Our barbers are committed to making every individual feel and look their best.
