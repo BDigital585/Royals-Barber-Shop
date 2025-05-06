@@ -174,7 +174,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (pageSettingsFields.hero) {
         console.log('Found hero reference in pageSettings');
-        // This is a reference to another entry
+        
+        // This is a reference to another entry - log the complete hero reference object
+        console.log('Hero reference object:', JSON.stringify(pageSettingsFields.hero, null, 2));
+        
         heroContent = pageSettingsFields.hero;
       } else {
         console.log('Using pageSettings directly as hero content');
@@ -182,28 +185,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
         heroContent = latestEntry;
       }
       
-      // Log the hero content for debugging
-      console.log('Hero content fields:', Object.keys(heroContent.fields || {}));
+      // Log the hero content fields structure
+      console.log('Hero content fields structure:', heroContent.fields ? Object.keys(heroContent.fields) : 'No fields found');
       
-      // Extract video data - using optional chaining for safety
-      const videoUrl = heroContent.fields?.videoUrl || '';
+      // For the sitehero content type, extract the needed fields
+      // The structure might be different than expected, let's check various possibilities
+      
+      // Extract title - may be directly in fields or in a nested structure
+      const title = heroContent.fields?.title || 'Royals Barbershop';
+      console.log('Title:', title);
+      
+      // Extract subtitle if available
+      const subtitle = heroContent.fields?.subtitle || '';
+      console.log('Subtitle:', subtitle);
+      
+      // Try different possible paths for the video URL
+      let videoUrl = '';
+      if (heroContent.fields?.videoUrl) {
+        // Direct videoUrl field
+        videoUrl = heroContent.fields.videoUrl;
+      } else if (heroContent.fields?.file && heroContent.fields.file.fields && heroContent.fields.file.fields.file) {
+        // Video might be in a file field with a URL
+        const fileData = heroContent.fields.file.fields.file;
+        if (fileData.contentType && fileData.contentType.includes('video')) {
+          videoUrl = `https:${fileData.url}`;
+        }
+      }
       console.log('Video URL:', videoUrl);
       
-      // Extract image data if present
+      // Extract image data - check multiple possible paths
       let backgroundImageUrl = null;
+      
+      // Check if backgroundImage is a direct field
       if (heroContent.fields?.backgroundImage) {
         const imageAsset = heroContent.fields.backgroundImage;
-        // Make sure we have a valid image asset
+        console.log('Image asset found:', imageAsset);
+        
+        // If it's a direct asset reference with fields
         if (imageAsset.fields && imageAsset.fields.file) {
           backgroundImageUrl = `https:${imageAsset.fields.file.url}`;
-          console.log('Background image URL:', backgroundImageUrl);
+        }
+      } 
+      // If the image is stored in 'file' field instead
+      else if (heroContent.fields?.file) {
+        const fileData = heroContent.fields.file;
+        console.log('File field found:', fileData);
+        
+        // It might be a direct file object or a reference to an asset
+        if (fileData.fields && fileData.fields.file) {
+          backgroundImageUrl = `https:${fileData.fields.file.url}`;
         }
       }
       
+      console.log('Background image URL:', backgroundImageUrl);
+      
       // Format the final response data
       const heroData = {
-        title: heroContent.fields?.title || 'Hero Title',
-        subtitle: heroContent.fields?.subtitle || '',
+        title: title,
+        subtitle: subtitle,
         videoUrl: videoUrl,
         backgroundImage: backgroundImageUrl
       };
