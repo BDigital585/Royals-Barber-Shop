@@ -72,7 +72,7 @@ const ContentfulHeroSection = () => {
               </h2>
               <a 
                 href="/#book" 
-                className="inline-block bg-secondary text-white font-medium py-3 px-8 rounded hover:bg-opacity-90 transition-colors text-base md:text-lg"
+                className="inline-block book-button py-3 px-8 text-base md:text-lg"
               >
                 BOOK NOW
               </a>
@@ -115,7 +115,7 @@ const ContentfulHeroSection = () => {
               </h2>
               <a 
                 href="/#book" 
-                className="inline-block bg-secondary text-white font-medium py-3 px-8 rounded hover:bg-opacity-90 transition-colors text-base md:text-lg"
+                className="inline-block book-button py-3 px-8 text-base md:text-lg"
               >
                 BOOK NOW
               </a>
@@ -158,7 +158,7 @@ const ContentfulHeroSection = () => {
             </h2>
             <a 
               href="/#book" 
-              className="inline-block bg-secondary text-white font-medium py-3 px-8 rounded hover:bg-opacity-90 transition-colors text-base md:text-lg"
+              className="inline-block book-button py-3 px-8 text-base md:text-lg"
             >
               BOOK NOW
             </a>

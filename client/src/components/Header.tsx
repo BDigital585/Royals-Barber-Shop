@@ -36,7 +36,7 @@ const Header = () => {
   };
 
   return (
-    <header className={`bg-primary text-white fixed top-0 left-0 w-full z-50 ${scrolled ? 'shadow-md' : ''}`}>
+    <header className={`bg-primary text-white fixed top-0 left-0 w-full z-50 navbar-shimmer ${scrolled ? 'shadow-md' : ''}`}>
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         <div className="logo">
           <Link href="/">
@@ -59,24 +59,24 @@ const Header = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8">
-          <Link href="/" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/" className="font-medium nav-link">
             Home
           </Link>
-          <Link href="/#book" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/#book" className="font-medium nav-link">
             Book Now
           </Link>
           
-          <Link href="/#gallery" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/#gallery" className="font-medium nav-link">
             Hair Gallery
           </Link>
           
-          <Link href="/#blog" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/#blog" className="font-medium nav-link">
             Blog
           </Link>
-          <Link href="/#newsletter" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/#newsletter" className="font-medium nav-link">
             Newsletter
           </Link>
-          <Link href="/contact" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/contact" className="font-medium nav-link">
             Contact
           </Link>
         </nav>
