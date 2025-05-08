@@ -54,11 +54,34 @@
   /* Gallery Filters */
   .gallery-filter {
     transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .gallery-filter::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #C4A47C;
+    transition: width 0.3s ease;
+    opacity: 0;
+  }
+
+  .gallery-filter:hover::after {
+    width: 100%;
+    opacity: 1;
   }
 
   .filter-active {
-    color: hsl(var(--secondary));
-    border-bottom: 2px solid hsl(var(--secondary));
+    color: #C4A47C;
+    font-weight: 600;
+  }
+
+  .filter-active::after {
+    width: 100%;
+    opacity: 1;
   }
 
   /* Hamburger Menu */
