@@ -5,7 +5,11 @@ interface RoyalsLogoProps {
 const RoyalsLogo: React.FC<RoyalsLogoProps> = ({ className = '' }) => {
   return (
     <div className={`flex items-center ${className}`}>
-      <span className="text-xl font-bold text-white">Royals Barber Shop</span>
+      <img 
+        src="/images/Royals Text Only Logo on Dark.png" 
+        alt="Royals Barber Shop" 
+        className="h-8 md:h-10"
+      />
     </div>
   );
 };
