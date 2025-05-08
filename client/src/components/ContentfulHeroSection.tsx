@@ -67,11 +67,13 @@ const ContentfulHeroSection = () => {
         <div className="h-[35vh] md:h-[70vh] flex items-center justify-center">
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center text-center">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading text-white mb-6 md:mb-8 text-center max-w-2xl mx-auto leading-relaxed">
+              <h2 className="text-xl sm:text-3xl md:text-4xl font-heading text-white mb-6 md:mb-8 text-center max-w-sm sm:max-w-md md:max-w-2xl mx-auto leading-relaxed">
                 A decade of sharp cuts, real trust, and local pride.
               </h2>
               <a 
-                href="/#book" 
+                href="https://royalsbarbershop.setmore.com/" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-block book-button py-3 px-8 text-base md:text-lg"
               >
                 BOOK NOW
@@ -110,11 +112,13 @@ const ContentfulHeroSection = () => {
         <div className="h-[35vh] md:h-[70vh] flex items-center justify-center">
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center text-center">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading text-white mb-6 md:mb-8 text-center max-w-2xl mx-auto leading-relaxed">
+              <h2 className="text-xl sm:text-3xl md:text-4xl font-heading text-white mb-6 md:mb-8 text-center max-w-sm sm:max-w-md md:max-w-2xl mx-auto leading-relaxed">
                 A decade of sharp cuts, real trust, and local pride.
               </h2>
               <a 
-                href="/#book" 
+                href="https://royalsbarbershop.setmore.com/" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-block book-button py-3 px-8 text-base md:text-lg"
               >
                 BOOK NOW
@@ -153,11 +157,13 @@ const ContentfulHeroSection = () => {
         {/* Text overlay with a dark semi-transparent background for better readability */}
         <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-center items-center px-2 sm:px-4">
           <div className="text-center max-w-4xl">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading text-white mb-6 md:mb-8 text-center max-w-2xl mx-auto leading-relaxed">
+            <h2 className="text-xl sm:text-3xl md:text-4xl font-heading text-white mb-6 md:mb-8 text-center max-w-sm sm:max-w-md md:max-w-2xl mx-auto leading-relaxed">
               A decade of sharp cuts, real trust, and local pride.
             </h2>
             <a 
-              href="/#book" 
+              href="https://royalsbarbershop.setmore.com/" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-block book-button py-3 px-8 text-base md:text-lg"
             >
               BOOK NOW
