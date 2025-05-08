@@ -55,7 +55,7 @@ const NewsletterSection = () => {
           />
           <button 
             type="submit" 
-            className="bg-secondary text-white font-medium py-3 px-6 rounded hover:bg-opacity-90 transition-colors"
+            className="subscribe-button py-3 px-6"
             disabled={subscribeNewsletter.isPending}
           >
             {subscribeNewsletter.isPending ? 'SUBSCRIBING...' : 'SUBSCRIBE'}

@@ -8,7 +8,7 @@ const BookingSection = () => {
           href="https://booksy.com" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="bg-secondary text-white font-medium py-2 md:py-3 px-6 md:px-8 rounded hover:bg-opacity-90 transition-colors inline-block text-sm md:text-base"
+          className="book-button py-2 md:py-3 px-6 md:px-8 inline-block text-sm md:text-base"
         >
           BOOK ONLINE
         </a>
