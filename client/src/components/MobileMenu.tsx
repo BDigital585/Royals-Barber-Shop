@@ -8,17 +8,13 @@ interface MobileMenuProps {
 const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   return (
     <div 
-      className={`fixed inset-0 z-20 navbar-modern navbar-texture flex-col items-center pt-24 pb-8 space-y-6 overflow-y-auto ${isOpen ? 'flex' : 'hidden'}`}
+      className={`fixed inset-0 z-20 bg-primary flex-col items-center pt-24 pb-8 space-y-6 overflow-y-auto ${isOpen ? 'flex' : 'hidden'}`}
     >
       <div className="flex flex-col space-y-6 w-full px-6">
         <Link href="/" onClick={onClose} className="text-white text-xl font-medium hover:text-secondary text-center">
           Home
         </Link>
-        <Link 
-          href="/#book" 
-          onClick={onClose} 
-          className="mx-auto px-8 py-3 btn-royal-blue rounded text-white text-xl font-medium hover:text-white text-center"
-        >
+        <Link href="/#book" onClick={onClose} className="text-white text-xl font-medium hover:text-secondary text-center">
           Book Now
         </Link>
         
