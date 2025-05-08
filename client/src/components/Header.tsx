@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'wouter';
-import RoyalsLogo from './RoyalsLogo';
 import MobileMenu from './MobileMenu';
 
 const Header = () => {
@@ -36,11 +35,15 @@ const Header = () => {
   };
 
   return (
-    <header className={`bg-primary text-white fixed top-0 left-0 w-full z-50 ${scrolled ? 'shadow-md' : ''}`}>
+    <header className={`navbar-modern navbar-texture text-white fixed top-0 left-0 w-full z-50 ${scrolled ? 'shadow-lg' : ''}`}>
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="logo">
           <Link href="/">
-            <RoyalsLogo className="h-12" />
+            <img 
+              src="/images/royals-logo.png" 
+              alt="Royals Barber Shop" 
+              className="logo-image"
+            />
           </Link>
         </div>
         
@@ -62,7 +65,7 @@ const Header = () => {
           <Link href="/" className="font-medium hover:text-secondary transition-colors">
             Home
           </Link>
-          <Link href="/#book" className="font-medium hover:text-secondary transition-colors">
+          <Link href="/#book" className="font-medium px-5 py-2 btn-royal-blue rounded hover:text-white">
             Book Now
           </Link>
           
