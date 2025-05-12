@@ -120,7 +120,7 @@ const BrowseHaircuts = () => {
                     <a href={shareLink} className="block w-full h-full">
                       <img 
                         src={imageUrl} 
-                        alt={formattedTitle}
+                        alt={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barbershop, Batavia NY`}
                         className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">

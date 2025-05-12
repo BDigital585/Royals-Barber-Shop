@@ -143,10 +143,11 @@ const HaircutShare = () => {
     );
   }
 
-  // Generate meta tags for social sharing
+  // Generate meta tags for social sharing with SEO optimization
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
-  const pageTitle = `${haircutTitle} - Royals Barbershop`;
-  const pageDescription = `Check out this ${haircutTitle} at Royals Barbershop. Book your appointment today!`;
+  const categoryName = params?.category ? getCategoryName(params.category) : '';
+  const pageTitle = `${haircutTitle} – ${categoryName} style | Royals Barbershop`;
+  const pageDescription = `Check out this ${haircutTitle} from our ${categoryName} collection at Royals Barbershop in Batavia, NY. Book your appointment today!`;
 
   return (
     <>
@@ -175,7 +176,7 @@ const HaircutShare = () => {
             <div className="aspect-square rounded-lg overflow-hidden shadow-lg">
               <img 
                 src={imageUrl} 
-                alt={haircutTitle}
+                alt={`${haircutTitle} – ${params?.category ? getCategoryName(params.category) : ''} style | Royals Barbershop, Batavia NY`}
                 className="w-full h-full object-cover object-center"
                 onError={() => {
                   // If the image fails to load, redirect to the gallery
