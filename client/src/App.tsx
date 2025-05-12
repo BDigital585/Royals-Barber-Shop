@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Contact from "@/pages/Contact";
 import BrowseHaircuts from "@/pages/BrowseHaircuts";
+import HaircutShare from "@/pages/HaircutShare";
 
 function Router() {
   return (
@@ -13,6 +14,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/contact" component={Contact} />
       <Route path="/browse-haircuts" component={BrowseHaircuts} />
+      <Route path="/haircut/:category/:image" component={HaircutShare} />
       <Route component={NotFound} />
     </Switch>
   );
