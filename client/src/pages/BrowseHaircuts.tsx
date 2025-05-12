@@ -1,22 +1,36 @@
 import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useHaircutImages } from '../features/haircuts/useHaircutImages';
 
 const BrowseHaircuts = () => {
+  const imagesByFolder = useHaircutImages();
   const [activeFilter, setActiveFilter] = useState('all');
 
   const filterCategories = [
     { id: 'all', label: 'All Haircuts' },
     { id: 'fades', label: 'Fades' },
-    { id: 'kids', label: 'Kids Haircuts' },
+    { id: 'kids haircuts', label: 'Kids Haircuts' },
     { id: 'tapers', label: 'Tapers' },
-    { id: 'facial', label: 'Facial Hair' },
-    { id: 'other', label: 'Other Styles' }
+    { id: 'facial hair', label: 'Facial Hair' },
+    { id: 'other styles', label: 'Other Styles' }
   ];
 
   const handleFilterChange = (filterId: string) => {
     setActiveFilter(filterId);
   };
+
+  // Prepare images to display based on the active filter
+  const getDisplayImages = () => {
+    if (activeFilter === 'all') {
+      // For "All Haircuts", flatten all image arrays
+      return Object.values(imagesByFolder).flat();
+    }
+    // For specific categories, return the matching folder images
+    return imagesByFolder[activeFilter] || [];
+  };
+
+  const displayImages = getDisplayImages();
 
   return (
     <>
@@ -44,12 +58,26 @@ const BrowseHaircuts = () => {
             </div>
           </div>
           
-          {/* Placeholder for haircut images grid */}
-          <div className="min-h-[400px] flex items-center justify-center bg-gray-50 rounded-lg">
-            <p className="text-gray-500 text-center">
-              Haircut images will be displayed here based on selected filter: <span className="font-medium">{activeFilter}</span>
-            </p>
-          </div>
+          {/* Display haircut images in a responsive grid */}
+          {displayImages.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {displayImages.map((imageUrl, index) => (
+                <div key={index} className="aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                  <img 
+                    src={imageUrl} 
+                    alt={`Haircut style ${index + 1}`} 
+                    className="w-full h-full object-cover object-center"
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="min-h-[400px] flex items-center justify-center bg-gray-50 rounded-lg">
+              <p className="text-gray-500 text-center">
+                No images available for this category yet. Check back soon!
+              </p>
+            </div>
+          )}
         </div>
       </main>
       <Footer />

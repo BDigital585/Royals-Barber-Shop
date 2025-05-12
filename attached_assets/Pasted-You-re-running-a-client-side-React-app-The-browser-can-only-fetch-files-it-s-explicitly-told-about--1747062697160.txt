@@ -1,0 +1,69 @@
+You’re running a client‑side React app. The browser can only fetch files it’s explicitly told about— it can’t “look inside” a folder at runtime.
+To auto‑populate each filter with every image that lives in its matching folder, you need to feed React a list of those files at build‑time, not at runtime. There are two clean ways to do that:
+
+Option	How it works	Pros	Cons
+A. Move images into /src and let Vite build the list with import.meta.glob	Put assets in src/assets/haircuts/{folder}/….  One line of code globs everything and gives you an object whose keys are the paths.	• Zero manual lists• No backend• Works today with pure front‑end code	• You must relocate images out of public
+B. Keep images in /public and run a tiny Node script that scans the folders and writes a JSON manifest (e.g. haircutImages.json) into /src	Script runs once (or on every build) and produces { "Fades": [ … ], … }.  React imports that JSON.	• You keep assets where they are	• Requires the extra script (one 15‑line file)
+
+Pick one.
+I recommend Option A—less moving parts, nothing extra to maintain, and it’s one prompt away.
+
+⸻
+
+If you agree, here’s the next single Vibe‑Code step (Option A)
+
+Title: Relocate Haircut Images and Auto‑Import with import.meta.glob
+
+Prompt (copy‑paste into Replit AI):
+
+1. Move all folders currently under /public/haircuts into /src/assets/haircuts, preserving names:
+   - fades
+   - tapers
+   - kids haircuts
+   - facial hair
+   - other styles
+
+2. Create a helper file at src/features/haircuts/useHaircutImages.js with:
+
+   import { useMemo } from 'react';
+
+   // Auto‑import every image in sub‑folders of assets/haircuts
+   const modules = import.meta.glob('/src/assets/haircuts/*/*.{jpg,jpeg,png,webp}');
+
+   // Build an object { "fades": [url1,url2], ... }
+   export function useHaircutImages() {
+     return useMemo(() => {
+       const map = {};
+       for (const path in modules) {
+         const [, folder, file] = path.match(/haircuts\/([^/]+)\/([^/]+)$/);
+         if (!map[folder]) map[folder] = [];
+         map[folder].push(modules[path]);  // Vite turns this into the URL
+       }
+       return map;
+     }, []);
+   }
+
+3. In BrowseHaircuts.jsx:
+   - `import { useHaircutImages } from '../features/haircuts/useHaircutImages';`
+   - `const imagesByFolder = useHaircutImages();`
+   - Map your filter labels to folder keys:
+       const labelToKey = {
+         'All Haircuts': 'all',
+         Fades: 'fades',
+         'Kids Haircuts': 'kids haircuts',
+         Tapers: 'tapers',
+         'Facial Hair': 'facial hair',
+         'Other Styles': 'other styles',
+       };
+   - When a filter button is tapped, update `selectedFilter`.
+   - `const display = selectedFilter === 'All Haircuts'
+         ? Object.values(imagesByFolder).flat()
+         : imagesByFolder[labelToKey[selectedFilter]] || [];`
+   - Render `display` in a responsive two‑column grid.
+
+4. Remove any hard‑coded file lists—everything now auto‑updates whenever you drop a new image into any folder.
+
+Outcome:  
+Selecting a filter instantly shows every image in the matched folder; “All Haircuts” aggregates them all. No manual file bookkeeping—just drop images into the correct folder and commit.
+
+Tell me when that’s working, or if you’d rather take Option B (JSON manifest) instead.
