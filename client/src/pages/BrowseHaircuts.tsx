@@ -1,7 +1,12 @@
 import { useState } from 'react';
+import { Link } from 'wouter';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { useHaircutImages } from '../features/haircuts/useHaircutImages';
+import { useHaircutImages, HaircutImage } from '../features/haircuts/useHaircutImages';
+import { Share2 } from 'lucide-react';
+
+// Use window.location.origin to get the current domain
+const domain = typeof window !== 'undefined' ? window.location.origin : '';
 
 const BrowseHaircuts = () => {
   const imagesByFolder = useHaircutImages();
@@ -21,7 +26,7 @@ const BrowseHaircuts = () => {
   };
 
   // Prepare images to display based on the active filter
-  const getDisplayImages = () => {
+  const getDisplayImages = (): HaircutImage[] => {
     if (activeFilter === 'all') {
       // For "All Haircuts", flatten all image arrays
       return Object.values(imagesByFolder).flat();
@@ -31,6 +36,11 @@ const BrowseHaircuts = () => {
   };
 
   const displayImages = getDisplayImages();
+
+  // Create a shareable URL for an image
+  const getShareableUrl = (image: HaircutImage) => {
+    return `${domain}/share/haircuts/${encodeURIComponent(image.folder)}/${encodeURIComponent(image.filename)}`;
+  };
 
   return (
     <>
@@ -61,13 +71,26 @@ const BrowseHaircuts = () => {
           {/* Display haircut images in a responsive grid */}
           {displayImages.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayImages.map((imageUrl, index) => (
-                <div key={index} className="aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                  <img 
-                    src={imageUrl} 
-                    alt={`Haircut style ${index + 1}`} 
-                    className="w-full h-full object-cover object-center"
-                  />
+              {displayImages.map((image, index) => (
+                <div key={index} className="group relative aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                  <a 
+                    href={getShareableUrl(image)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block relative w-full h-full"
+                  >
+                    <img 
+                      src={image.url} 
+                      alt={`${image.folder} - ${image.filename}`} 
+                      className="w-full h-full object-cover object-center transition-transform group-hover:scale-105"
+                    />
+                    
+                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity flex items-center justify-center">
+                      <div className="bg-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Share2 className="w-5 h-5 text-primary" />
+                      </div>
+                    </div>
+                  </a>
                 </div>
               ))}
             </div>
