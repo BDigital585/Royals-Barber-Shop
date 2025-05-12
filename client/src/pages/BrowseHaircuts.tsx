@@ -3,6 +3,15 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useHaircutImages } from '../features/haircuts/useHaircutImages';
 
+// Valid category IDs (used for validation)
+const VALID_CATEGORIES = [
+  'fades',
+  'kids haircuts',
+  'tapers',
+  'facial hair',
+  'other styles'
+];
+
 // Mapping of folder IDs to human-readable names
 const categoryNames: Record<string, string> = {
   'fades': 'Fades',
@@ -16,9 +25,25 @@ const BrowseHaircuts = () => {
   const imagesByFolder = useHaircutImages();
   const [activeFilter, setActiveFilter] = useState('all');
   
-  // Helper function to get display name for category
+  /**
+   * Helper function to get the display name for a category
+   * Cleans and formats folder names into proper category labels
+   * 
+   * @param categoryId - The raw folder name or category ID
+   * @returns A properly formatted category name or empty string if invalid
+   */
   const getCategoryName = (categoryId: string): string => {
-    return categoryNames[categoryId] || categoryId;
+    // Decode URL-encoded characters
+    const decodedCategory = decodeURIComponent(categoryId.trim().toLowerCase());
+    
+    // Check if this is a valid category we know about
+    if (VALID_CATEGORIES.includes(decodedCategory)) {
+      return categoryNames[decodedCategory];
+    }
+    
+    // If it's not a valid category, log a warning and return empty string
+    console.warn(`Unknown category: ${decodedCategory}`);
+    return '';
   };
 
   const filterCategories = [
@@ -101,7 +126,13 @@ const BrowseHaircuts = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="absolute bottom-0 left-0 right-0 p-4">
                           <h3 className="text-white font-medium truncate">{formattedTitle}</h3>
-                          <p className="text-white/80 text-sm">{getCategoryName(folder)}</p>
+                          {/* Only show category if it's valid */}
+                          {getCategoryName(folder) && (
+                            <div className="flex items-center mt-1">
+                              <span className="inline-block w-2 h-2 rounded-full bg-secondary mr-2"></span>
+                              <p className="text-white/90 text-sm font-medium">{getCategoryName(folder)}</p>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </a>
