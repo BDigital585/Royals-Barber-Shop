@@ -18,7 +18,7 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
           Book Now
         </Link>
         
-        <Link href="/#gallery" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
+        <Link href="/browse-haircuts" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
           Browse Haircuts
         </Link>
         

@@ -66,7 +66,7 @@ const Header = () => {
             Book Now
           </Link>
           
-          <Link href="/#gallery" className="font-medium nav-link">
+          <Link href="/browse-haircuts" className="font-medium nav-link">
             Browse Haircuts
           </Link>
           
