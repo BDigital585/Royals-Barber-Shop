@@ -67,7 +67,7 @@ const Header = () => {
           </Link>
           
           <Link href="/#gallery" className="font-medium nav-link">
-            Hair Gallery
+            Browse Haircuts
           </Link>
           
           <Link href="/#blog" className="font-medium nav-link">

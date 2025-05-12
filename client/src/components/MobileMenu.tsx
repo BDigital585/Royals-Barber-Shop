@@ -19,7 +19,7 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
         </Link>
         
         <Link href="/#gallery" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
-          Hair Gallery
+          Browse Haircuts
         </Link>
         
         <Link href="/#blog" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
