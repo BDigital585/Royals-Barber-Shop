@@ -3,13 +3,15 @@ import { useMemo } from 'react';
 // Auto-import every image in sub-folders of assets/haircuts
 const modules = import.meta.glob('/src/assets/haircuts/*/*.{jpg,jpeg,png,webp}', { eager: true });
 
-type ImageMap = Record<string, string[]>;
+// Define the shape of our image map (folder name -> array of image URLs)
+export type ImageMap = Record<string, string[]>;
 
 // Build an object { "fades": [url1,url2], ... }
-export function useHaircutImages() {
+export function useHaircutImages(): ImageMap {
   return useMemo(() => {
     const map: ImageMap = {};
     
+    // Process each image path found by Vite
     for (const path in modules) {
       const match = path.match(/haircuts\/([^/]+)\/([^/]+)$/);
       if (match) {

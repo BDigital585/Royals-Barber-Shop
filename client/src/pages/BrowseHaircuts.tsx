@@ -78,6 +78,15 @@ const BrowseHaircuts = () => {
               </p>
             </div>
           )}
+          
+          {/* Professional Disclaimer */}
+          <div className="mt-12 mb-8 px-4 py-5 bg-gray-50 rounded-lg">
+            <p className="text-gray-500 text-sm text-center max-w-3xl mx-auto leading-relaxed">
+              Disclaimer: The haircuts displayed on this page were not performed by barbers currently employed at this establishment. 
+              These images are provided for promotional and educational purposes only. 
+              Our licensed barbers are capable of performing most of the styles shown.
+            </p>
+          </div>
         </div>
       </main>
       <Footer />
