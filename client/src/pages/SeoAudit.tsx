@@ -96,8 +96,11 @@ export default function SeoAudit() {
   
   // Automatically select the most recent report when reports are loaded
   useEffect(() => {
-    if (reportsData?.reports?.length > 0 && !activeReport) {
-      setActiveReport(reportsData.reports[0].name);
+    if (reportsData?.reports && reportsData.reports.length > 0 && !activeReport) {
+      const firstReport = reportsData.reports[0];
+      if (firstReport && firstReport.name) {
+        setActiveReport(firstReport.name);
+      }
     }
   }, [reportsData, activeReport]);
   

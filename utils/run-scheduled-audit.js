@@ -12,40 +12,64 @@
  * 0 8 * * 1 /path/to/node /path/to/run-scheduled-audit.js
  */
 
-const { execSync } = require('child_process');
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
+const chalk = require('chalk');
 
 // Configuration
 const REPORTS_DIR = path.join(__dirname, '../reports');
-const AUDIT_SCRIPT = path.join(__dirname, 'contentful-seo-audit.ts');
+const SEO_AUDIT_SCRIPT = path.join(__dirname, 'contentful-seo-audit.ts');
 
 // Create reports directory if it doesn't exist
 if (!fs.existsSync(REPORTS_DIR)) {
   fs.mkdirSync(REPORTS_DIR, { recursive: true });
 }
 
-// Generate report file name with date
+// Format current date for the report filename
 const date = new Date();
-const reportFileName = `seo-audit-${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}.log`;
-const reportPath = path.join(REPORTS_DIR, reportFileName);
+const timestamp = date.toISOString().replace(/[:.]/g, '-');
+const reportFilename = `seo-audit-${timestamp}.txt`;
+const reportPath = path.join(REPORTS_DIR, reportFilename);
+
+// Verify environment variables
+const requiredEnvVars = ['CONTENTFUL_SPACE_ID', 'CONTENTFUL_ACCESS_TOKEN', 'CONTENTFUL_ENVIRONMENT'];
+const missingEnvVars = requiredEnvVars.filter(variable => !process.env[variable]);
+
+if (missingEnvVars.length > 0) {
+  console.error(chalk.red('Error: Missing required environment variables:'));
+  missingEnvVars.forEach(variable => {
+    console.error(chalk.red(`- ${variable}`));
+  });
+  process.exit(1);
+}
+
+console.log(chalk.blue('Starting scheduled SEO audit...'));
+console.log(chalk.gray(`Report will be saved to: ${reportPath}`));
 
 try {
-  console.log('Starting scheduled SEO audit...');
+  // Run the TypeScript audit script and capture its output
+  const auditOutput = execSync(`npx tsx ${SEO_AUDIT_SCRIPT}`, { encoding: 'utf8' });
   
-  // Run the audit script and capture output
-  const output = execSync(`tsx ${AUDIT_SCRIPT}`, { encoding: 'utf8' });
+  // Save the audit results to a report file
+  const header = `
+=========================================
+  ROYALS BARBERSHOP BLOG SEO AUDIT REPORT
+  ${date.toLocaleString()}
+=========================================
+
+`;
   
-  // Write output to report file
-  fs.writeFileSync(reportPath, output);
+  fs.writeFileSync(reportPath, header + auditOutput);
   
-  console.log(`SEO audit completed successfully. Report saved to: ${reportPath}`);
+  console.log(chalk.green('SEO audit completed successfully!'));
+  console.log(chalk.gray(`Report saved to: ${reportPath}`));
+  
+  // Return the path for use by other processes
+  console.log(reportPath);
+  
 } catch (error) {
-  console.error('Error running scheduled SEO audit:', error);
-  
-  // Write error to report file
-  fs.writeFileSync(
-    reportPath, 
-    `ERROR RUNNING SEO AUDIT\n\n${error.message}\n\n${error.stack || ''}`
-  );
+  console.error(chalk.red('Error running SEO audit:'), error);
+  process.exit(1);
 }
