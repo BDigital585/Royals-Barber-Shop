@@ -106,6 +106,9 @@
     padding: 0.5rem 0;
     border-bottom: 1px solid #EEE;
     margin-top: 56px; /* To account for fixed header */
+    display: block; /* Ensure visibility on all devices */
+    width: 100%;
+    z-index: 30; /* High enough to be clickable */
   }
 
   .home-link-below {
@@ -115,14 +118,27 @@
     font-size: 0.75rem;
     font-weight: 500;
     color: #666666;
-    padding: 4px 8px;
+    padding: 8px 12px;
     border-radius: 4px;
     transition: all 0.2s ease;
     text-decoration: none;
   }
 
   .home-icon {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    color: #1E3A8A;
+  }
+  
+  /* Mobile-specific enhancements */
+  @media (max-width: 768px) {
+    .home-link-below {
+      padding: 10px 15px; /* Larger touch target */
+      font-size: 0.8rem;
+    }
+    
+    .home-icon {
+      font-size: 1rem;
+    }
   }
 
   .home-link-below:hover {

@@ -11,7 +11,7 @@ const HomeLink: React.FC = () => {
   return (
     <div className="home-link-container">
       <div className="container mx-auto px-4">
-        <Link href="/" className="home-link-below">
+        <Link href="/" className="home-link-below" aria-label="Go to homepage">
           <FaHome className="home-icon" />
           <span>Home</span>
         </Link>
