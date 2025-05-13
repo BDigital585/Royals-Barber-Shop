@@ -285,12 +285,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Add static pages
       const staticPages = [
-        { url: 'https://www.royalsbatavia.com/', priority: '1.0', changefreq: 'weekly' },
-        { url: 'https://www.royalsbatavia.com/browse-haircuts', priority: '0.9', changefreq: 'weekly' },
-        { url: 'https://www.royalsbatavia.com/book-now', priority: '0.8', changefreq: 'weekly' },
-        { url: 'https://www.royalsbatavia.com/contact', priority: '0.7', changefreq: 'monthly' },
-        { url: 'https://www.royalsbatavia.com/blog', priority: '0.8', changefreq: 'weekly' },
-        { url: 'https://www.royalsbatavia.com/newsletter', priority: '0.6', changefreq: 'monthly' }
+        { url: 'https://royals-barbershop.replit.app/', priority: '1.0', changefreq: 'weekly' },
+        { url: 'https://royals-barbershop.replit.app/browse-haircuts', priority: '0.9', changefreq: 'weekly' },
+        { url: 'https://royals-barbershop.replit.app/book-now', priority: '0.8', changefreq: 'weekly' },
+        { url: 'https://royals-barbershop.replit.app/contact', priority: '0.7', changefreq: 'monthly' },
+        { url: 'https://royals-barbershop.replit.app/blog', priority: '0.8', changefreq: 'weekly' },
+        { url: 'https://royals-barbershop.replit.app/newsletter', priority: '0.6', changefreq: 'monthly' }
       ];
       
       // Add each static page to the sitemap
@@ -325,7 +325,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               // Create the haircut URL with proper encoding
               const categorySlug = encodeURIComponent(category);
               const fileSlug = encodeURIComponent(filename);
-              const haircutUrl = `https://www.royalsbatavia.com/haircut/${categorySlug}/${fileSlug}`;
+              const haircutUrl = `https://royals-barbershop.replit.app/haircut/${categorySlug}/${fileSlug}`;
               
               // Add to sitemap
               sitemap += '  <url>\n';
@@ -351,6 +351,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Error generating sitemap:', error);
       // Fall back to static sitemap.xml file if dynamic generation fails
       res.sendFile('sitemap.xml', { root: './public' });
+    }
+  });
+
+  // Get all blog posts from Contentful
+  app.get(`${apiPrefix}/contentful/blog`, async (req, res) => {
+    try {
+      const { createClient } = await import('contentful');
+      
+      // Create client with environment variables
+      const client = createClient({
+        space: process.env.CONTENTFUL_SPACE_ID || '',
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN || '',
+        environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
+      });
+      
+      // Fetch all published entries of content type "royalsBlog"
+      const blogEntries = await client.getEntries({
+        content_type: 'royalsBlog',
+        order: ['-sys.createdAt'], // Sort by published date descending (newest first)
+        include: 2 // Include linked entries up to 2 levels deep (for images, etc.)
+      });
+      
+      console.log(`Found ${blogEntries.items.length} blog entries`);
+      
+      // Transform Contentful response to a cleaner format
+      const formattedPosts = blogEntries.items.map(entry => {
+        const fields = entry.fields as any;
+        
+        // Get the featured image URL if it exists
+        let featuredImageUrl = null;
+        if (fields.featuredImage && fields.featuredImage.fields && fields.featuredImage.fields.file) {
+          // Make sure we have a proper URL with https:
+          featuredImageUrl = fields.featuredImage.fields.file.url.startsWith('//') 
+            ? `https:${fields.featuredImage.fields.file.url}` 
+            : fields.featuredImage.fields.file.url;
+        }
+        
+        return {
+          id: entry.sys.id,
+          title: fields.title || 'Untitled Post',
+          slug: fields.slug || entry.sys.id,
+          excerpt: fields.excerpt || '',
+          content: fields.content || '',
+          featuredImage: featuredImageUrl,
+          publishedAt: entry.sys.createdAt
+        };
+      });
+      
+      return res.status(200).json(formattedPosts);
+    } catch (error) {
+      console.error("Error fetching Contentful blog posts:", error);
+      return res.status(500).json({ 
+        message: "Failed to fetch blog posts",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+  
+  // Get a single blog post by slug from Contentful
+  app.get(`${apiPrefix}/contentful/blog/:slug`, async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const { createClient } = await import('contentful');
+      
+      // Create client with environment variables
+      const client = createClient({
+        space: process.env.CONTENTFUL_SPACE_ID || '',
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN || '',
+        environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
+      });
+      
+      // Fetch entry with matching slug
+      const blogEntries = await client.getEntries({
+        content_type: 'royalsBlog',
+        'fields.slug': slug,
+        include: 2 // Include linked entries (for images, etc.)
+      });
+      
+      if (!blogEntries.items.length) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      const entry = blogEntries.items[0];
+      const fields = entry.fields as any;
+      
+      // Get the featured image URL if it exists
+      let featuredImageUrl = null;
+      if (fields.featuredImage && fields.featuredImage.fields && fields.featuredImage.fields.file) {
+        // Make sure we have a proper URL with https:
+        featuredImageUrl = fields.featuredImage.fields.file.url.startsWith('//') 
+          ? `https:${fields.featuredImage.fields.file.url}` 
+          : fields.featuredImage.fields.file.url;
+      }
+      
+      const formattedPost = {
+        id: entry.sys.id,
+        title: fields.title || 'Untitled Post',
+        slug: fields.slug || entry.sys.id,
+        excerpt: fields.excerpt || '',
+        content: fields.content || '',
+        featuredImage: featuredImageUrl,
+        publishedAt: entry.sys.createdAt
+      };
+      
+      return res.status(200).json(formattedPost);
+    } catch (error) {
+      console.error("Error fetching Contentful blog post:", error);
+      return res.status(500).json({ 
+        message: "Failed to fetch blog post",
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 
