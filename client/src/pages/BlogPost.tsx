@@ -149,7 +149,7 @@ export default function BlogPost() {
               Sorry, we couldn't find the blog post you're looking for.
             </p>
             <Link href="/blog">
-              <Button>Return to Blog</Button>
+              <Button>Return to Barber Wisdom</Button>
             </Link>
           </div>
         ) : (
@@ -185,7 +185,7 @@ export default function BlogPost() {
             <div className="mt-12 pt-6 border-t border-gray-200">
               <Link href="/blog">
                 <Button variant="outline" className="hover:translate-x-1 transition-all">
-                  <ChevronLeft className="mr-2 h-4 w-4" /> Back to Blog
+                  <ChevronLeft className="mr-2 h-4 w-4" /> Back to Barber Wisdom
                 </Button>
               </Link>
             </div>
