@@ -13,7 +13,7 @@ const HomeLink: React.FC = () => {
       <div className="container mx-auto px-4">
         <Link href="/" className="home-link-below" aria-label="Go to homepage">
           <FaHome className="home-icon" />
-          <span>Home</span>
+          <span className="home-link-text">Home</span>
         </Link>
       </div>
     </div>

@@ -109,6 +109,25 @@
     display: block; /* Ensure visibility on all devices */
     width: 100%;
     z-index: 30; /* High enough to be clickable */
+    position: relative; /* Ensure proper stacking context */
+  }
+  
+  /* Fix for mobile specifically */
+  @media (max-width: 768px) {
+    .home-link-container {
+      position: fixed;
+      top: 56px; /* Position right under header */
+      left: 0;
+      right: 0;
+      background-color: #FFFFFF;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-top: 0; /* Reset margin */
+    }
+    
+    /* Adjust main content to account for fixed home link */
+    main {
+      padding-top: 45px; /* Add padding to main content to account for fixed home link */
+    }
   }
 
   .home-link-below {
@@ -133,11 +152,22 @@
   @media (max-width: 768px) {
     .home-link-below {
       padding: 10px 15px; /* Larger touch target */
-      font-size: 0.8rem;
+      font-size: 0.85rem;
+      width: auto;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      background-color: rgba(245, 247, 255, 0.8);
+      border: 1px solid #E5E7EB;
     }
     
     .home-icon {
-      font-size: 1rem;
+      font-size: 1.1rem;
+      color: #1E3A8A;
+    }
+    
+    .home-link-text {
+      font-weight: 600;
     }
   }
 
