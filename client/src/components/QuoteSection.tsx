@@ -34,12 +34,13 @@ export default function QuoteSection() {
   
   return (
     <section className="quote-section">
+      <div className="divider-line"></div>
       <div className="container">
         <div 
           ref={quoteRef} 
-          className={`quote-text ${isVisible ? 'visible' : ''}`}
+          className={`tagline-text ${isVisible ? 'visible' : ''}`}
         >
-          More than a cut. This is barbershop game, culture, and consistency—all under one roof.
+          It's not just a cut—it's a standard.
         </div>
       </div>
     </section>

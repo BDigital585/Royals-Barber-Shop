@@ -48,14 +48,14 @@ const NewsletterSection = () => {
           <input 
             type="email" 
             placeholder="Your email address" 
-            className="flex-grow py-3 px-4 rounded focus:outline-none focus:ring-2 focus:ring-secondary text-textColor" 
+            className="flex-grow py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-black"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
           <button 
             type="submit" 
-            className="subscribe-button py-3 px-6"
+            className="button-inverse"
             disabled={subscribeNewsletter.isPending}
           >
             {subscribeNewsletter.isPending ? 'SUBSCRIBING...' : 'SUBSCRIBE'}
