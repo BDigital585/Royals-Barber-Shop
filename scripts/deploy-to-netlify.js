@@ -61,12 +61,25 @@ try {
 
 // Deploy to Netlify using the CLI (this handles creating the site if it doesn't exist)
 try {
-  // First, authenticate with Netlify using the token
-  execSync(`netlify login --auth ${process.env.NETLIFY_AUTH_TOKEN}`, { stdio: 'inherit' });
+  // First try to create the site if it doesn't exist (will fail silently if it exists)
+  try {
+    console.log(`Checking/creating Netlify site "${NETLIFY_SITE_NAME}"...`);
+    execSync(`npx netlify sites:create --name=${NETLIFY_SITE_NAME} --auth=${process.env.NETLIFY_AUTH_TOKEN}`, { 
+      stdio: 'pipe'
+    });
+    console.log(`Created Netlify site "${NETLIFY_SITE_NAME}"`);
+  } catch (err) {
+    // Site may already exist, which is fine
+    console.log(`Site may already exist, continuing with deployment...`);
+  }
   
-  // Deploy the site (create if it doesn't exist)
+  // Authenticate with Netlify using the token
+  console.log('Authenticating with Netlify...');
+  execSync(`npx netlify login --auth ${process.env.NETLIFY_AUTH_TOKEN}`, { stdio: 'inherit' });
+  
+  // Deploy the site
   console.log('Deploying to Netlify...');
-  execSync(`netlify deploy --prod --dir=dist --site=${NETLIFY_SITE_NAME} --auth=${process.env.NETLIFY_AUTH_TOKEN}`, { 
+  execSync(`npx netlify deploy --prod --dir=dist --site=${NETLIFY_SITE_NAME} --auth=${process.env.NETLIFY_AUTH_TOKEN}`, { 
     stdio: 'inherit'
   });
   
