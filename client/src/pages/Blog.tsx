@@ -99,33 +99,35 @@ function BlogPostCard({ post }: { post: BlogPost }) {
   });
 
   return (
-    <Card className="overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-lg">
+    <div className="blog-card">
       {post.featuredImage && (
-        <div className="h-48 overflow-hidden">
+        <div className="h-48 overflow-hidden -mx-5 -mt-5 mb-4 relative">
           <img 
             src={post.featuredImage} 
             alt={post.title} 
             className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
           />
+          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#111] to-transparent"></div>
         </div>
       )}
       
-      <CardHeader className="flex-1">
-        <CardTitle className="text-xl">{post.title}</CardTitle>
-        <CardDescription className="text-sm text-gray-500 mb-1">
-          {formattedDate}
-          {post.authorName && <span> • By {post.authorName}</span>}
-        </CardDescription>
-        <p className="mt-2 text-gray-700 line-clamp-3">{post.excerpt}</p>
-      </CardHeader>
+      <div className="blog-card-date">
+        {formattedDate}
+        {post.authorName && <span> • By {post.authorName}</span>}
+      </div>
       
-      <CardFooter className="pt-0">
-        <Link href={`/blog/${post.slug}`}>
-          <Button variant="default" className="transition-all hover:translate-x-1">
-            Read More
-          </Button>
-        </Link>
-      </CardFooter>
-    </Card>
+      <h2>{post.title}</h2>
+      
+      {post.excerpt && (
+        <p className="line-clamp-3">{post.excerpt}</p>
+      )}
+      
+      <Link href={`/blog/${post.slug}`} className="blog-card-read-more">
+        Read More
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </Link>
+    </div>
   );
 }
