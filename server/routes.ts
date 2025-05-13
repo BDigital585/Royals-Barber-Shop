@@ -469,6 +469,125 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  // SEO Audit endpoint
+  app.post(`${apiPrefix}/seo/audit`, async (req, res) => {
+    try {
+      console.log('Running on-demand SEO audit...');
+      
+      // Path to the audit script
+      const auditScriptPath = path.resolve('./utils/contentful-seo-audit.ts');
+      
+      // Create reports directory if it doesn't exist
+      const reportsDir = path.resolve('./reports');
+      if (!fs.existsSync(reportsDir)) {
+        fs.mkdirSync(reportsDir, { recursive: true });
+      }
+      
+      // Generate report file name with date and timestamp
+      const date = new Date();
+      const timestamp = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}_${String(date.getHours()).padStart(2, '0')}-${String(date.getMinutes()).padStart(2, '0')}`;
+      const reportFileName = `seo-audit-${timestamp}.log`;
+      const reportPath = path.join(reportsDir, reportFileName);
+      
+      // Run the audit script
+      console.log(`Executing audit script: ${auditScriptPath}`);
+      const output = execSync(`tsx ${auditScriptPath}`, { encoding: 'utf8' });
+      
+      // Write output to report file
+      fs.writeFileSync(reportPath, output);
+      
+      // Return the audit results to the client
+      // Clean the output from color codes for cleaner response
+      const cleanOutput = output.replace(/\u001b\[\d+m/g, '');
+      
+      return res.status(200).json({ 
+        success: true, 
+        message: 'SEO audit completed successfully', 
+        reportPath: `/reports/${reportFileName}`,
+        output: cleanOutput
+      });
+      
+    } catch (error) {
+      console.error('Error running SEO audit:', error);
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Failed to run SEO audit',
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
+  // Endpoint to list all SEO audit reports
+  app.get(`${apiPrefix}/seo/reports`, (req, res) => {
+    try {
+      const reportsDir = path.resolve('./reports');
+      
+      // Check if reports directory exists
+      if (!fs.existsSync(reportsDir)) {
+        return res.status(200).json({ reports: [] });
+      }
+      
+      // Get all report files
+      const files = fs.readdirSync(reportsDir)
+        .filter(file => file.startsWith('seo-audit-') && file.endsWith('.log'))
+        .map(file => {
+          const filePath = path.join(reportsDir, file);
+          const stats = fs.statSync(filePath);
+          
+          return {
+            name: file,
+            path: `/reports/${file}`,
+            size: stats.size,
+            createdAt: stats.birthtime
+          };
+        })
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      
+      return res.status(200).json({ reports: files });
+      
+    } catch (error) {
+      console.error('Error listing SEO audit reports:', error);
+      return res.status(500).json({ 
+        message: 'Failed to list SEO audit reports',
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+  
+  // Endpoint to get a specific SEO audit report
+  app.get(`${apiPrefix}/seo/reports/:filename`, (req, res) => {
+    try {
+      const { filename } = req.params;
+      const reportPath = path.resolve(`./reports/${filename}`);
+      
+      // Validate the filename to prevent directory traversal attacks
+      if (!filename.startsWith('seo-audit-') || !filename.endsWith('.log')) {
+        return res.status(400).json({ message: 'Invalid report filename' });
+      }
+      
+      // Check if the report file exists
+      if (!fs.existsSync(reportPath)) {
+        return res.status(404).json({ message: 'Report not found' });
+      }
+      
+      // Read the report file
+      const reportContent = fs.readFileSync(reportPath, 'utf8');
+      
+      // Return the report content
+      return res.status(200).json({ 
+        name: filename,
+        content: reportContent
+      });
+      
+    } catch (error) {
+      console.error('Error retrieving SEO audit report:', error);
+      return res.status(500).json({ 
+        message: 'Failed to retrieve SEO audit report',
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
 
   const httpServer = createServer(app);
 
