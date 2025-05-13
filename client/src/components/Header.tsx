@@ -44,8 +44,18 @@ const Header = () => {
           </Link>
         </div>
         
-        {/* Mobile Action Buttons - modernized design with better spacing */}
-        <div className="md:hidden flex items-center gap-7">
+        {/* Mobile Navigation and Action Buttons */}
+        <div className="md:hidden flex items-center gap-4">
+          {/* Mobile Quick Nav Links */}
+          <div className="flex mr-2 gap-4 items-center">
+            <Link href="/browse-haircuts" className="mobile-nav-link">
+              Browse
+            </Link>
+            <Link href="/contact" className="mobile-nav-link">
+              Contact
+            </Link>
+          </div>
+          
           {/* Mobile Book Now Link - Desktop version shown in the nav bar */}
           <a
             href="https://royalsbarbershop.setmore.com/"
@@ -53,7 +63,7 @@ const Header = () => {
             rel="noopener noreferrer"
             className="mobile-book-btn"
           >
-            Book
+            Book Now
           </a>
           
           {/* Modern Mobile Menu Button */}
@@ -73,9 +83,14 @@ const Header = () => {
           <Link href="/" className="font-medium nav-link">
             Home
           </Link>
-          <Link href="/#book" className="font-medium nav-link">
+          <a 
+            href="https://royalsbarbershop.setmore.com/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="font-medium nav-link"
+          >
             Book Now
-          </Link>
+          </a>
           
           <Link href="/browse-haircuts" className="font-medium nav-link">
             Browse Haircuts

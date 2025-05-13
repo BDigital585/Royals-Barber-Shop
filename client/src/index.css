@@ -100,16 +100,42 @@
     opacity: 1;
   }
 
-  /* Mobile Book Button */
+  /* Mobile Navigation */
+  /* Mobile Text Links */
+  .mobile-nav-link {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  
+  .mobile-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: white;
+    transition: width 0.2s ease;
+  }
+  
+  .mobile-nav-link:hover::after {
+    width: 100%;
+  }
+  
+  /* Mobile Book Now Button */
   .mobile-book-btn {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 5px 8px;
+    border-radius: 5px;
     background-color: #1E3A8A;
     color: white;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
     transition: all 0.2s ease;
+    white-space: nowrap;
   }
 
   .mobile-book-btn:hover,
