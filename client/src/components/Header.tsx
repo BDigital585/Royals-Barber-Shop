@@ -70,7 +70,7 @@ const Header = () => {
             Browse Haircuts
           </Link>
           
-          <Link href="/#blog" className="font-medium nav-link">
+          <Link href="/blog" className="font-medium nav-link">
             Blog
           </Link>
           <Link href="/#newsletter" className="font-medium nav-link">
