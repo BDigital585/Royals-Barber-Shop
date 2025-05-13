@@ -268,6 +268,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Serve SEO-related files directly from the public directory
+  app.get('/robots.txt', (req, res) => {
+    res.sendFile('robots.txt', { root: './public' });
+  });
+
+  app.get('/sitemap.xml', (req, res) => {
+    res.sendFile('sitemap.xml', { root: './public' });
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
