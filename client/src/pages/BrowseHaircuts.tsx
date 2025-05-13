@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import MetaTags from '@/components/MetaTags';
+import SchemaMarkup from '@/components/SchemaMarkup';
 import { useHaircutImages } from '../features/haircuts/useHaircutImages';
 
 // Valid category IDs (used for validation)
@@ -73,6 +75,18 @@ const BrowseHaircuts = () => {
 
   return (
     <>
+      {/* SEO meta tags for haircuts gallery page */}
+      <MetaTags
+        title="Browse Haircuts | Royals Barbershop, Batavia NY"
+        description="Explore our gallery of premium men's haircuts including fades, tapers, kids cuts and facial hair styling at Royals Barbershop in Batavia, NY."
+        imageUrl="/src/assets/haircuts/fades/low-skin-fade.png"
+        type="website"
+        url="https://www.royalsbatavia.com/browse-haircuts"
+      />
+      
+      {/* Schema markup for haircuts gallery page */}
+      <SchemaMarkup type="website" />
+      
       <Header />
       <main className="pt-[64px] md:pt-[80px] pb-16">
         <div className="container mx-auto px-4">
