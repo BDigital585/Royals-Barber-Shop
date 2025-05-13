@@ -9,6 +9,7 @@ import { Button } from '../components/ui/button';
 import MetaTags from '../components/MetaTags';
 import SchemaMarkup from '../components/SchemaMarkup';
 import { useMobile } from '../hooks/use-mobile';
+import Layout from '../components/Layout';
 
 export default function Blog() {
   const isMobile = useMobile();
@@ -29,61 +30,63 @@ export default function Blog() {
   }
 
   return (
-    <main className="container mx-auto px-4 py-12">
-      <MetaTags 
-        title="Blog | Royals Barbershop" 
-        description="Read the latest news, trends, and tips from Royals Barbershop in Batavia, NY. Stay updated on haircut styles, grooming tips, and barber culture."
-      />
-      <SchemaMarkup />
-      
-      <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold mb-2">Royals Blog</h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Stay updated with the latest trends, tips, and news from Royals Barbershop
-        </p>
-      </div>
-      
-      {isLoading ? (
-        // Loading state with skeletons
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, index) => (
-            <Card key={index} className="overflow-hidden h-[400px]">
-              <Skeleton className="h-48 w-full" />
-              <CardHeader>
-                <Skeleton className="h-6 w-3/4 mb-2" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-2/3 mt-1" />
-              </CardHeader>
-              <CardFooter>
-                <Skeleton className="h-10 w-32" />
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-      ) : isError ? (
-        // Error state
-        <div className="text-center py-12">
-          <h3 className="text-xl font-semibold mb-4">Oops! Something went wrong</h3>
-          <p className="text-gray-600 mb-6">We're having trouble loading the blog posts. Please try again later.</p>
-          <Button onClick={() => window.location.reload()}>Refresh Page</Button>
-        </div>
-      ) : blogPosts && blogPosts.length > 0 ? (
-        // Content when blog posts are available
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {blogPosts.map((post: BlogPost) => (
-            <BlogPostCard key={post.id} post={post} />
-          ))}
-        </div>
-      ) : (
-        // Empty state when no blog posts are found
-        <div className="text-center py-12">
-          <h3 className="text-xl font-semibold mb-2">No Blog Posts Found</h3>
-          <p className="text-gray-600">
-            We're working on creating great content. Check back soon!
+    <Layout>
+      <div className="container mx-auto px-4 py-12">
+        <MetaTags 
+          title="Blog | Royals Barbershop" 
+          description="Read the latest news, trends, and tips from Royals Barbershop in Batavia, NY. Stay updated on haircut styles, grooming tips, and barber culture."
+        />
+        <SchemaMarkup />
+        
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold mb-2">Royals Blog</h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Stay updated with the latest trends, tips, and news from Royals Barbershop
           </p>
         </div>
-      )}
-    </main>
+      
+        {isLoading ? (
+          // Loading state with skeletons
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, index) => (
+              <Card key={index} className="overflow-hidden h-[400px]">
+                <Skeleton className="h-48 w-full" />
+                <CardHeader>
+                  <Skeleton className="h-6 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3 mt-1" />
+                </CardHeader>
+                <CardFooter>
+                  <Skeleton className="h-10 w-32" />
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        ) : isError ? (
+          // Error state
+          <div className="text-center py-12">
+            <h3 className="text-xl font-semibold mb-4">Oops! Something went wrong</h3>
+            <p className="text-gray-600 mb-6">We're having trouble loading the blog posts. Please try again later.</p>
+            <Button onClick={() => window.location.reload()}>Refresh Page</Button>
+          </div>
+        ) : blogPosts && blogPosts.length > 0 ? (
+          // Content when blog posts are available
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {blogPosts.map((post: BlogPost) => (
+              <BlogPostCard key={post.id} post={post} />
+            ))}
+          </div>
+        ) : (
+          // Empty state when no blog posts are found
+          <div className="text-center py-12">
+            <h3 className="text-xl font-semibold mb-2">No Blog Posts Found</h3>
+            <p className="text-gray-600">
+              We're working on creating great content. Check back soon!
+            </p>
+          </div>
+        )}
+      </div>
+    </Layout>
   );
 }
 

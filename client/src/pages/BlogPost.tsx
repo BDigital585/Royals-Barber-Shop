@@ -11,6 +11,7 @@ import SchemaMarkup from '../components/SchemaMarkup';
 import { useMobile } from '../hooks/use-mobile';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, INLINES, MARKS } from '@contentful/rich-text-types';
+import Layout from '../components/Layout';
 
 export default function BlogPost() {
   const isMobile = useMobile();
@@ -106,89 +107,91 @@ export default function BlogPost() {
   }
 
   return (
-    <main className="container mx-auto px-4 py-12">
-      {post && (
-        <MetaTags 
-          title={`${post.title} | Royals Barbershop Blog`}
-          description={post.excerpt || `Read about ${post.title} on the Royals Barbershop Blog.`}
-          imageUrl={post.featuredImage}
-          type="article"
-        />
-      )}
-      <SchemaMarkup />
-      
-      <div className="mb-8">
-        <Link href="/blog">
-          <Button variant="ghost" className="mb-4 pl-0 hover:pl-2 transition-all">
-            <ChevronLeft className="mr-2 h-4 w-4" /> Back to Blog
-          </Button>
-        </Link>
-      </div>
-      
-      {isLoading ? (
-        // Loading state with skeletons
-        <div className="max-w-3xl mx-auto">
-          <Skeleton className="h-10 w-3/4 mb-4" />
-          <Skeleton className="h-6 w-1/3 mb-8" />
-          <Skeleton className="h-96 w-full mb-8" />
-          <div className="space-y-4">
-            <Skeleton className="h-6 w-full" />
-            <Skeleton className="h-6 w-full" />
-            <Skeleton className="h-6 w-4/5" />
-            <Skeleton className="h-6 w-full" />
-            <Skeleton className="h-6 w-3/4" />
-          </div>
-        </div>
-      ) : isError || !post ? (
-        // Error state or post not found
-        <div className="text-center py-12">
-          <h3 className="text-xl font-semibold mb-4">Post Not Found</h3>
-          <p className="text-gray-600 mb-6">
-            Sorry, we couldn't find the blog post you're looking for.
-          </p>
+    <Layout>
+      <div className="container mx-auto px-4 py-12">
+        {post && (
+          <MetaTags 
+            title={`${post.title} | Royals Barbershop Blog`}
+            description={post.excerpt || `Read about ${post.title} on the Royals Barbershop Blog.`}
+            imageUrl={post.featuredImage}
+            type="article"
+          />
+        )}
+        <SchemaMarkup />
+        
+        <div className="mb-8">
           <Link href="/blog">
-            <Button>Return to Blog</Button>
+            <Button variant="ghost" className="mb-4 pl-0 hover:pl-2 transition-all">
+              <ChevronLeft className="mr-2 h-4 w-4" /> Back to Blog
+            </Button>
           </Link>
         </div>
-      ) : (
-        // Content when blog post is available
-        <article className="max-w-3xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">{post.title}</h1>
-          
-          <p className="text-gray-500 mb-8">
-            {formattedDate}
-            {post.authorName && <span> • By <span className="font-medium">{post.authorName}</span></span>}
-          </p>
-          
-          {post.featuredImage && (
-            <div className="mb-8 rounded-lg overflow-hidden">
-              <img 
-                src={post.featuredImage} 
-                alt={post.title} 
-                className="w-full h-auto" 
-              />
+      
+        {isLoading ? (
+          // Loading state with skeletons
+          <div className="max-w-3xl mx-auto">
+            <Skeleton className="h-10 w-3/4 mb-4" />
+            <Skeleton className="h-6 w-1/3 mb-8" />
+            <Skeleton className="h-96 w-full mb-8" />
+            <div className="space-y-4">
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-4/5" />
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-3/4" />
             </div>
-          )}
-          
-          {post.excerpt && (
-            <div className="text-lg font-medium mb-6 text-gray-700 italic">
-              {post.excerpt}
-            </div>
-          )}
-          
-          <div className="prose prose-lg max-w-none">
-            {renderBlogContent(post.content)}
           </div>
-          
-          <div className="mt-12 pt-6 border-t border-gray-200">
+        ) : isError || !post ? (
+          // Error state or post not found
+          <div className="text-center py-12">
+            <h3 className="text-xl font-semibold mb-4">Post Not Found</h3>
+            <p className="text-gray-600 mb-6">
+              Sorry, we couldn't find the blog post you're looking for.
+            </p>
             <Link href="/blog">
-              <Button variant="outline" className="hover:translate-x-1 transition-all">
-                <ChevronLeft className="mr-2 h-4 w-4" /> Back to Blog
-              </Button>
+              <Button>Return to Blog</Button>
             </Link>
           </div>
-        </article>
-      )}
-    </main>
+        ) : (
+          // Content when blog post is available
+          <article className="max-w-3xl mx-auto">
+            <h1 className="text-3xl md:text-4xl font-bold mb-3">{post.title}</h1>
+            
+            <p className="text-gray-500 mb-8">
+              {formattedDate}
+              {post.authorName && <span> • By <span className="font-medium">{post.authorName}</span></span>}
+            </p>
+            
+            {post.featuredImage && (
+              <div className="mb-8 rounded-lg overflow-hidden">
+                <img 
+                  src={post.featuredImage} 
+                  alt={post.title} 
+                  className="w-full h-auto" 
+                />
+              </div>
+            )}
+            
+            {post.excerpt && (
+              <div className="text-lg font-medium mb-6 text-gray-700 italic">
+                {post.excerpt}
+              </div>
+            )}
+            
+            <div className="prose prose-lg max-w-none">
+              {renderBlogContent(post.content)}
+            </div>
+            
+            <div className="mt-12 pt-6 border-t border-gray-200">
+              <Link href="/blog">
+                <Button variant="outline" className="hover:translate-x-1 transition-all">
+                  <ChevronLeft className="mr-2 h-4 w-4" /> Back to Blog
+                </Button>
+              </Link>
+            </div>
+          </article>
+        )}
+      </div>
+    </Layout>
   );
 }
