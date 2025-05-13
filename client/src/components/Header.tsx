@@ -49,6 +49,10 @@ const Header = () => {
         <div className="md:hidden flex items-center gap-4">
           {/* Mobile Quick Nav Links */}
           <div className="flex mr-2 gap-4 items-center">
+            {/* Home Link Added for Mobile - Always Visible */}
+            <Link href="/" className="mobile-nav-link home-nav-link">
+              <span className="home-mobile-icon">⌂</span> Home
+            </Link>
             <Link href="/browse-haircuts" className="mobile-nav-link">
               Browse
             </Link>

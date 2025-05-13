@@ -201,6 +201,26 @@
     width: 100%;
   }
   
+  /* Special styling for home link in mobile nav */
+  .home-nav-link {
+    display: inline-flex;
+    align-items: center;
+    background-color: rgba(30, 58, 138, 0.15);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+    gap: 4px;
+  }
+  
+  .home-mobile-icon {
+    font-size: 1.1rem;
+    color: #1E3A8A;
+  }
+  
+  .home-nav-link:hover {
+    background-color: rgba(30, 58, 138, 0.3);
+  }
+  
   /* Mobile Book Now Button */
   .mobile-book-btn {
     font-size: 0.75rem;
