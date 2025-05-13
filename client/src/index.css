@@ -315,6 +315,57 @@
     margin-top: -8px; /* overlap slightly to hide any gap */
   }
   
+  /* Social Media Icons */
+  .social-icons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  
+  .social-icons-container.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: #1A1A1A;
+    color: white;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+  }
+  
+  .social-icon:hover {
+    background-color: #1E3A8A;
+    transform: translateY(-3px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Instagram icon specific styling */
+  .social-icon:nth-child(1):hover {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  }
+  
+  /* Facebook icon specific styling */
+  .social-icon:nth-child(2):hover {
+    background-color: #4267B2;
+  }
+  
+  /* Google icon specific styling */
+  .social-icon:nth-child(3):hover {
+    background-color: #DB4437;
+  }
+  
   .tagline-text {
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
