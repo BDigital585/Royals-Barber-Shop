@@ -33,15 +33,15 @@ export default function Blog() {
     <Layout>
       <div className="container mx-auto px-4 py-12">
         <MetaTags 
-          title="Blog | Royals Barbershop" 
-          description="Read the latest news, trends, and tips from Royals Barbershop in Batavia, NY. Stay updated on haircut styles, grooming tips, and barber culture."
+          title="Behind the Barber Chair | Royals Barbershop" 
+          description="Dive into authentic barbershop culture with unfiltered insights, style talk, and real wisdom from Royals Barbershop in Batavia, NY."
         />
         <SchemaMarkup />
         
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold mb-2">Royals Blog</h1>
+          <h1 className="text-4xl font-bold mb-2">Behind the Barber Chair</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Stay updated with the latest trends, tips, and news from Royals Barbershop
+            Unfiltered insights, culture talk, and real barbershop wisdom—straight from Royals.
           </p>
         </div>
       

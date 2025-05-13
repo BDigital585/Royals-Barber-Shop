@@ -111,8 +111,8 @@ export default function BlogPost() {
       <div className="container mx-auto px-4 py-12">
         {post && (
           <MetaTags 
-            title={`${post.title} | Royals Barbershop Blog`}
-            description={post.excerpt || `Read about ${post.title} on the Royals Barbershop Blog.`}
+            title={`${post.title} | Behind the Barber Chair - Royals Barbershop`}
+            description={post.excerpt || `Dive into ${post.title} - authentic barbershop wisdom from Royals Barbershop.`}
             imageUrl={post.featuredImage}
             type="article"
           />
@@ -122,7 +122,7 @@ export default function BlogPost() {
         <div className="mb-8">
           <Link href="/blog">
             <Button variant="ghost" className="mb-4 pl-0 hover:pl-2 transition-all">
-              <ChevronLeft className="mr-2 h-4 w-4" /> Back to Blog
+              <ChevronLeft className="mr-2 h-4 w-4" /> Back to Barber Wisdom
             </Button>
           </Link>
         </div>
