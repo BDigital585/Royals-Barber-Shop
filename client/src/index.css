@@ -218,4 +218,25 @@
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     transform: translateY(-1px);
   }
+  
+  /* Blog Header Styling */
+  .blog-header {
+    margin-top: 80px;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .blog-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #111;
+  }
+  
+  .blog-subtitle {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 10px auto 0;
+  }
 }

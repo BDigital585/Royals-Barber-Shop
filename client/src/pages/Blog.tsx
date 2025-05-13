@@ -38,12 +38,12 @@ export default function Blog() {
         />
         <SchemaMarkup />
         
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold mb-2">Behind the Barber Chair</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+        <section className="blog-header mb-8">
+          <h1 className="blog-title">Behind the Barber Chair</h1>
+          <p className="blog-subtitle">
             Unfiltered insights, culture talk, and real barbershop wisdom—straight from Royals.
           </p>
-        </div>
+        </section>
       
         {isLoading ? (
           // Loading state with skeletons
