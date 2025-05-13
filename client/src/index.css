@@ -100,40 +100,34 @@
     opacity: 1;
   }
 
-  /* Logo Container and Home Link */
-  .logo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  /* Home Link Below Header */
+  .home-link-container {
+    background-color: #FFFFFF;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #EEE;
+    margin-top: 56px; /* To account for fixed header */
   }
 
-  .home-link {
-    font-size: 0.7rem;
+  .home-link-below {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.85);
-    margin-top: 2px;
-    margin-left: 2px;
-    position: relative;
+    color: #666666;
+    padding: 4px 8px;
+    border-radius: 4px;
     transition: all 0.2s ease;
+    text-decoration: none;
   }
 
-  .home-link::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background-color: white;
-    transition: width 0.2s ease;
+  .home-icon {
+    font-size: 0.8rem;
   }
 
-  .home-link:hover {
-    color: white;
-  }
-
-  .home-link:hover::after {
-    width: 100%;
+  .home-link-below:hover {
+    color: #1E3A8A;
+    background-color: #F5F7FF;
   }
 
   /* Mobile Navigation */
