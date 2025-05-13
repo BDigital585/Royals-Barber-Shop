@@ -153,8 +153,8 @@ const ContentfulHeroSection = () => {
           {/* Removed Book Now button as requested since it's already in the header */}
         </div>
         
-        {/* Bottom fade gradient - more subtle transition */}
-        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/90 via-white/40 to-transparent"></div>
+        {/* Even more subtle bottom fade gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white/80 via-white/30 to-transparent"></div>
       </div>
     </section>
   );

@@ -44,19 +44,19 @@ const Header = () => {
           </Link>
         </div>
         
-        {/* Mobile Action Buttons - increased spacing and better alignment */}
-        <div className="md:hidden flex items-center gap-6">
+        {/* Mobile Action Buttons - modernized design with better spacing */}
+        <div className="md:hidden flex items-center gap-7">
           {/* Mobile Book Now Link - Desktop version shown in the nav bar */}
           <a
             href="https://royalsbarbershop.setmore.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="mobile-book-btn mr-1"
+            className="mobile-book-btn"
           >
             Book
           </a>
           
-          {/* Mobile Menu Button */}
+          {/* Modern Mobile Menu Button */}
           <button 
             className={`hamburger z-30 ${isMenuOpen ? 'open' : ''}`}
             onClick={toggleMenu}
