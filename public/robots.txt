@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://www.royalsbatavia.com/sitemap.xml
+Sitemap: https://royals-barbershop.replit.app/sitemap.xml

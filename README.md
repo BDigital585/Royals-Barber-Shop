@@ -10,7 +10,6 @@ A mobile-first responsive website for Royals Barbershop in Batavia, NY.
 - SEO optimization with schema markup
 - Newsletter subscription functionality
 - Contact information and booking links
-- Automated deployment to Netlify
 
 ## Development
 
@@ -24,42 +23,9 @@ This will start the Express server with Vite for hot-reloading during developmen
 
 ## Deployment
 
-The project is set up for automated deployment to Netlify with a custom domain (royalsbatavia.com) through Porkbun.
+The project can be deployed directly through Replit's deployment platform, which handles all deployment aspects automatically.
 
-### Prerequisites
-
-Before deployment, ensure you have set the following environment variables:
-
-- `NETLIFY_AUTH_TOKEN`: Your Netlify authentication token
-- `PORKBUN_API_KEY`: Your Porkbun API key
-- `PORKBUN_API_SECRET`: Your Porkbun API secret
-
-### Running the Deployment
-
-To deploy the website, you can use either the Node.js script or the bash script:
-
-#### Using Node.js:
-```bash
-node scripts/deploy.js
-```
-
-#### Using Bash:
-```bash
-./deploy.sh
-```
-
-This script will:
-
-1. Build the site for production
-2. Copy SEO files (robots.txt, sitemap.xml) to the build directory
-3. Deploy to Netlify
-4. Configure DNS settings on Porkbun to point to Netlify
-
-### Deployment Scripts
-
-- `scripts/deploy.js`: Main deployment script with user confirmation
-- `scripts/deploy-to-netlify.js`: Handles the Netlify deployment and Porkbun DNS configuration
-- `scripts/prepare-deploy.js`: Ensures SEO files are correctly included in the build
+To deploy, simply click the "Deploy" button in the Replit interface. Replit will build and host the application with its own domain.
 
 ## Content Management
 
