@@ -56,9 +56,6 @@ const Header = () => {
             <Link href="/browse-haircuts" className="mobile-nav-link">
               Browse
             </Link>
-            <Link href="/contact" className="mobile-nav-link">
-              Contact
-            </Link>
           </div>
           
           {/* Mobile Book Now Link - Desktop version shown in the nav bar */}

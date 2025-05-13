@@ -48,7 +48,7 @@ export default function QuoteSection() {
             <FaInstagram />
           </a>
           <a 
-            href="https://www.facebook.com/royalsbarbershop" 
+            href="https://www.facebook.com/share/19UCgP9N1f/?mibextid=wwXIfr" 
             target="_blank" 
             rel="noopener noreferrer"
             className="social-icon"

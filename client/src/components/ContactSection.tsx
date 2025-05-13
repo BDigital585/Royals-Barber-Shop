@@ -68,7 +68,7 @@ const ContactSection = () => {
                   <FaInstagram />
                 </a>
                 <a 
-                  href="https://facebook.com/RoyalsBarberShop" 
+                  href="https://www.facebook.com/share/19UCgP9N1f/?mibextid=wwXIfr" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-secondary text-2xl hover:opacity-80 transition-opacity"
