@@ -268,13 +268,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Serve SEO-related files directly from the public directory
+  // Serve robots.txt directly from the public directory
   app.get('/robots.txt', (req, res) => {
     res.sendFile('robots.txt', { root: './public' });
   });
 
-  app.get('/sitemap.xml', (req, res) => {
-    res.sendFile('sitemap.xml', { root: './public' });
+  // Generate sitemap.xml dynamically based on haircut data
+  app.get('/sitemap.xml', async (req, res) => {
+    try {
+      // Current date in YYYY-MM-DD format for lastmod
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Start building sitemap XML
+      let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+      
+      // Add static pages
+      const staticPages = [
+        { url: 'https://www.royalsbatavia.com/', priority: '1.0', changefreq: 'weekly' },
+        { url: 'https://www.royalsbatavia.com/browse-haircuts', priority: '0.9', changefreq: 'weekly' },
+        { url: 'https://www.royalsbatavia.com/book-now', priority: '0.8', changefreq: 'weekly' },
+        { url: 'https://www.royalsbatavia.com/contact', priority: '0.7', changefreq: 'monthly' },
+        { url: 'https://www.royalsbatavia.com/blog', priority: '0.8', changefreq: 'weekly' },
+        { url: 'https://www.royalsbatavia.com/newsletter', priority: '0.6', changefreq: 'monthly' }
+      ];
+      
+      // Add each static page to the sitemap
+      staticPages.forEach(page => {
+        sitemap += '  <url>\n';
+        sitemap += `    <loc>${page.url}</loc>\n`;
+        sitemap += `    <lastmod>${today}</lastmod>\n`;
+        sitemap += `    <changefreq>${page.changefreq}</changefreq>\n`;
+        sitemap += `    <priority>${page.priority}</priority>\n`;
+        sitemap += '  </url>\n';
+      });
+      
+      // Use child_process to list haircut files
+      const { exec } = await import('child_process');
+      const { promisify } = await import('util');
+      const execPromise = promisify(exec);
+      
+      try {
+        // Get a list of all haircut files
+        const { stdout } = await execPromise('find ./client/src/assets/haircuts -type f -name "*.jpg" -o -name "*.png" -o -name "*.jpeg" -o -name "*.webp" | sort');
+        
+        if (stdout.trim()) {
+          const files = stdout.trim().split('\n');
+          
+          for (const file of files) {
+            // Extract category and filename from the path
+            const matches = file.match(/haircuts\/([^/]+)\/([^/]+)$/);
+            
+            if (matches) {
+              const [, category, filename] = matches;
+              
+              // Create the haircut URL with proper encoding
+              const categorySlug = encodeURIComponent(category);
+              const fileSlug = encodeURIComponent(filename);
+              const haircutUrl = `https://www.royalsbatavia.com/haircut/${categorySlug}/${fileSlug}`;
+              
+              // Add to sitemap
+              sitemap += '  <url>\n';
+              sitemap += `    <loc>${haircutUrl}</loc>\n`;
+              sitemap += `    <lastmod>${today}</lastmod>\n`;
+              sitemap += `    <changefreq>monthly</changefreq>\n`;
+              sitemap += `    <priority>0.7</priority>\n`;
+              sitemap += '  </url>\n';
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error listing haircut files:', err);
+      }
+      
+      // Close the sitemap
+      sitemap += '</urlset>';
+      
+      // Set content type and send the generated sitemap
+      res.header('Content-Type', 'application/xml');
+      res.send(sitemap);
+    } catch (error) {
+      console.error('Error generating sitemap:', error);
+      // Fall back to static sitemap.xml file if dynamic generation fails
+      res.sendFile('sitemap.xml', { root: './public' });
+    }
   });
 
   const httpServer = createServer(app);
