@@ -3,6 +3,7 @@ import { useLocation, useRoute } from 'wouter';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MetaTags from '@/components/MetaTags';
+import SchemaMarkup from '@/components/SchemaMarkup';
 import { Button } from '@/components/ui/button';
 import { FaFacebook, FaTwitter, FaEnvelope, FaInstagram, FaLink, FaArrowLeft } from 'react-icons/fa';
 import { toast } from '@/hooks/use-toast';
@@ -157,6 +158,14 @@ const HaircutShare = () => {
         description={pageDescription}
         imageUrl={imageUrl || undefined}
         url={pageUrl}
+      />
+      
+      {/* Add schema markup for this haircut */}
+      <SchemaMarkup 
+        type="haircut"
+        haircutName={haircutTitle}
+        haircutCategory={categoryName}
+        haircutImage={imageUrl}
       />
       
       <Header />
