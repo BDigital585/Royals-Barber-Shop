@@ -19,7 +19,8 @@ export interface BlogPost {
   slug: string;
   excerpt?: string;
   featuredImage?: string;
-  content?: string;
+  content?: any; // Rich text content from Contentful
+  authorName?: string;
   publishedAt: string;
 }
 

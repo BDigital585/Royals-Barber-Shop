@@ -9,6 +9,8 @@ import { ChevronLeft } from 'lucide-react';
 import MetaTags from '../components/MetaTags';
 import SchemaMarkup from '../components/SchemaMarkup';
 import { useMobile } from '../hooks/use-mobile';
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import { BLOCKS, INLINES, MARKS } from '@contentful/rich-text-types';
 
 export default function BlogPost() {
   const isMobile = useMobile();
@@ -46,6 +48,62 @@ export default function BlogPost() {
         day: 'numeric'
       })
     : '';
+    
+  // Rich text rendering options for Contentful
+  const renderOptions = {
+    renderMark: {
+      [MARKS.BOLD]: (text: React.ReactNode) => <strong className="font-bold">{text}</strong>,
+      [MARKS.ITALIC]: (text: React.ReactNode) => <em className="italic">{text}</em>,
+      [MARKS.UNDERLINE]: (text: React.ReactNode) => <span className="underline">{text}</span>,
+      [MARKS.CODE]: (text: React.ReactNode) => <code className="bg-gray-100 p-1 rounded font-mono text-sm">{text}</code>,
+    },
+    renderNode: {
+      [BLOCKS.PARAGRAPH]: (node: any, children: React.ReactNode) => <p className="text-gray-700 leading-relaxed mb-4">{children}</p>,
+      [BLOCKS.HEADING_1]: (node: any, children: React.ReactNode) => <h1 className="text-3xl font-bold mt-8 mb-4">{children}</h1>,
+      [BLOCKS.HEADING_2]: (node: any, children: React.ReactNode) => <h2 className="text-2xl font-bold mt-6 mb-3">{children}</h2>,
+      [BLOCKS.HEADING_3]: (node: any, children: React.ReactNode) => <h3 className="text-xl font-bold mt-5 mb-2">{children}</h3>,
+      [BLOCKS.HEADING_4]: (node: any, children: React.ReactNode) => <h4 className="text-lg font-bold mt-4 mb-2">{children}</h4>,
+      [BLOCKS.HEADING_5]: (node: any, children: React.ReactNode) => <h5 className="text-base font-bold mt-3 mb-1">{children}</h5>,
+      [BLOCKS.HEADING_6]: (node: any, children: React.ReactNode) => <h6 className="text-sm font-bold mt-3 mb-1">{children}</h6>,
+      [BLOCKS.UL_LIST]: (node: any, children: React.ReactNode) => <ul className="list-disc pl-6 mb-4">{children}</ul>,
+      [BLOCKS.OL_LIST]: (node: any, children: React.ReactNode) => <ol className="list-decimal pl-6 mb-4">{children}</ol>,
+      [BLOCKS.LIST_ITEM]: (node: any, children: React.ReactNode) => <li className="mb-1">{children}</li>,
+      [BLOCKS.QUOTE]: (node: any, children: React.ReactNode) => (
+        <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-600 mb-4">{children}</blockquote>
+      ),
+      [BLOCKS.HR]: () => <hr className="my-6 border-t border-gray-300" />,
+      [BLOCKS.EMBEDDED_ASSET]: (node: any) => {
+        const { title, description, file } = node.data.target.fields;
+        const imageUrl = file?.url || '';
+        return (
+          <figure className="my-6">
+            <img 
+              src={imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl}
+              alt={description || title || "Blog image"} 
+              className="mx-auto rounded-md shadow-md max-w-full"
+            />
+            {title && <figcaption className="text-center text-sm text-gray-500 mt-2">{title}</figcaption>}
+          </figure>
+        );
+      },
+      [INLINES.HYPERLINK]: (node: any, children: React.ReactNode) => (
+        <a href={node.data.uri} className="text-secondary hover:underline" target="_blank" rel="noopener noreferrer">
+          {children}
+        </a>
+      ),
+    },
+  };
+
+  // Render rich text content from Contentful
+  function renderBlogContent(content: any) {
+    if (!content) return <p className="text-gray-500 italic">No content available</p>;
+    try {
+      return documentToReactComponents(content, renderOptions);
+    } catch (error) {
+      console.error("Error rendering rich text:", error);
+      return <p className="text-red-500">Error rendering content</p>;
+    }
+  }
 
   return (
     <main className="container mx-auto px-4 py-12">
@@ -116,13 +174,7 @@ export default function BlogPost() {
           )}
           
           <div className="prose prose-lg max-w-none">
-            {post.content?.split('\n').map((paragraph, index) => (
-              paragraph.trim() ? (
-                <p key={index} className="mb-4">{paragraph}</p>
-              ) : (
-                <br key={index} />
-              )
-            ))}
+            {renderBlogContent(post.content)}
           </div>
           
           <div className="mt-12 pt-6 border-t border-gray-200">

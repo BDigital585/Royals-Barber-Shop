@@ -393,7 +393,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           title: fields.title || 'Untitled Post',
           slug: fields.slug || entry.sys.id,
           excerpt: fields.excerpt || '',
-          content: fields.content || '',
+          content: fields.content || null,
+          authorName: fields.authorName || '',
           featuredImage: featuredImageUrl,
           publishedAt: entry.sys.createdAt
         };
@@ -450,7 +451,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         title: fields.title || 'Untitled Post',
         slug: fields.slug || entry.sys.id,
         excerpt: fields.excerpt || '',
-        content: fields.content || '',
+        content: fields.content || null,
+        authorName: fields.authorName || '',
         featuredImage: featuredImageUrl,
         publishedAt: entry.sys.createdAt
       };
