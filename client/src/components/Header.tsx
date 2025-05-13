@@ -44,8 +44,19 @@ const Header = () => {
           </Link>
         </div>
         
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
+        {/* Mobile Action Buttons */}
+        <div className="md:hidden flex items-center gap-4">
+          {/* Mobile Book Now Link - Desktop version shown in the nav bar */}
+          <a
+            href="https://royalsbarbershop.setmore.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mobile-book-btn"
+          >
+            Book
+          </a>
+          
+          {/* Mobile Menu Button */}
           <button 
             className={`hamburger z-30 ${isMenuOpen ? 'open' : ''}`}
             onClick={toggleMenu}

@@ -33,14 +33,15 @@ export default function QuoteSection() {
   }, []);
   
   return (
-    <section className="quote-section">
-      <div className="divider-line"></div>
+    <section className="tagline-section">
       <div className="container">
         <div 
           ref={quoteRef} 
           className={`tagline-text ${isVisible ? 'visible' : ''}`}
         >
-          It's not just a cut—it's a standard.
+          <span className="tagline-wrapper">
+            Where sharp cuts meet sharper standards.
+          </span>
         </div>
       </div>
     </section>

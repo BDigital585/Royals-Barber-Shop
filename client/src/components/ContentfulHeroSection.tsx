@@ -163,7 +163,7 @@ const ContentfulHeroSection = () => {
         </div>
         
         {/* Bottom fade gradient for smoother transition to next section */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white via-white/60 to-transparent"></div>
       </div>
     </section>
   );

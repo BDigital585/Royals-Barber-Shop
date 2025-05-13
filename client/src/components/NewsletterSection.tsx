@@ -10,7 +10,10 @@ const NewsletterSection = () => {
 
   const subscribeNewsletter = useMutation({
     mutationFn: async (email: string) => {
-      const response = await apiRequest('POST', '/api/newsletter/subscribe', { email });
+      const response = await apiRequest('/api/newsletter/subscribe', {
+        method: 'POST',
+        data: { email }
+      });
       return response.json();
     },
     onSuccess: () => {
