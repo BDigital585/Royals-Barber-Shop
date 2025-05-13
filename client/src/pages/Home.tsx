@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
 import ContentfulHeroSection from '@/components/ContentfulHeroSection';
+import QuoteSection from '@/components/QuoteSection';
 import BookingSection from '@/components/BookingSection';
 import ContactSection from '@/components/ContactSection';
 import NewsletterSection from '@/components/NewsletterSection';
@@ -25,6 +26,7 @@ const Home = () => {
       <Header />
       <main>
         <ContentfulHeroSection />
+        <QuoteSection />
         <BookingSection />
         <ContactSection />
         <NewsletterSection />

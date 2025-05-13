@@ -293,6 +293,45 @@
     margin: 10px auto 0;
   }
   
+  /* Quote Section Styling */
+  .quote-section {
+    padding: 60px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background-color: #FFF;
+  }
+  
+  .quote-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1.3;
+    color: #1A1A1A;
+    max-width: 900px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  
+  .quote-text.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  @media (min-width: 768px) {
+    .quote-text {
+      font-size: 2.5rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .quote-text {
+      font-size: 3rem;
+    }
+  }
+  
   /* Blog Card Styling */
   .blog-card {
     background-color: #111; /* deep black base */
