@@ -5,6 +5,9 @@ import * as schema from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { ZodError } from "zod";
+import { execSync } from "child_process";
+import path from "path";
+import fs from "fs";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API routes prefix
