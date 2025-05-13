@@ -100,6 +100,42 @@
     opacity: 1;
   }
 
+  /* Logo Container and Home Link */
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .home-link {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 2px;
+    margin-left: 2px;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+
+  .home-link::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: white;
+    transition: width 0.2s ease;
+  }
+
+  .home-link:hover {
+    color: white;
+  }
+
+  .home-link:hover::after {
+    width: 100%;
+  }
+
   /* Mobile Navigation */
   /* Mobile Text Links */
   .mobile-nav-link {

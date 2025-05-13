@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import RoyalsLogo from './RoyalsLogo';
 import MobileMenu from './MobileMenu';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [location] = useLocation(); // Get current location to check if we're on homepage
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,10 +39,17 @@ const Header = () => {
   return (
     <header className={`bg-primary text-white fixed top-0 left-0 w-full z-50 navbar-shimmer ${scrolled ? 'shadow-md' : ''}`}>
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
-        <div className="logo">
+        <div className="logo-container">
           <Link href="/">
             <RoyalsLogo className="flex items-center" />
           </Link>
+          
+          {/* Show Home link on all pages except homepage */}
+          {location !== '/' && (
+            <Link href="/" className="home-link">
+              Home
+            </Link>
+          )}
         </div>
         
         {/* Mobile Navigation and Action Buttons */}
