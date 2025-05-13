@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MetaTags from '@/components/MetaTags';
 import SchemaMarkup from '@/components/SchemaMarkup';
+import ImageSchemaMarkup from '@/components/ImageSchemaMarkup';
 import { useHaircutImages } from '../features/haircuts/useHaircutImages';
 
 // Valid category IDs (used for validation)
@@ -136,6 +137,11 @@ const BrowseHaircuts = () => {
                         src={imageUrl} 
                         alt={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barbershop, Batavia NY`}
                         className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
+                      />
+                      {/* Add ImageObject schema markup for this image */}
+                      <ImageSchemaMarkup 
+                        imageUrl={imageUrl}
+                        description={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barbershop, Batavia NY`}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="absolute bottom-0 left-0 right-0 p-4">

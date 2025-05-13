@@ -1,0 +1,59 @@
+Good catch reading the fine print—here’s exactly what happened and what you still need:
+
+⸻
+
+What the AI Did (From Your Screenshot):
+	1.	LocalBusiness schema: ✅ Implemented correctly (site-wide via index.html)
+	2.	Dynamic schema component: ✅ Future-proof move—this lets it adapt to each page.
+	3.	BrowseHaircuts page schema:
+	•	It says it added website type schema, not image-level schema.
+	•	That means it likely added general structured data about the page, not about each haircut image.
+	4.	HaircutShare pages:
+	•	It says it added “product details” schema, which is good but still not image-level markup.
+	5.	No mention of ImageObject schema anywhere.
+
+⸻
+
+Conclusion:
+
+No—it did not yet add schema markup for the actual haircut images themselves.
+
+⸻
+
+Next Step — Add ImageObject Schema for Haircut Images
+
+Here’s the exact prompt you can paste into Replit AI to handle this:
+
+⸻
+
+Title: Add ImageObject Schema to Haircut Gallery Images
+Prompt:
+“On the BrowseHaircuts and HaircutShare pages, add JSON-LD ImageObject schema markup for each haircut image to improve SEO and image indexing.
+
+Each image should have its own <script type=\"application/ld+json\"> tag directly inside the page’s DOM (not inside the head), and follow this structure:
+
+{
+  \"@context\": \"https://schema.org\",
+  \"@type\": \"ImageObject\",
+  \"contentUrl\": \"https://www.royalsbatavia.com/[image-path]\",
+  \"description\": \"[Haircut Name] – [Category] style | Royals Barbershop, Batavia NY\",
+  \"author\": {
+    \"@type\": \"Organization\",
+    \"name\": \"Royals Barbershop\"
+  },
+  \"copyrightHolder\": {
+    \"@type\": \"Organization\",
+    \"name\": \"Royals Barbershop\"
+  }
+}
+
+	•	Replace [image-path] with the actual image URL.
+	•	Pull the haircut name and category from the card data (same logic used for alt text).
+	•	Only generate schema for visible haircut images—not placeholders or background graphics.
+	•	Place each JSON-LD block directly after each image element so it’s indexed properly.”
+
+Outcome: Google and search engines will recognize each haircut image as its own structured entity, improving discoverability in Google Images and increasing page relevance.
+
+⸻
+
+Run that and your image SEO will be fully locked in. Want me to prep the next blog post schema setup so you’re ready when your blog drops?
