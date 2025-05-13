@@ -109,7 +109,10 @@ function BlogPostCard({ post }: { post: BlogPost }) {
       
       <CardHeader className="flex-1">
         <CardTitle className="text-xl">{post.title}</CardTitle>
-        <CardDescription className="text-sm text-gray-500 mb-1">{formattedDate}</CardDescription>
+        <CardDescription className="text-sm text-gray-500 mb-1">
+          {formattedDate}
+          {post.authorName && <span> • By {post.authorName}</span>}
+        </CardDescription>
         <p className="mt-2 text-gray-700 line-clamp-3">{post.excerpt}</p>
       </CardHeader>
       

@@ -155,7 +155,10 @@ export default function BlogPost() {
         <article className="max-w-3xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold mb-3">{post.title}</h1>
           
-          <p className="text-gray-500 mb-8">{formattedDate}</p>
+          <p className="text-gray-500 mb-8">
+            {formattedDate}
+            {post.authorName && <span> • By <span className="font-medium">{post.authorName}</span></span>}
+          </p>
           
           {post.featuredImage && (
             <div className="mb-8 rounded-lg overflow-hidden">
