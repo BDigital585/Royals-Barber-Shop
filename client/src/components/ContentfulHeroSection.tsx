@@ -148,22 +148,13 @@ const ContentfulHeroSection = () => {
           </video>
         )}
         
-        {/* Text overlay with a dark semi-transparent background for better readability */}
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center px-2 sm:px-4">
-          <div className="text-center max-w-4xl">
-            <a 
-              href="https://royalsbarbershop.setmore.com/" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block book-button"
-            >
-              BOOK NOW
-            </a>
-          </div>
+        {/* Simple dark overlay for video contrast without the button */}
+        <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center px-2 sm:px-4">
+          {/* Removed Book Now button as requested since it's already in the header */}
         </div>
         
-        {/* Bottom fade gradient for smoother transition to next section */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white via-white/60 to-transparent"></div>
+        {/* Bottom fade gradient - more subtle transition */}
+        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white/90 via-white/40 to-transparent"></div>
       </div>
     </section>
   );

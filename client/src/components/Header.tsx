@@ -44,14 +44,14 @@ const Header = () => {
           </Link>
         </div>
         
-        {/* Mobile Action Buttons */}
-        <div className="md:hidden flex items-center gap-4">
+        {/* Mobile Action Buttons - increased spacing and better alignment */}
+        <div className="md:hidden flex items-center gap-6">
           {/* Mobile Book Now Link - Desktop version shown in the nav bar */}
           <a
             href="https://royalsbarbershop.setmore.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="mobile-book-btn"
+            className="mobile-book-btn mr-1"
           >
             Book
           </a>

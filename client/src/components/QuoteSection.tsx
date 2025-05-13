@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { FaInstagram, FaFacebookF, FaGoogle } from 'react-icons/fa';
 
 export default function QuoteSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -35,6 +36,37 @@ export default function QuoteSection() {
   return (
     <section className="tagline-section">
       <div className="container">
+        {/* Social Media Icons */}
+        <div className={`social-icons-container ${isVisible ? 'visible' : ''}`}>
+          <a 
+            href="https://www.instagram.com/royalsbarbershop585/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="social-icon"
+            aria-label="Instagram"
+          >
+            <FaInstagram />
+          </a>
+          <a 
+            href="https://www.facebook.com/royalsbarbershop" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="social-icon"
+            aria-label="Facebook"
+          >
+            <FaFacebookF />
+          </a>
+          <a 
+            href="https://g.page/royalsbarbershop" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="social-icon"
+            aria-label="Google"
+          >
+            <FaGoogle />
+          </a>
+        </div>
+        
         <div 
           ref={quoteRef} 
           className={`tagline-text ${isVisible ? 'visible' : ''}`}
