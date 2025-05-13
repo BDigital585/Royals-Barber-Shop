@@ -1,10 +1,16 @@
 #!/usr/bin/env node
 
 // Script to deploy to Netlify and configure Porkbun domain
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
+// Using ES Modules syntax since the project is ESM
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import https from 'https';
+import { fileURLToPath } from 'url';
+
+// Get current file directory name (ESM equivalent of __dirname)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Configuration
 const NETLIFY_SITE_NAME = 'royals-barbershop';
@@ -27,10 +33,15 @@ if (missingVars.length > 0) {
   process.exit(1);
 }
 
-// Step 1: Build the project for production
-console.log('Building project for production...');
+// Step 1: Build the project for production and ensure SEO files are included
+console.log('Preparing SEO files...');
 try {
+  // Run the prepare-deploy script to ensure SEO files are ready
+  execSync('node scripts/prepare-deploy.js', { stdio: 'inherit' });
+  
+  console.log('Building project for production...');
   execSync('npm run build', { stdio: 'inherit' });
+  
   console.log('✅ Build completed successfully');
 } catch (error) {
   console.error('❌ Build failed:', error.message);
@@ -84,7 +95,7 @@ function porkbunRequest(endpoint, data) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Content-Length': requestData.length,
+        'Content-Length': Buffer.byteLength(requestData),
       },
     };
     
