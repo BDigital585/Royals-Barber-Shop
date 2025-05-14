@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-// Import the image directly
-import kidsImage from '../../../kids-cuts-2025.png';
 
 const CommunitySection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -51,7 +49,7 @@ const CommunitySection = () => {
           
           <div className="community-image-container">
             <img 
-              src={kidsImage}
+              src="/kids-cuts-2025.png"
               alt="Community event with free haircuts for students" 
               className="community-image"
               loading="lazy"
