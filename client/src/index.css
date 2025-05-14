@@ -454,6 +454,8 @@
     background-color: #f8f8f8;
     position: relative;
     overflow: hidden;
+    margin-top: 10px;
+    padding-bottom: 50px; /* Extra padding for dot indicators */
   }
   
   .carousel-image-wrapper {
@@ -465,10 +467,46 @@
   .carousel-image-wrapper img {
     transform: scale(1);
     transition: transform 0.5s ease;
+    object-position: top center; /* Focus on the top of images where faces are */
   }
   
   .carousel-image-wrapper:hover img {
     transform: scale(1.03);
+  }
+  
+  /* Improve carousel controls */
+  [class*="carousel-prev"],
+  [class*="carousel-next"] {
+    width: 44px;
+    height: 44px;
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+  }
+  
+  [class*="carousel-prev"]:hover,
+  [class*="carousel-next"]:hover {
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Mobile optimization */
+  @media (max-width: 640px) {
+    .carousel-section {
+      padding-top: 30px;
+      padding-bottom: 40px;
+    }
+    
+    .carousel-image-wrapper {
+      height: 250px !important; /* Override inline height for mobile */
+    }
+    
+    [class*="carousel-prev"],
+    [class*="carousel-next"] {
+      width: 36px;
+      height: 36px;
+    }
   }
   
   /* Social Media Icons */
