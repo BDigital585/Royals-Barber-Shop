@@ -461,10 +461,11 @@
     background-color: #1E293B; /* Dark slate blue background */
     position: relative;
     overflow: hidden;
-    margin-top: -1px; /* Remove any gap between hero and carousel */
-    padding: 40px 0 60px; /* Reduced top padding for tighter hero-to-carousel transition */
+    margin-top: -2px; /* Remove any gap between hero and carousel */
+    padding: 24px 0 60px; /* Reduced top padding for tighter hero-to-carousel transition */
     color: white;
     animation: fadeIn 0.5s ease-in;
+    border-top: none;
   }
   
   /* White container for the carousel */
