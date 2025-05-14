@@ -121,14 +121,17 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
   // Display loading state while images are being loaded
   if (isLoading) {
     return (
-      <section className={`carousel-section py-10 ${className}`}>
-        <div className="container px-4 mx-auto">
-          <h2 className="text-xl md:text-2xl text-center font-heading mb-6 md:mb-8 text-primary leading-relaxed">
-            Proudly serving Batavia for 10 years.<br />
-            <span className="font-medium text-gray-700 text-lg md:text-xl">Thank you for growing with us!</span>
+      <section className={`carousel-section ${className}`}>
+        <div className="carousel-title mx-auto px-4 max-w-4xl">
+          <h2 className="text-xl md:text-2xl font-heading">
+            Proudly serving Batavia for 10 years
           </h2>
-          <div className="simple-carousel-container relative max-w-3xl mx-auto">
-            <div className="simple-carousel-image h-64 sm:h-72 md:h-96 bg-gray-200 animate-pulse rounded-lg flex items-center justify-center">
+          <span className="text-lg md:text-xl block">Thank you for growing with us!</span>
+        </div>
+        
+        <div className="carousel-white-container mx-4">
+          <div className="simple-carousel-container relative">
+            <div className="simple-carousel-image h-64 sm:h-72 md:h-96 animate-pulse flex items-center justify-center">
               <span className="text-gray-500">Loading images...</span>
             </div>
           </div>
@@ -138,21 +141,25 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
   }
   
   return (
-    <section className={`carousel-section py-10 ${className}`}>
-      <div className="container px-4 mx-auto">
-        <h2 className="text-xl md:text-2xl text-center font-heading mb-6 md:mb-8 text-primary leading-relaxed">
-          Proudly serving Batavia for 10 years.<br />
-          <span className="font-medium text-gray-700 text-lg md:text-xl">Thank you for growing with us!</span>
+    <section className={`carousel-section ${className}`}>
+      {/* Title area outside the white container */}
+      <div className="carousel-title mx-auto px-4 max-w-4xl">
+        <h2 className="text-xl md:text-2xl font-heading">
+          Proudly serving Batavia for 10 years
         </h2>
-        
+        <span className="text-lg md:text-xl block">Thank you for growing with us!</span>
+      </div>
+      
+      {/* White container with the carousel */}
+      <div className="carousel-white-container mx-4">
         <div 
-          className="simple-carousel-container relative max-w-3xl mx-auto"
+          className="simple-carousel-container relative"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
         >
           {/* Main Image */}
           {shopImages.length > 0 && (
-            <div className="simple-carousel-image relative rounded-lg overflow-hidden shadow-lg">
+            <div className="simple-carousel-image relative overflow-hidden">
               <img
                 src={shopImages[currentIndex]}
                 alt={`Barber shop image ${currentIndex + 1}`}
@@ -165,7 +172,7 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
           
           {/* Navigation Controls */}
           <button 
-            className="carousel-control carousel-prev absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md text-primary"
+            className="carousel-control carousel-prev absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-md text-primary"
             onClick={prevImage}
             aria-label="Previous image"
           >
@@ -173,7 +180,7 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
           </button>
           
           <button 
-            className="carousel-control carousel-next absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md text-primary"
+            className="carousel-control carousel-next absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-md text-primary"
             onClick={nextImage}
             aria-label="Next image"
           >
@@ -182,7 +189,7 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
           
           {/* Autoplay toggle button */}
           <button 
-            className="carousel-control absolute left-1/2 -translate-x-1/2 bottom-4 bg-white/80 hover:bg-white rounded-full p-2 shadow-md text-primary"
+            className="carousel-control absolute left-1/2 -translate-x-1/2 bottom-4 bg-white/90 hover:bg-white rounded-full p-2 shadow-md text-primary"
             onClick={toggleAutoplay}
             aria-label={isPaused ? "Play slideshow" : "Pause slideshow"}
           >
@@ -190,7 +197,7 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
           </button>
           
           {/* Image counter */}
-          <div className="absolute bottom-4 right-4 bg-black/50 text-white text-sm px-2 py-1 rounded">
+          <div className="carousel-counter absolute bottom-4 right-4">
             {currentIndex + 1} / {shopImages.length}
           </div>
         </div>

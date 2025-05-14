@@ -451,11 +451,40 @@
   
   /* Simplified Image Carousel Styling */
   .carousel-section {
-    background-color: #f8f8f8;
+    background-color: #1E293B; /* Dark slate blue background */
     position: relative;
     overflow: hidden;
     margin-top: 0;
-    padding-bottom: 30px;
+    padding: 60px 0; /* Increased padding for more space */
+    color: white;
+  }
+  
+  /* White container for the carousel */
+  .carousel-white-container {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+    padding: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  /* Title section in the dark navy background */
+  .carousel-title {
+    margin-bottom: 2rem;
+    color: white;
+    text-align: center;
+  }
+  
+  .carousel-title h2 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: white;
+  }
+  
+  .carousel-title span {
+    color: #E5E7EB; /* Light gray for subtitle */
+    font-weight: 400;
   }
   
   /* Container for all carousel elements */
@@ -463,14 +492,18 @@
     position: relative;
     user-select: none;
     touch-action: pan-y;
+    max-width: 90%;
+    margin: 0 auto;
   }
   
   /* Main image container with smooth transitions */
   .simple-carousel-image {
     transition: opacity 200ms ease-out;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     will-change: opacity; /* Performance hint */
+    overflow: hidden;
+    background-color: #F3F4F6; /* Light gray background for loading images */
   }
   
   .simple-carousel-image img {
@@ -478,12 +511,13 @@
     display: block;
     margin: 0 auto;
     pointer-events: none; /* Prevent drag on the image */
+    width: 100%;
   }
   
   /* Navigation controls */
   .carousel-control {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -497,25 +531,40 @@
   .carousel-control:hover {
     opacity: 1;
     transform: translateY(-50%) scale(1.05);
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   .carousel-control:active {
     transform: translateY(-50%) scale(0.95);
   }
   
+  /* Counter badge */
+  .carousel-counter {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  
   /* Mobile optimization */
   @media (max-width: 640px) {
     .carousel-section {
-      padding-top: 20px;
-      padding-bottom: 20px;
+      padding: 40px 0;
     }
     
-    .carousel-section h2 {
-      font-size: 1.2rem;
-      margin-bottom: 0.75rem;
+    .carousel-white-container {
+      padding: 16px;
+      border-radius: 12px;
     }
     
-    .carousel-section h2 span {
+    .carousel-title h2 {
+      font-size: 1.3rem;
+    }
+    
+    .carousel-title span {
       font-size: 1rem;
     }
     
