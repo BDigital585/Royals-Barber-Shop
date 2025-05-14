@@ -4,10 +4,10 @@ import SimpleImageCarousel from './SimpleImageCarousel';
 
 export default function QuoteSection() {
   const [isVisible, setIsVisible] = useState(false);
-  const quoteRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    const currentRef = quoteRef.current;
+    const currentRef = sectionRef.current;
     
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -36,15 +36,20 @@ export default function QuoteSection() {
   
   return (
     <>
-      <section className="tagline-section">
-        <div className="container">
-          {/* Social Media Icons */}
+      <section className="social-section" ref={sectionRef}>
+        <div className="container px-4 mx-auto">
+          {/* Social Text */}
+          <div className={`social-text ${isVisible ? 'visible' : ''}`}>
+            Give us a like, a follow, or a review — it's greatly appreciated!
+          </div>
+          
+          {/* Modern Brand-Colored Social Media Icons */}
           <div className={`social-icons-container ${isVisible ? 'visible' : ''}`}>
             <a 
               href="https://www.instagram.com/royalsbarbershop585/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="social-icon"
+              className="social-icon instagram-icon"
               aria-label="Instagram"
             >
               <FaInstagram />
@@ -53,7 +58,7 @@ export default function QuoteSection() {
               href="https://www.facebook.com/share/19UCgP9N1f/?mibextid=wwXIfr" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="social-icon"
+              className="social-icon facebook-icon"
               aria-label="Facebook"
             >
               <FaFacebookF />
@@ -62,20 +67,11 @@ export default function QuoteSection() {
               href="https://g.page/royalsbarbershop" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="social-icon"
-              aria-label="Google"
+              className="social-icon google-icon"
+              aria-label="Google Reviews"
             >
               <FaGoogle />
             </a>
-          </div>
-          
-          <div 
-            ref={quoteRef} 
-            className={`tagline-text ${isVisible ? 'visible' : ''}`}
-          >
-            <span className="tagline-wrapper">
-              Where sharp cuts meet sharper standards.
-            </span>
           </div>
         </div>
       </section>

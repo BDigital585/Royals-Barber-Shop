@@ -439,14 +439,14 @@
   }
   
   /* Tagline Section Styling */
-  .tagline-section {
-    padding: 30px 20px;
+  .social-section {
+    padding: 24px 20px;
     text-align: center;
     position: relative;
     overflow: hidden;
     background-color: #FFF;
     margin-top: -8px; /* overlap slightly to hide any gap */
-    padding-bottom: 15px; /* reduced padding at bottom since carousel follows */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
   
   /* Simplified Image Carousel Styling */
@@ -579,16 +579,16 @@
     }
   }
   
-  /* Social Media Icons */
+  /* Social Media Icons - Modern Style */
   .social-icons-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
+    gap: 1.25rem;
+    margin: 1rem auto;
     opacity: 0;
-    transform: translateY(15px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
   }
   
   .social-icons-container.visible {
@@ -596,37 +596,56 @@
     transform: translateY(0);
   }
   
+  .social-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: #4B5563;
+    margin-bottom: 1rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  
+  .social-text.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Base styling for all social icons */
   .social-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
     border-radius: 50%;
-    background-color: #1A1A1A;
-    color: white;
+    background-color: white;
     font-size: 1.25rem;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
   .social-icon:hover {
-    background-color: #1E3A8A;
     transform: translateY(-3px);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
   
-  /* Instagram icon specific styling */
-  .social-icon:nth-child(1):hover {
+  /* Instagram icon with gradient */
+  .instagram-icon {
+    color: #fff;
     background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
   }
   
-  /* Facebook icon specific styling */
-  .social-icon:nth-child(2):hover {
-    background-color: #4267B2;
+  /* Facebook icon in Facebook blue */
+  .facebook-icon {
+    color: #fff;
+    background-color: #1877F2;
   }
   
-  /* Google icon specific styling */
-  .social-icon:nth-child(3):hover {
+  /* Google icon with Google colors */
+  .google-icon {
+    color: #fff;
     background-color: #DB4437;
   }
   
