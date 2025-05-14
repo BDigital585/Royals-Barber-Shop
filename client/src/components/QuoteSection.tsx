@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { FaInstagram, FaFacebookF, FaGoogle } from 'react-icons/fa';
-import ImageCarousel from './ImageCarousel';
+import SimpleImageCarousel from './SimpleImageCarousel';
 
 export default function QuoteSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -80,8 +80,8 @@ export default function QuoteSection() {
         </div>
       </section>
       
-      {/* Image Carousel Section */}
-      <ImageCarousel />
+      {/* Simple Image Carousel Section */}
+      <SimpleImageCarousel />
     </>
   );
 }
