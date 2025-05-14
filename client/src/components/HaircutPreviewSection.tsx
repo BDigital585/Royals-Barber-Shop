@@ -2,6 +2,20 @@ import { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import { useHaircutImages } from '../features/haircuts/useHaircutImages';
 
+// Custom Link component that ensures scroll to top
+const ScrollToTopLink = ({ href, className, children }: { href: string, className?: string, children: React.ReactNode }) => {
+  const handleClick = () => {
+    // Manually scroll to top when link is clicked (in addition to navigation)
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
+  return (
+    <Link href={href} onClick={handleClick} className={className}>
+      {children}
+    </Link>
+  );
+};
+
 // Valid category IDs (for validation)
 const VALID_CATEGORIES = [
   'fades',
@@ -147,9 +161,9 @@ const HaircutPreviewSection = () => {
         )}
         
         <div className={`text-center mt-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{ animationDelay: '200ms' }}>
-          <Link href="/browse-haircuts" className="inline-block bg-primary hover:bg-[#B91C1C] text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+          <ScrollToTopLink href="/browse-haircuts" className="inline-block bg-primary hover:bg-[#B91C1C] text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
             See Full Haircut Guide
-          </Link>
+          </ScrollToTopLink>
         </div>
       </div>
     </section>
