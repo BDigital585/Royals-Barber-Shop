@@ -461,8 +461,8 @@
     background-color: #0F172A; /* Dark navy/blue background to match community section */
     position: relative;
     overflow: hidden;
-    margin-top: -1px; /* Remove any gap between hero and carousel and ensure seamless connection */
-    padding: 0 0 40px; /* Removed top padding completely for tighter hero-to-carousel transition */
+    margin-top: 0; /* No negative margin to avoid overlap with hero */
+    padding: 4px 0 40px; /* Small top padding for slight separation */
     color: white;
     animation: fadeIn 0.5s ease-in;
     border-top: none;
@@ -480,7 +480,7 @@
     animation: slideUp 0.7s ease-out;
     transform-origin: center bottom;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-left 0.2s ease;
-    margin-top: -0.5rem; /* Negative margin to pull up the carousel */
+    margin-top: 0.75rem; /* Small positive margin for spacing */
   }
   
   .carousel-white-container:hover {
