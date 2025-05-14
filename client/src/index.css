@@ -461,8 +461,8 @@
     background-color: #0F172A; /* Dark navy/blue background to match community section */
     position: relative;
     overflow: hidden;
-    margin-top: 0; /* Remove any gap between hero and carousel */
-    padding: 24px 0 60px; /* Reduced top padding for tighter hero-to-carousel transition */
+    margin-top: -1px; /* Remove any gap between hero and carousel and ensure seamless connection */
+    padding: 0 0 40px; /* Removed top padding completely for tighter hero-to-carousel transition */
     color: white;
     animation: fadeIn 0.5s ease-in;
     border-top: none;
