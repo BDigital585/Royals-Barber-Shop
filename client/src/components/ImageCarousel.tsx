@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -12,162 +12,163 @@ import { cn } from '@/lib/utils';
 interface CarouselImage {
   src: string;
   alt: string;
-  caption: string;
 }
 
-// Import images for carousel
-import basicFade from '../assets/haircuts/fades/basic-fade.jpg';
-import skinFade from '../assets/haircuts/fades/skin-fade.jpg';
-import dropFadeCurly from '../assets/haircuts/fades/drop-fade-curly.jpg';
-import midFade from '../assets/haircuts/fades/mid-fade.jpg';
-import curlyTopFade from '../assets/haircuts/fades/curly-top-fade.jpg';
-import longMidTaper from '../assets/haircuts/tapers/long-mid-taper.jpg';
-import lowLongTaper from '../assets/haircuts/tapers/low-long-taper.jpg';
-import lightFade from '../assets/haircuts/other styles/light-fade.jpg';
-
 // Define image paths to include in the carousel
+// Using images from the shop folder in the public directory
 const carouselImages: CarouselImage[] = [
   {
-    src: basicFade,
-    alt: "Classic fade haircut with clean lines",
-    caption: "Classic Fade"
+    src: "/shop/cut.JPG",
+    alt: "Professional haircut at Royals Barbershop"
   },
   {
-    src: skinFade,
-    alt: "Skin fade haircut with excellent detail work",
-    caption: "Premium Skin Fade"
+    src: "/shop/cut2.JPG",
+    alt: "Quality haircut from Royals expert barbers"
   },
   {
-    src: dropFadeCurly,
-    alt: "Drop fade with curly texture on top",
-    caption: "Drop Fade Curly"
+    src: "/shop/IMG_0674.JPG",
+    alt: "Precise fade haircut technique from Royals Barbershop"
   },
   {
-    src: midFade,
-    alt: "Mid fade haircut with textured top",
-    caption: "Mid Fade"
+    src: "/shop/IMG_0675.JPG",
+    alt: "Classic men's haircut at Royals Barbershop in Batavia"
   },
   {
-    src: curlyTopFade,
-    alt: "Curly top fade with natural styling",
-    caption: "Curly Top Fade"
+    src: "/shop/IMG_0676.JPG",
+    alt: "Premium men's haircut with perfect details"
   },
   {
-    src: longMidTaper,
-    alt: "Long mid taper cut with extra length",
-    caption: "Long Mid Taper"
+    src: "/shop/IMG_0678.JPG",
+    alt: "Modern haircut style from skilled barbers at Royals"
   },
   {
-    src: lowLongTaper,
-    alt: "Low taper with length preservation",
-    caption: "Low Long Taper"
+    src: "/shop/IMG_0680.JPG",
+    alt: "Precision haircut by Royals Barbershop professionals"
   },
   {
-    src: lightFade,
-    alt: "Light fade with natural styling",
-    caption: "Light Fade"
-  },
+    src: "/shop/IMG_9364.JPG",
+    alt: "Expert men's haircut with fine detailing"
+  }
 ];
 
 const ImageCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
   
-  // Function to advance to the next slide
+  // Memoize our handlers to prevent unnecessary re-renders
   const nextSlide = useCallback(() => {
-    setCurrentIndex((prevIndex) => 
+    setActiveIndex((prevIndex) => 
       prevIndex === carouselImages.length - 1 ? 0 : prevIndex + 1
     );
   }, []);
   
-  // Function to go to the previous slide
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) => 
+  const prevSlide = useCallback(() => {
+    setActiveIndex((prevIndex) => 
       prevIndex === 0 ? carouselImages.length - 1 : prevIndex - 1
     );
-  };
+  }, []);
   
-  // Function to directly set the current slide
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-    // Reset auto-play timer when manually changing slides
-    setIsPlaying(true);
-  };
-  
-  // Auto-play functionality
+  const goToSlide = useCallback((index: number) => {
+    setActiveIndex(index);
+    setPaused(false);
+  }, []);
+
+  // Optimize auto-play functionality
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let timer: number | undefined;
     
-    if (isPlaying) {
-      interval = setInterval(() => {
-        nextSlide();
-      }, 5000); // Change slide every 5 seconds
+    if (!paused) {
+      // Use requestAnimationFrame for smoother transitions
+      const tick = () => {
+        timer = window.setTimeout(() => {
+          nextSlide();
+          requestAnimationFrame(tick);
+        }, 5000);
+      };
+      
+      requestAnimationFrame(tick);
     }
     
     return () => {
-      if (interval) clearInterval(interval);
+      if (timer) window.clearTimeout(timer);
     };
-  }, [isPlaying, nextSlide]);
-
-  // Pause auto-play when user interacts with controls
-  const handleControlClick = (callback: () => void) => {
-    callback();
-    setIsPlaying(false);
-    // Resume auto-play after 10 seconds of inactivity
-    setTimeout(() => setIsPlaying(true), 10000);
-  };
-
+  }, [paused, nextSlide]);
+  
+  // Optimized control handler
+  const handleControl = useCallback((action: () => void) => {
+    action();
+    setPaused(true);
+    
+    const resumeTimer = window.setTimeout(() => {
+      setPaused(false);
+    }, 8000);
+    
+    return () => clearTimeout(resumeTimer);
+  }, []);
+  
+  // Preload images for smoother transitions
+  useEffect(() => {
+    carouselImages.forEach(image => {
+      const img = new Image();
+      img.src = image.src;
+    });
+  }, []);
+  
   return (
-    <section className="carousel-section py-12 md:py-16 overflow-hidden">
+    <section className="carousel-section py-10 md:py-14 overflow-hidden">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl text-center font-heading mb-8 text-primary">Featured Styles</h2>
+        <h2 className="text-xl md:text-2xl text-center font-heading mb-6 md:mb-8 text-primary leading-relaxed px-4">
+          Proudly serving Batavia for 10 years.<br />
+          <span className="font-medium text-gray-700 text-lg md:text-xl">Thank you for growing with us!</span>
+        </h2>
         
-        <Carousel className="relative w-full" aria-label="Haircut styles carousel">
+        <Carousel className="relative w-full" aria-label="Royals Barbershop images">
           <CarouselContent>
             {carouselImages.map((image, index) => (
               <CarouselItem key={index} className="flex justify-center">
                 <div 
                   className={cn(
-                    "carousel-image-wrapper relative h-64 sm:h-80 md:h-96 w-full max-w-4xl mx-auto rounded-lg overflow-hidden shadow-lg transition-opacity duration-300",
-                    index === currentIndex ? "opacity-100" : "opacity-0 absolute"
+                    "carousel-image-wrapper relative h-60 sm:h-72 md:h-96 w-full max-w-4xl mx-auto rounded-lg overflow-hidden shadow-lg transform transition-all",
+                    {
+                      "opacity-100 scale-100": index === activeIndex,
+                      "opacity-0 absolute scale-95": index !== activeIndex
+                    }
                   )}
-                  style={{ display: index === currentIndex ? 'block' : 'none' }}
+                  style={{ display: index === activeIndex ? 'block' : 'none' }}
                 >
                   <img 
                     src={image.src} 
                     alt={image.alt}
                     className="w-full h-full object-cover object-center"
-                    loading={index === 0 ? "eager" : "lazy"} 
+                    loading={index <= 1 ? "eager" : "lazy"} 
+                    decoding="async"
                   />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
-                    <p className="text-lg font-semibold text-center">{image.caption}</p>
-                  </div>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
           
           <CarouselPrevious 
-            onClick={() => handleControlClick(prevSlide)}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-primary border-0"
-            aria-label="Previous slide"
+            onClick={() => handleControl(prevSlide)}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-primary border-0 z-10"
+            aria-label="Previous image"
           />
           <CarouselNext 
-            onClick={() => handleControlClick(nextSlide)}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-primary border-0"
-            aria-label="Next slide"
+            onClick={() => handleControl(nextSlide)}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-primary border-0 z-10"
+            aria-label="Next image"
           />
           
-          {/* Dot indicators */}
-          <div className="flex justify-center mt-4 space-x-2 absolute -bottom-10 left-0 right-0">
+          {/* Small dot indicators for mobile */}
+          <div className="flex justify-center mt-4 space-x-1.5 absolute -bottom-8 left-0 right-0">
             {carouselImages.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  index === currentIndex ? "bg-primary" : "bg-gray-300"
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  index === activeIndex ? "bg-primary scale-125" : "bg-gray-300"
                 }`}
-                aria-label={`Go to slide ${index + 1}`}
+                aria-label={`Go to image ${index + 1}`}
               />
             ))}
           </div>

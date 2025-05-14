@@ -454,58 +454,84 @@
     background-color: #f8f8f8;
     position: relative;
     overflow: hidden;
-    margin-top: 10px;
-    padding-bottom: 50px; /* Extra padding for dot indicators */
+    margin-top: 0;
+    padding-bottom: 40px; /* Extra padding for dot indicators */
+    will-change: transform; /* Performance optimization */
+    contain: content; /* Performance optimization */
   }
   
   .carousel-image-wrapper {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
+    transform: translateZ(0); /* Force hardware acceleration */
+    backface-visibility: hidden; /* Performance optimization */
+    perspective: 1000px; /* Performance optimization */
+    will-change: transform, opacity; /* Performance optimization */
   }
   
   .carousel-image-wrapper img {
     transform: scale(1);
-    transition: transform 0.5s ease;
+    transition: transform 0.3s ease;
     object-position: top center; /* Focus on the top of images where faces are */
+    backface-visibility: hidden; /* Performance optimization */
+    -webkit-backface-visibility: hidden; /* Safari */
   }
   
   .carousel-image-wrapper:hover img {
-    transform: scale(1.03);
+    transform: scale(1.02);
   }
   
   /* Improve carousel controls */
   [class*="carousel-prev"],
   [class*="carousel-next"] {
-    width: 44px;
-    height: 44px;
-    background-color: rgba(255, 255, 255, 0.85);
+    width: 42px;
+    height: 42px;
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     transition: all 0.2s ease;
+    opacity: 0.8;
+    transform: translateZ(0); /* Force hardware acceleration */
   }
   
   [class*="carousel-prev"]:hover,
   [class*="carousel-next"]:hover {
     background-color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    opacity: 1;
   }
   
   /* Mobile optimization */
   @media (max-width: 640px) {
     .carousel-section {
-      padding-top: 30px;
-      padding-bottom: 40px;
+      padding-top: 20px;
+      padding-bottom: 30px;
+    }
+    
+    .carousel-section h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .carousel-section h2 span {
+      font-size: 1rem;
     }
     
     .carousel-image-wrapper {
-      height: 250px !important; /* Override inline height for mobile */
+      height: 220px !important; /* Override inline height for mobile */
     }
     
     [class*="carousel-prev"],
     [class*="carousel-next"] {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
+      transform: translateY(-50%) scale(0.9);
+    }
+    
+    [class*="carousel-prev"] svg,
+    [class*="carousel-next"] svg {
+      width: 16px;
+      height: 16px;
     }
   }
   
