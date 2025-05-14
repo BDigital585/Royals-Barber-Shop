@@ -40,8 +40,8 @@ const CommunitySection = () => {
       <div className="container mx-auto">
         <div className={`community-card ${isVisible ? 'visible' : ''}`}>
           <div className="community-content">
-            <h2 className="text-2xl md:text-3xl font-heading mb-4 text-white">Community Values</h2>
-            <p className="text-gray-300 mb-6 md:text-lg leading-relaxed">
+            <h2 className="text-xl md:text-2xl font-heading mb-2 md:mb-3 text-white">Community Values</h2>
+            <p className="text-gray-300 mb-3 md:mb-4 text-sm md:text-base leading-snug md:leading-relaxed">
               Here at Royals we build genuine relationships and love to grow with our clients! 
               We are also involved in the community and love giving back to our kids every year at the back to school event that Just Kings sponsors giving free haircuts to all students returning to school.
             </p>
