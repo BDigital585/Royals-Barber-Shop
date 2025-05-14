@@ -13,6 +13,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // API routes prefix
   const apiPrefix = "/api";
 
+  // Get shop images for the carousel
+  app.get(`${apiPrefix}/shop-images`, (req, res) => {
+    try {
+      // Path to the shop folder
+      const shopDir = path.join(process.cwd(), 'client', 'public', 'shop');
+      
+      // Check if directory exists
+      if (!fs.existsSync(shopDir)) {
+        return res.status(404).json({ message: 'Shop directory not found' });
+      }
+      
+      // Get all files in the directory
+      const files = fs.readdirSync(shopDir)
+        .filter(file => {
+          // Filter for image files with common extensions
+          const ext = path.extname(file).toLowerCase();
+          return ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif', '.bmp', '.jfif'].includes(ext);
+        })
+        .map(file => `/shop/${file}`);
+      
+      console.log(`Found ${files.length} shop images for carousel`);
+      
+      return res.status(200).json(files);
+    } catch (error) {
+      console.error("Error fetching shop images:", error);
+      return res.status(500).json({ message: "Failed to fetch shop images" });
+    }
+  });
+
   // Get services
   app.get(`${apiPrefix}/services`, async (req, res) => {
     try {
