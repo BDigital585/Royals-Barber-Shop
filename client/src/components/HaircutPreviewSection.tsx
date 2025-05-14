@@ -1,0 +1,146 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'wouter';
+import { useHaircutImages } from '../features/haircuts/useHaircutImages';
+
+// Valid category IDs (for validation)
+const VALID_CATEGORIES = [
+  'fades',
+  'kids haircuts',
+  'tapers',
+  'facial hair',
+  'other styles'
+];
+
+// Mapping of folder IDs to human-readable names
+const categoryNames: Record<string, string> = {
+  'fades': 'Fades',
+  'kids haircuts': 'Kids Haircuts',
+  'tapers': 'Tapers',
+  'facial hair': 'Facial Hair',
+  'other styles': 'Other Styles'
+};
+
+const HaircutPreviewSection = () => {
+  const imagesByFolder = useHaircutImages();
+  const [randomImages, setRandomImages] = useState<string[]>([]);
+  const [isVisible, setIsVisible] = useState(false);
+  
+  // Helper function to get the display name for a category
+  const getCategoryName = (categoryId: string): string => {
+    // Decode URL-encoded characters
+    const decodedCategory = decodeURIComponent(categoryId.trim().toLowerCase());
+    
+    // Check if this is a valid category we know about
+    if (VALID_CATEGORIES.includes(decodedCategory)) {
+      return categoryNames[decodedCategory];
+    }
+    
+    return '';
+  };
+  
+  // On mount, randomly select 6 images to display
+  useEffect(() => {
+    // Get all images by flattening the folder arrays
+    const allImages = Object.values(imagesByFolder).flat();
+    
+    // Only proceed if we have images
+    if (allImages.length === 0) return;
+    
+    // Shuffle the array and take up to 6 images
+    const shuffled = [...allImages].sort(() => 0.5 - Math.random());
+    setRandomImages(shuffled.slice(0, 6));
+  }, [imagesByFolder]);
+  
+  // Add intersection observer for fade-in effect
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.1
+      }
+    );
+    
+    const section = document.getElementById('haircut-preview-section');
+    if (section) {
+      observer.observe(section);
+    }
+    
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  return (
+    <section 
+      id="haircut-preview-section"
+      className="py-12 md:py-16 bg-white"
+    >
+      <div className="container mx-auto px-4">
+        <div className={`mb-8 text-center ${isVisible ? 'animate-fadeIn' : 'opacity-0'}`}>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-heading text-primary mb-2">
+            Not Sure What to Ask For?
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto text-base md:text-lg">
+            Explore popular haircut styles so you know exactly what to book.
+          </p>
+        </div>
+        
+        {randomImages.length > 0 ? (
+          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`}>
+            {randomImages.map((imageUrl, index) => {
+              // Extract folder and filename from the imageUrl
+              const matches = imageUrl.match(/\/src\/assets\/haircuts\/([^/]+)\/([^/]+)$/);
+              if (!matches) return null;
+              
+              const [, folder, filename] = matches;
+              const imageTitle = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '').replace(/-/g, ' ');
+              const formattedTitle = imageTitle
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+              
+              return (
+                <div key={index} className="group relative aspect-square rounded-lg shadow-md overflow-hidden">
+                  <img 
+                    src={imageUrl} 
+                    alt={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barbershop, Batavia NY`}
+                    className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent">
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h3 className="text-white font-medium truncate">{formattedTitle}</h3>
+                      {/* Only show category if it's valid */}
+                      {getCategoryName(folder) && (
+                        <div className="flex items-center mt-1">
+                          <span className="inline-block w-2 h-2 rounded-full bg-secondary mr-2"></span>
+                          <p className="text-white/90 text-sm font-medium">{getCategoryName(folder)}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="py-16 flex items-center justify-center">
+            <p className="text-gray-400">Loading haircut styles...</p>
+          </div>
+        )}
+        
+        <div className={`text-center mt-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{ animationDelay: '200ms' }}>
+          <Link href="/browse-haircuts" className="inline-block bg-primary hover:bg-[#B91C1C] text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+            See Full Haircut Guide
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default HaircutPreviewSection;

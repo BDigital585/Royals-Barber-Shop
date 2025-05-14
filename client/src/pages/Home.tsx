@@ -2,6 +2,7 @@ import Header from '@/components/Header';
 import ContentfulHeroSection from '@/components/ContentfulHeroSection';
 import QuoteSection from '@/components/QuoteSection';
 import BookingSection from '@/components/BookingSection';
+import HaircutPreviewSection from '@/components/HaircutPreviewSection';
 import CommunitySection from '@/components/CommunitySection';
 import ContactSection from '@/components/ContactSection';
 import SocialSection from '@/components/SocialSection';
@@ -30,6 +31,7 @@ const Home = () => {
         <ContentfulHeroSection />
         <QuoteSection />
         <BookingSection />
+        <HaircutPreviewSection />
         <CommunitySection />
         <ContactSection />
         <SocialSection />
