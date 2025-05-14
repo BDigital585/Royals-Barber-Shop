@@ -591,41 +591,55 @@
   
   /* Counter badge */
   .carousel-counter {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(30, 58, 138, 0.8); /* Semi-transparent royal blue to match border */
     color: white;
     border-radius: 20px;
     padding: 4px 10px;
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
   
   /* Mobile optimization */
   @media (max-width: 640px) {
     .carousel-section {
-      padding: 40px 0;
+      padding: 32px 0 40px;
     }
     
     .carousel-white-container {
       padding: 16px;
-      border-radius: 12px;
+      border-radius: 8px;
+      margin: 0 12px;
     }
     
     .carousel-title h2 {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
+      margin-bottom: 0.25rem;
     }
     
     .carousel-title span {
-      font-size: 1rem;
+      font-size: 0.9rem;
     }
     
     .carousel-control {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
     }
     
     .carousel-control svg {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
+    }
+    
+    .simple-carousel-image {
+      border-radius: 4px;
+    }
+    
+    .carousel-counter {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      right: 3px;
+      bottom: 3px;
     }
   }
   

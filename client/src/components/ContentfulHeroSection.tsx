@@ -126,7 +126,7 @@ const ContentfulHeroSection = () => {
 
   // Show the video with the main branding text overlaid
   return (
-    <section id="home" className="relative bg-white pt-[48px] md:pt-16">
+    <section id="home" className="relative bg-black pt-[48px] md:pt-16">
       <div 
         className={`relative h-[35vh] md:h-[70vh] overflow-hidden ${hasVideo ? '' : 'bg-cover bg-center'}`} 
         style={hasVideo ? {} : backgroundStyle}
