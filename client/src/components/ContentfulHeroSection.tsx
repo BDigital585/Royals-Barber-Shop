@@ -128,7 +128,7 @@ const ContentfulHeroSection = () => {
   return (
     <section id="home" className="relative bg-black pt-[48px] md:pt-16">
       <div 
-        className={`relative h-[35vh] md:h-[70vh] overflow-hidden ${hasVideo ? '' : 'bg-cover bg-center'}`} 
+        className={`relative h-[30vh] md:h-[65vh] overflow-hidden ${hasVideo ? '' : 'bg-cover bg-center'}`} 
         style={hasVideo ? {} : backgroundStyle}
       >
         {hasVideo && (
@@ -153,8 +153,8 @@ const ContentfulHeroSection = () => {
           {/* Removed Book Now button as requested since it's already in the header */}
         </div>
         
-        {/* Stronger bottom fade gradient that transitions into the black carousel background */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#111] via-[#111]/50 to-transparent"></div>
+        {/* Stronger bottom fade gradient that transitions into the carousel background */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/80 to-transparent"></div>
       </div>
     </section>
   );
