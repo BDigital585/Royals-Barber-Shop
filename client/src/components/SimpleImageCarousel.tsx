@@ -187,19 +187,7 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
             <ChevronRight size={24} />
           </button>
           
-          {/* Autoplay toggle button */}
-          <button 
-            className="carousel-control absolute left-1/2 -translate-x-1/2 bottom-4 bg-white/90 hover:bg-white rounded-full p-2 shadow-md text-primary"
-            onClick={toggleAutoplay}
-            aria-label={isPaused ? "Play slideshow" : "Pause slideshow"}
-          >
-            {isPaused ? <Play size={18} /> : <Pause size={18} />}
-          </button>
-          
-          {/* Image counter */}
-          <div className="carousel-counter absolute bottom-4 right-4">
-            {currentIndex + 1} / {shopImages.length}
-          </div>
+          {/* Removed autoplay toggle button and image counter as requested */}
         </div>
       </div>
     </section>

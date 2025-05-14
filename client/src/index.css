@@ -840,11 +840,11 @@
   background-color: #111; /* deep black base like blog cards */
   border-radius: 10px;
   border-left: 4px solid #1E3A8A; /* royal blue accent */
-  padding: 16px; /* Reduced padding on mobile */
+  padding: 12px; /* Further reduced padding on mobile */
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  gap: 16px; /* Reduced gap on mobile */
+  gap: 12px; /* Further reduced gap on mobile */
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.6s ease;
@@ -886,16 +886,23 @@
   .community-card {
     flex-direction: row;
     align-items: center;
-    padding: 32px;
+    padding: 20px;
   }
   
   .community-content {
-    padding-right: 32px;
+    padding-right: 20px;
   }
   
   .community-image-container {
-    flex-basis: 45%;
-    min-width: 45%;
+    flex-basis: 40%;
+    min-width: 40%;
+    max-height: 240px;
+    overflow: hidden;
+  }
+  
+  .community-image {
+    object-fit: cover;
+    height: 100%;
   }
 }
 
