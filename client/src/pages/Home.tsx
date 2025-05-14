@@ -3,6 +3,7 @@ import ContentfulHeroSection from '@/components/ContentfulHeroSection';
 import QuoteSection from '@/components/QuoteSection';
 import BookingSection from '@/components/BookingSection';
 import ContactSection from '@/components/ContactSection';
+import SocialSection from '@/components/SocialSection';
 import NewsletterSection from '@/components/NewsletterSection';
 import Footer from '@/components/Footer';
 import SchemaMarkup from '@/components/SchemaMarkup';
@@ -29,6 +30,7 @@ const Home = () => {
         <QuoteSection />
         <BookingSection />
         <ContactSection />
+        <SocialSection />
         <NewsletterSection />
       </main>
       <Footer />

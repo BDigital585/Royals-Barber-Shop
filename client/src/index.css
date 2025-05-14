@@ -445,8 +445,15 @@
     position: relative;
     overflow: hidden;
     background-color: #FFF;
-    margin-top: -8px; /* overlap slightly to hide any gap */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Compact version for the social section when placed between contact and newsletter */
+  .compact-social {
+    padding: 16px 20px;
+    background-color: #f9fafb;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
   }
   
   /* Simplified Image Carousel Styling */
@@ -612,6 +619,12 @@
     transform: translateY(0);
   }
   
+  /* Compact styling for social text */
+  .compact-social .social-text {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+  
   /* Base styling for all social icons */
   .social-icon {
     display: flex;
@@ -624,6 +637,13 @@
     font-size: 1.25rem;
     transition: all 0.2s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Smaller social icons in compact mode */
+  .compact-social .social-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1rem;
   }
   
   .social-icon:hover {
