@@ -65,10 +65,17 @@ const BrowseHaircuts = () => {
   // Prepare images to display based on the active filter
   const getDisplayImages = () => {
     if (activeFilter === 'all') {
-      // For "All Haircuts", flatten all image arrays
-      return Object.values(imagesByFolder).flat();
+      // For "All Haircuts", flatten all image arrays and randomize the order
+      const allImages = Object.values(imagesByFolder).flat();
+      // Use Fisher-Yates (Knuth) shuffle algorithm for true randomization
+      const shuffledImages = [...allImages];
+      for (let i = shuffledImages.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledImages[i], shuffledImages[j]] = [shuffledImages[j], shuffledImages[i]];
+      }
+      return shuffledImages;
     }
-    // For specific categories, return the matching folder images
+    // For specific categories, return the matching folder images (not randomized)
     return imagesByFolder[activeFilter] || [];
   };
 
@@ -78,7 +85,7 @@ const BrowseHaircuts = () => {
     <>
       {/* SEO meta tags for haircuts gallery page */}
       <MetaTags
-        title="Browse Haircuts | Royals Barbershop, Batavia NY"
+        title="Pick a Style That Fits You | Royals Barbershop, Batavia NY"
         description="Explore our gallery of premium men's haircuts including fades, tapers, kids cuts and facial hair styling at Royals Barbershop in Batavia, NY."
         imageUrl="/src/assets/haircuts/fades/low-skin-fade.png"
         type="website"
@@ -91,7 +98,10 @@ const BrowseHaircuts = () => {
       <Header />
       <main className="pt-[64px] md:pt-[80px] pb-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-heading text-primary text-center my-8">Browse Haircuts</h1>
+          <h1 className="text-3xl md:text-4xl font-heading text-primary text-center mt-8 mb-3">Pick a Style That Fits You</h1>
+          <p className="text-gray-600 text-center mb-8 max-w-2xl mx-auto">
+            Not sure what to ask for? Use this visual guide to explore popular cuts, styles, and beard designs. Whether you're booking for yourself or your child, this will help you show your barber exactly what you want.
+          </p>
           
           {/* Scrollable Filter Bar */}
           <div className="relative mb-8 overflow-x-auto pb-2">
