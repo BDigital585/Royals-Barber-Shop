@@ -458,29 +458,37 @@
   
   /* Simplified Image Carousel Styling */
   .carousel-section {
-    background-color: #1E293B; /* Dark slate blue background */
+    background-color: #111; /* Dark black background to match blog cards */
     position: relative;
     overflow: hidden;
-    margin-top: -2px; /* Remove any gap between hero and carousel */
+    margin-top: 0; /* Remove any gap between hero and carousel */
     padding: 24px 0 60px; /* Reduced top padding for tighter hero-to-carousel transition */
     color: white;
     animation: fadeIn 0.5s ease-in;
     border-top: none;
   }
   
-  /* White container for the carousel */
+  /* Dark container for the carousel - matching blog card style */
   .carousel-white-container {
-    background-color: #fff;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #111; /* deep black base like blog cards */
+    border-radius: 10px;
+    border-left: 4px solid #1E3A8A; /* subtle royal blue stripe */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     padding: 24px;
     max-width: 1000px;
     margin: 0 auto;
     animation: slideUp 0.7s ease-out;
     transform-origin: center bottom;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-left 0.2s ease;
   }
   
-  /* Title section in the dark navy background */
+  .carousel-white-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+    border-left: 4px solid #B91C1C; /* subtle crimson red on hover */
+  }
+  
+  /* Title section in the dark black background */
   .carousel-title {
     margin-bottom: 2rem;
     color: white;
@@ -489,17 +497,20 @@
   }
   
   .carousel-title h2 {
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 0.5rem;
     color: white;
     animation: slideRight 0.7s ease-out;
+    font-size: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
   }
   
   .carousel-title span {
-    color: #E5E7EB; /* Light gray for subtitle */
+    color: #ccc; /* Light gray for subtitle - matching blog card */
     font-weight: 400;
     animation: slideLeft 0.7s ease-out;
     display: block;
+    font-size: 1rem;
   }
   
   /* Container for all carousel elements */
@@ -514,17 +525,17 @@
   /* Main image container with smooth transitions */
   .simple-carousel-image {
     transition: all 0.3s ease-out;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     will-change: opacity, transform; /* Performance hint */
     overflow: hidden;
-    background-color: #F3F4F6; /* Light gray background for loading images */
+    background-color: #222; /* Dark background matching blog cards */
     position: relative;
   }
   
   .simple-carousel-image:hover {
     transform: scale(1.01);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
   }
   
   .simple-carousel-image img {
@@ -540,6 +551,17 @@
     transform: scale(1.03);
   }
   
+  /* Add subtle gradient overlay to match blog cards */
+  .simple-carousel-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 16px;
+    background: linear-gradient(to top, rgba(17, 17, 17, 0.8), transparent);
+  }
+  
   /* Navigation controls */
   .carousel-control {
     width: 44px;
@@ -549,16 +571,18 @@
     justify-content: center;
     z-index: 10;
     cursor: pointer;
-    color: #1E3A8A; /* Primary blue color */
+    color: white; /* White icons for better contrast */
+    background-color: rgba(30, 58, 138, 0.8); /* Semi-transparent royal blue */
     transition: all 150ms ease;
     opacity: 0.9;
+    border-radius: 50%;
   }
   
   .carousel-control:hover {
     opacity: 1;
     transform: translateY(-50%) scale(1.05);
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #B91C1C; /* Hover to crimson red like blog card hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
   
   .carousel-control:active {
