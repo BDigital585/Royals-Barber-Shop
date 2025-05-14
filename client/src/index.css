@@ -918,6 +918,22 @@
   animation: fadeInUp 0.8s ease forwards;
 }
 
+/* Horizontal scroll styling for haircuts preview */
+.haircut-scroll-container .overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  scroll-behavior: smooth;
+  /* Add padding so the end cards are visible */
+  padding: 8px 16px;
+  margin: -8px -16px;
+}
+
+/* Hide scrollbar while maintaining functionality */
+.haircut-scroll-container .overflow-x-auto::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

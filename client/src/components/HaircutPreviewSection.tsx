@@ -91,41 +91,54 @@ const HaircutPreviewSection = () => {
         </div>
         
         {randomImages.length > 0 ? (
-          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`}>
-            {randomImages.map((imageUrl, index) => {
-              // Extract folder and filename from the imageUrl
-              const matches = imageUrl.match(/\/src\/assets\/haircuts\/([^/]+)\/([^/]+)$/);
-              if (!matches) return null;
-              
-              const [, folder, filename] = matches;
-              const imageTitle = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '').replace(/-/g, ' ');
-              const formattedTitle = imageTitle
-                .split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ');
-              
-              return (
-                <div key={index} className="group relative aspect-square rounded-lg shadow-md overflow-hidden">
-                  <img 
-                    src={imageUrl} 
-                    alt={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barbershop, Batavia NY`}
-                    className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent">
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <h3 className="text-white font-medium truncate">{formattedTitle}</h3>
-                      {/* Only show category if it's valid */}
-                      {getCategoryName(folder) && (
-                        <div className="flex items-center mt-1">
-                          <span className="inline-block w-2 h-2 rounded-full bg-secondary mr-2"></span>
-                          <p className="text-white/90 text-sm font-medium">{getCategoryName(folder)}</p>
+          <div className={`${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`}>
+            {/* Horizontal scrollable container for mobile */}
+            <div className="haircut-scroll-container relative pb-4 mb-6">
+              <div className="flex overflow-x-auto gap-4 pb-4 snap-x">
+                {randomImages.map((imageUrl, index) => {
+                  // Extract folder and filename from the imageUrl
+                  const matches = imageUrl.match(/\/src\/assets\/haircuts\/([^/]+)\/([^/]+)$/);
+                  if (!matches) return null;
+                  
+                  const [, folder, filename] = matches;
+                  const imageTitle = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '').replace(/-/g, ' ');
+                  const formattedTitle = imageTitle
+                    .split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+                  
+                  return (
+                    <div 
+                      key={index} 
+                      className="group relative aspect-square rounded-lg shadow-md overflow-hidden flex-shrink-0 snap-start"
+                      style={{ width: '280px', maxWidth: '90vw' }}
+                    >
+                      <img 
+                        src={imageUrl} 
+                        alt={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barbershop, Batavia NY`}
+                        className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent">
+                        <div className="absolute bottom-0 left-0 right-0 p-4">
+                          <h3 className="text-white font-medium truncate">{formattedTitle}</h3>
+                          {/* Only show category if it's valid */}
+                          {getCategoryName(folder) && (
+                            <div className="flex items-center mt-1">
+                              <span className="inline-block w-2 h-2 rounded-full bg-secondary mr-2"></span>
+                              <p className="text-white/90 text-sm font-medium">{getCategoryName(folder)}</p>
+                            </div>
+                          )}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+              <div className="scroll-indicators flex justify-center gap-2 mt-2">
+                <div className="w-16 h-1 bg-gradient-to-r from-transparent to-gray-300 rounded-full"></div>
+                <div className="w-16 h-1 bg-gradient-to-l from-transparent to-gray-300 rounded-full"></div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="py-16 flex items-center justify-center">

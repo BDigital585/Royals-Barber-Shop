@@ -1,5 +1,22 @@
 import { Link } from 'wouter';
 
+// Custom Link component that ensures scroll to top
+const ScrollToTopLink = ({ href, className, children, onClick }: { href: string, className?: string, children: React.ReactNode, onClick?: () => void }) => {
+  const handleClick = () => {
+    // Execute the onClick handler if provided
+    if (onClick) onClick();
+    
+    // Manually scroll to top when link is clicked (in addition to navigation)
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
+  return (
+    <Link href={href} onClick={handleClick} className={className}>
+      {children}
+    </Link>
+  );
+};
+
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
@@ -11,26 +28,26 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
       className={`fixed inset-0 z-20 bg-primary flex-col items-center pt-24 pb-8 space-y-6 overflow-y-auto ${isOpen ? 'flex' : 'hidden'}`}
     >
       <div className="flex flex-col space-y-6 w-full px-6">
-        <Link href="/" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
+        <ScrollToTopLink href="/" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
           Home
-        </Link>
-        <Link href="/#book" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
+        </ScrollToTopLink>
+        <ScrollToTopLink href="/#book" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
           Book Now
-        </Link>
+        </ScrollToTopLink>
         
-        <Link href="/browse-haircuts" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
+        <ScrollToTopLink href="/browse-haircuts" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
           Browse Haircuts
-        </Link>
+        </ScrollToTopLink>
         
-        <Link href="/blog" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
+        <ScrollToTopLink href="/blog" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
           Blog
-        </Link>
-        <Link href="/#newsletter" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
+        </ScrollToTopLink>
+        <ScrollToTopLink href="/#newsletter" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
           Newsletter
-        </Link>
-        <Link href="/contact" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
+        </ScrollToTopLink>
+        <ScrollToTopLink href="/contact" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
           Contact
-        </Link>
+        </ScrollToTopLink>
       </div>
     </div>
   );

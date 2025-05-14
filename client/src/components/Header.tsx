@@ -3,6 +3,20 @@ import { Link, useLocation } from 'wouter';
 import RoyalsLogo from './RoyalsLogo';
 import MobileMenu from './MobileMenu';
 
+// Custom Link component that ensures scroll to top
+const ScrollToTopLink = ({ href, className, children }: { href: string, className?: string, children: React.ReactNode }) => {
+  const handleClick = () => {
+    // Manually scroll to top when link is clicked (in addition to navigation)
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
+  return (
+    <Link href={href} onClick={handleClick} className={className}>
+      {children}
+    </Link>
+  );
+};
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -40,9 +54,9 @@ const Header = () => {
     <header className={`bg-primary text-white fixed top-0 left-0 w-full z-50 navbar-shimmer ${scrolled ? 'shadow-md' : ''}`}>
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         <div className="logo">
-          <Link href="/">
+          <ScrollToTopLink href="/">
             <RoyalsLogo className="flex items-center" />
-          </Link>
+          </ScrollToTopLink>
         </div>
         
         {/* Mobile Navigation and Action Buttons */}
@@ -50,12 +64,12 @@ const Header = () => {
           {/* Mobile Quick Nav Links */}
           <div className="flex mr-2 gap-4 items-center">
             {/* Home Link Added for Mobile - Always Visible */}
-            <Link href="/" className="mobile-nav-link home-nav-link">
+            <ScrollToTopLink href="/" className="mobile-nav-link home-nav-link">
               <span className="home-mobile-icon">⌂</span> Home
-            </Link>
-            <Link href="/browse-haircuts" className="mobile-nav-link">
+            </ScrollToTopLink>
+            <ScrollToTopLink href="/browse-haircuts" className="mobile-nav-link">
               Browse
-            </Link>
+            </ScrollToTopLink>
           </div>
           
           {/* Mobile Book Now Link - Desktop version shown in the nav bar */}
@@ -82,9 +96,9 @@ const Header = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8">
-          <Link href="/" className="font-medium nav-link">
+          <ScrollToTopLink href="/" className="font-medium nav-link">
             Home
-          </Link>
+          </ScrollToTopLink>
           <a 
             href="https://royalsbarbershop.setmore.com/" 
             target="_blank" 
@@ -94,19 +108,19 @@ const Header = () => {
             Book Now
           </a>
           
-          <Link href="/browse-haircuts" className="font-medium nav-link">
+          <ScrollToTopLink href="/browse-haircuts" className="font-medium nav-link">
             Browse Haircuts
-          </Link>
+          </ScrollToTopLink>
           
-          <Link href="/blog" className="font-medium nav-link">
+          <ScrollToTopLink href="/blog" className="font-medium nav-link">
             Blog
-          </Link>
-          <Link href="/#newsletter" className="font-medium nav-link">
+          </ScrollToTopLink>
+          <ScrollToTopLink href="/#newsletter" className="font-medium nav-link">
             Newsletter
-          </Link>
-          <Link href="/contact" className="font-medium nav-link">
+          </ScrollToTopLink>
+          <ScrollToTopLink href="/contact" className="font-medium nav-link">
             Contact
-          </Link>
+          </ScrollToTopLink>
         </nav>
       </div>
       
