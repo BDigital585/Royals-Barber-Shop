@@ -774,6 +774,28 @@
     }
   }
   
+  /* Latest Blog Preview Styling */
+  .latest-blog-preview {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  
+  .latest-blog-preview.animate-fadeIn {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .latest-blog-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #f0f0f0;
+  }
+  
+  .latest-blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+  
   /* Blog Card Styling */
   .blog-card {
     background-color: #111; /* deep black base */
