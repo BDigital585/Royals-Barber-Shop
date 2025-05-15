@@ -792,8 +792,24 @@
   }
   
   .latest-blog-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  }
+  
+  /* Make Latest Blog Preview more compact on mobile */
+  @media (max-width: 640px) {
+    .latest-blog-card {
+      max-width: 100%;
+    }
+    
+    .latest-blog-card .text-lg {
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+    
+    .latest-blog-card p {
+      margin-bottom: 0.5rem;
+    }
   }
   
   /* Blog Card Styling */
