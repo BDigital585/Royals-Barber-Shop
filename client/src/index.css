@@ -774,44 +774,6 @@
     }
   }
   
-  /* Latest Blog Preview Styling */
-  .latest-blog-preview {
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  
-  .latest-blog-preview.animate-fadeIn {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  .latest-blog-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid #f0f0f0;
-  }
-  
-  .latest-blog-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-  }
-  
-  /* Make Latest Blog Preview more compact on mobile */
-  @media (max-width: 640px) {
-    .latest-blog-card {
-      max-width: 100%;
-    }
-    
-    .latest-blog-card .text-lg {
-      font-size: 1rem;
-      line-height: 1.4;
-    }
-    
-    .latest-blog-card p {
-      margin-bottom: 0.5rem;
-    }
-  }
-  
   /* Blog Card Styling */
   .blog-card {
     background-color: #111; /* deep black base */
