@@ -1,7 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { SiteHero, getHeroContent } from '@/lib/contentful';
+import { FaMapMarkerAlt, FaPhone, FaInstagram, FaFacebook, FaComments } from 'react-icons/fa';
+import ChatBot from './ChatBot';
 
 const ContentfulHeroSection = () => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [heroContent, setHeroContent] = useState<SiteHero | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -204,16 +207,16 @@ const ContentfulHeroSection = () => {
         )}
         
         {/* Gradient overlay for text visibility */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex items-center">
-          <div className="container mx-auto px-6">
-            <div className="max-w-[600px] text-white">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight mb-2 md:mb-6">
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-center justify-center md:items-start md:justify-center">
+          <div className="container mx-auto px-4 md:px-6 flex flex-col items-center md:items-start">
+            <div className="max-w-[600px] text-white text-center md:text-left">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight mb-1 md:mb-3">
                 Royals
               </h1>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight mb-6 md:mb-8">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight mb-3 md:mb-4">
                 Barber Shop
               </h2>
-              <p className="text-sm md:text-base uppercase tracking-wider mb-6 md:mb-8 max-w-[500px]">
+              <p className="text-xs sm:text-sm md:text-base uppercase tracking-wider mb-4 md:mb-6 max-w-[500px]">
                 Celebrating 10 years of barbering in Batavia, New York<br />
                 Thanks for growing with us.
               </p>
@@ -221,13 +224,108 @@ const ContentfulHeroSection = () => {
                 href="https://royalsbarbershop.setmore.com/" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-black text-white font-medium uppercase py-3 px-8 rounded text-sm md:text-base border border-white/20 hover:bg-primary transition-colors duration-300"
+                className="inline-block bg-black text-white font-medium uppercase py-2 px-6 md:py-3 md:px-8 rounded text-xs sm:text-sm md:text-base border border-white/20 hover:bg-primary transition-colors duration-300 mb-4 md:mb-8"
               >
                 Book Now
               </a>
             </div>
+            
+            {/* Contact and social links */}
+            <div className="w-full max-w-md mt-4 md:mt-0">
+              <div className="grid grid-cols-5 gap-1 sm:gap-2">
+                {/* Address */}
+                <a 
+                  href="https://maps.google.com/?q=317+Ellicott+Street,+Batavia,+NY" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center"
+                  aria-label="317 Ellicott St, Batavia, NY"
+                >
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+                    <FaMapMarkerAlt size={16} className="sm:text-lg" />
+                  </div>
+                  <span className="text-[10px] sm:text-xs text-center mt-1 font-medium text-white">Location</span>
+                </a>
+                
+                {/* Phone */}
+                <a 
+                  href="tel:+15855366576"
+                  className="flex flex-col items-center" 
+                  aria-label="Call (585) 536-6576"
+                >
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+                    <FaPhone size={16} className="sm:text-lg" />
+                  </div>
+                  <span className="text-[10px] sm:text-xs text-center mt-1 font-medium text-white">Call</span>
+                </a>
+                
+                {/* Instagram */}
+                <a 
+                  href="https://www.instagram.com/royalsbarbershop585" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center"
+                  aria-label="Instagram"
+                >
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-[#833AB4] to-[#E1306C] text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+                    <FaInstagram size={16} className="sm:text-lg" />
+                  </div>
+                  <span className="text-[10px] sm:text-xs text-center mt-1 font-medium text-white">Instagram</span>
+                </a>
+                
+                {/* Facebook */}
+                <a 
+                  href="https://www.facebook.com/share/19UCgP9N1f/?mibextid=wwXIfr" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center"
+                  aria-label="Facebook"
+                >
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-[#1877F2] to-[#0A66C2] text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+                    <FaFacebook size={16} className="sm:text-lg" />
+                  </div>
+                  <span className="text-[10px] sm:text-xs text-center mt-1 font-medium text-white">Facebook</span>
+                </a>
+                
+                {/* Chat Button */}
+                <div className="flex flex-col items-center">
+                  <button
+                    onClick={() => setIsChatOpen(true)}
+                    className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 shadow-md hover:shadow-lg hover:scale-105 transition-all border-0 outline-none relative"
+                    aria-label="Chat with us"
+                  >
+                    <div className="bg-white rounded-full w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
+                      <FaComments size={14} className="sm:text-lg text-primary" />
+                    </div>
+                    <span className="absolute -top-1 -right-1 bg-red-500 rounded-full w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white">1</span>
+                  </button>
+                  <span className="text-[10px] sm:text-xs text-center mt-1 font-medium text-white">Chat Now</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+        
+        {/* Chat Interface */}
+        {isChatOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg shadow-xl flex flex-col w-full max-w-md h-[30rem] overflow-hidden">
+              {/* Chat header */}
+              <div className="bg-primary text-white p-4 flex justify-between items-center">
+                <h3 className="font-semibold">Royals Barbershop Assistant</h3>
+                <button 
+                  onClick={() => setIsChatOpen(false)}
+                  className="text-white hover:text-gray-200 transition-colors"
+                  aria-label="Close chat"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+              </div>
+              
+              <ChatBot isInWelcomeSection={true} />
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
