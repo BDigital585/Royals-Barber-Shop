@@ -128,7 +128,7 @@ const WelcomeSection = () => {
                 className="flex flex-col items-center"
                 aria-label="Chat with us"
               >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-[#38B2AC] to-[#2C7A7B] text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
                   <FaComments size={20} />
                 </div>
                 <span className="text-xs text-center mt-1 font-medium text-gray-900">Chat</span>

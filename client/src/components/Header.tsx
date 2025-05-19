@@ -63,10 +63,6 @@ const Header = () => {
         <div className="md:hidden flex items-center gap-4">
           {/* Mobile Quick Nav Links */}
           <div className="flex mr-2 gap-4 items-center">
-            {/* Home Link Added for Mobile - Always Visible */}
-            <ScrollToTopLink href="/" className="mobile-nav-link home-nav-link">
-              <span className="home-mobile-icon">⌂</span> Home
-            </ScrollToTopLink>
             <ScrollToTopLink href="/browse-haircuts" className="mobile-nav-link">
               Browse
             </ScrollToTopLink>
@@ -96,9 +92,6 @@ const Header = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8">
-          <ScrollToTopLink href="/" className="font-medium nav-link">
-            Home
-          </ScrollToTopLink>
           <a 
             href="https://royalsbarbershop.setmore.com/" 
             target="_blank" 
