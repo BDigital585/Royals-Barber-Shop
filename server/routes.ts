@@ -195,11 +195,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const botResponse = response.choices[0].message;
       res.json({ response: botResponse });
       
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error processing chatbot request:", error);
       res.status(500).json({ 
         error: "Failed to process chatbot request",
-        details: error.message
+        details: error.message || "Unknown error"
       });
     }
   });
