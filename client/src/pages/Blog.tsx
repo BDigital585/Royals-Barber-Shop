@@ -31,14 +31,14 @@ export default function Blog() {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-6 md:py-12 mt-16 md:mt-20">
+      <div className="container mx-auto px-4 py-3 md:py-6 mt-12 md:mt-14">
         <MetaTags 
           title="Behind the Barber Chair | Royals Barbershop" 
           description="Dive into authentic barbershop culture with unfiltered insights, style talk, and real wisdom from Royals Barbershop in Batavia, NY."
         />
         <SchemaMarkup />
         
-        <section className="blog-header mb-6 md:mb-8">
+        <section className="blog-header mb-5 md:mb-6">
           <div className="border-l-4 border-primary pl-3 md:pl-4 py-1">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
               Behind the <span className="inline-block">Barber Chair</span>
@@ -98,38 +98,48 @@ export default function Blog() {
 function BlogPostCard({ post }: { post: BlogPost }) {
   const formattedDate = new Date(post.publishedAt).toLocaleDateString('en-US', {
     year: 'numeric',
-    month: 'short', // Use abbreviated month format for mobile
+    month: 'short',
     day: 'numeric'
   });
 
   return (
-    <div className="blog-card border border-gray-200 rounded-lg shadow-sm overflow-hidden bg-white h-full flex flex-col">
-      {post.featuredImage && (
-        <div className="h-32 md:h-40 overflow-hidden relative">
+    <div className="relative rounded-lg overflow-hidden bg-black text-white shadow-md h-full flex flex-col">
+      {/* Featured Image with Overlay */}
+      {post.featuredImage ? (
+        <div className="h-32 md:h-44 overflow-hidden relative">
           <img 
             src={post.featuredImage} 
             alt={post.title} 
             className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
           />
-          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#111] to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent opacity-70"></div>
+          
+          {/* Title overlay on the image */}
+          <div className="absolute bottom-0 left-0 right-0 p-3">
+            <h2 className="text-sm md:text-lg font-bold text-white mb-1 line-clamp-2 drop-shadow-md">{post.title}</h2>
+          </div>
+        </div>
+      ) : (
+        // If no image, display title in a black background
+        <div className="h-28 md:h-36 bg-black p-3 flex items-center">
+          <h2 className="text-sm md:text-lg font-bold text-white line-clamp-2">{post.title}</h2>
         </div>
       )}
       
-      <div className="p-3 md:p-4 flex flex-col flex-grow">
-        <div className="text-xs md:text-sm text-gray-500 mb-1">
+      {/* Content area */}
+      <div className="p-3 bg-black flex flex-col flex-grow">
+        <div className="text-xs text-gray-400 mb-2">
           {formattedDate}
           {post.authorName && <span className="hidden md:inline"> • By {post.authorName}</span>}
         </div>
         
-        <h2 className="text-base md:text-lg font-bold text-gray-900 mb-2 line-clamp-2">{post.title}</h2>
-        
         {post.excerpt && (
-          <p className="text-xs md:text-sm text-gray-600 line-clamp-2 md:line-clamp-3 mb-3">{post.excerpt}</p>
+          <p className="text-xs md:text-sm text-gray-300 line-clamp-2 md:line-clamp-3 mb-3">{post.excerpt}</p>
         )}
         
         <Link 
           href={`/blog/${post.slug}`} 
-          className="mt-auto inline-flex items-center text-xs md:text-sm font-medium text-blue-600 hover:text-blue-800"
+          className="mt-auto inline-flex items-center text-xs md:text-sm font-medium text-secondary hover:text-secondary/80"
         >
           Read More
           <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 md:h-4 md:w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
