@@ -62,82 +62,78 @@ const WelcomeSection = () => {
       )}
       
       {/* Main content */}
-      <div className="container mx-auto px-4 py-10 md:py-14 relative z-20">
+      <div className="container mx-auto px-4 py-6 md:py-8 relative z-20">
         <div className="flex flex-col items-center">
           
-          {/* Contact and social info - Horizontal scrolling for mobile */}
-          <div className="flex overflow-x-auto no-scrollbar pb-2 w-full max-w-4xl mx-auto px-4 gap-3">
-            {/* Address */}
-            <a 
-              href="https://maps.google.com/?q=317+Ellicott+Street,+Batavia,+NY" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 py-2 px-3 hover:bg-gray-50 rounded-full shadow-sm transition-all duration-300 group bg-white"
-            >
-              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white group-hover:shadow-md transition-all">
-                <FaMapMarkerAlt size={16} />
-              </div>
-              <span className="font-medium text-gray-900">317 Ellicott St, Batavia</span>
-            </a>
-            
-            {/* Phone */}
-            <a 
-              href="tel:+15855366576" 
-              className="flex items-center gap-2 py-2 px-3 hover:bg-gray-50 rounded-full shadow-sm transition-all duration-300 group bg-white"
-            >
-              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white group-hover:shadow-md transition-all">
-                <FaPhone size={16} />
-              </div>
-              <span className="font-medium text-gray-900">(585) 536-6576</span>
-            </a>
-            
-            {/* Social Links - Combined in one row */}
-            <div className="flex items-center gap-2 py-2 px-4 hover:bg-gray-50 rounded-full shadow-sm transition-all duration-300 bg-white">
-              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
-              </div>
-              <div className="flex space-x-3">
-                <a 
-                  href="https://www.instagram.com/royalsbarbershop585" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-[#E1306C] transition-colors"
-                  aria-label="Instagram"
-                >
-                  <FaInstagram size={20} />
-                </a>
-                <a 
-                  href="https://www.facebook.com/share/19UCgP9N1f/?mibextid=wwXIfr" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-[#1877F2] transition-colors"
-                  aria-label="Facebook"
-                >
+          {/* Contact and social info - Grid layout for better mobile display */}
+          <div className="w-full max-w-md mx-auto">
+            <div className="grid grid-cols-5 gap-1 sm:gap-3">
+              {/* Address */}
+              <a 
+                href="https://maps.google.com/?q=317+Ellicott+Street,+Batavia,+NY" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex flex-col items-center"
+                aria-label="317 Ellicott St, Batavia, NY"
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+                  <FaMapMarkerAlt size={20} />
+                </div>
+                <span className="text-xs text-center mt-1 font-medium text-gray-900">Location</span>
+              </a>
+              
+              {/* Phone - icon only */}
+              <a 
+                href="tel:+15855366576"
+                className="flex flex-col items-center" 
+                aria-label="Call (585) 536-6576"
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+                  <FaPhone size={18} />
+                </div>
+                <span className="text-xs text-center mt-1 font-medium text-gray-900">Call</span>
+              </a>
+              
+              {/* Instagram */}
+              <a 
+                href="https://www.instagram.com/royalsbarbershop585" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex flex-col items-center"
+                aria-label="Instagram"
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-[#833AB4] to-[#E1306C] text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+                  <FaInstagram size={22} />
+                </div>
+                <span className="text-xs text-center mt-1 font-medium text-gray-900">Instagram</span>
+              </a>
+              
+              {/* Facebook */}
+              <a 
+                href="https://www.facebook.com/share/19UCgP9N1f/?mibextid=wwXIfr" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex flex-col items-center"
+                aria-label="Facebook"
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-[#1877F2] to-[#0A66C2] text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
                   <FaFacebook size={20} />
-                </a>
-                <a 
-                  href="https://g.page/r/CXiCN-AOTXGtEBM/review" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-[#DB4437] transition-colors"
-                  aria-label="Google Reviews"
-                >
-                  <FaGoogle size={20} />
-                </a>
-              </div>
+                </div>
+                <span className="text-xs text-center mt-1 font-medium text-gray-900">Facebook</span>
+              </a>
+              
+              {/* Chat Button - Icon only */}
+              <button
+                onClick={() => setIsChatOpen(true)}
+                className="flex flex-col items-center"
+                aria-label="Chat with us"
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-[#38B2AC] to-[#2C7A7B] text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+                  <FaComments size={20} />
+                </div>
+                <span className="text-xs text-center mt-1 font-medium text-gray-900">Chat</span>
+              </button>
             </div>
-            
-            {/* Chat Button */}
-            <button
-              onClick={() => setIsChatOpen(true)}
-              className="flex items-center gap-2 py-2 px-3 hover:bg-gray-50 rounded-full shadow-sm transition-all duration-300 group bg-white"
-              aria-label="Chat with us"
-            >
-              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white group-hover:shadow-md transition-all">
-                <FaComments size={16} />
-              </div>
-              <span className="font-medium text-gray-900">Chat with us</span>
-            </button>
           </div>
         </div>
       </div>
