@@ -1,10 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { SiteHero, getHeroContent } from '@/lib/contentful';
-import { FaMapMarkerAlt, FaPhone, FaInstagram, FaFacebook, FaComments } from 'react-icons/fa';
-import ChatBot from './ChatBot';
+import { FaMapMarkerAlt, FaPhone, FaInstagram, FaFacebook } from 'react-icons/fa';
 
 const ContentfulHeroSection = () => {
-  const [isChatOpen, setIsChatOpen] = useState(false);
   const [heroContent, setHeroContent] = useState<SiteHero | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -228,7 +226,7 @@ const ContentfulHeroSection = () => {
             
             {/* Contact and social links */}
             <div className="w-full max-w-md mt-2 md:mt-0">
-              <div className="grid grid-cols-5 gap-0 xs:gap-1 sm:gap-2">
+              <div className="grid grid-cols-4 gap-0 xs:gap-1 sm:gap-2">
                 {/* Address */}
                 <a 
                   href="https://maps.google.com/?q=317+Ellicott+Street,+Batavia,+NY" 
@@ -283,45 +281,13 @@ const ContentfulHeroSection = () => {
                   <span className="text-[10px] sm:text-xs text-center mt-1 font-medium text-white">Facebook</span>
                 </a>
                 
-                {/* Chat Button */}
-                <div className="flex flex-col items-center">
-                  <button
-                    onClick={() => setIsChatOpen(true)}
-                    className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 shadow-md hover:shadow-lg hover:scale-105 transition-all border-0 outline-none relative"
-                    aria-label="Chat with us"
-                  >
-                    <div className="bg-white rounded-full w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
-                      <FaComments size={14} className="sm:text-lg text-primary" />
-                    </div>
-                    <span className="absolute -top-1 -right-1 bg-red-500 rounded-full w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center text-[8px] sm:text-[10px] font-bold text-white">1</span>
-                  </button>
-                  <span className="text-[10px] sm:text-xs text-center mt-1 font-medium text-white">Chat Now</span>
-                </div>
+
               </div>
             </div>
           </div>
         </div>
         
-        {/* Chat Interface */}
-        {isChatOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-lg shadow-xl flex flex-col w-full max-w-md h-[30rem] overflow-hidden">
-              {/* Chat header */}
-              <div className="bg-primary text-white p-4 flex justify-between items-center">
-                <h3 className="font-semibold">Royals Barbershop Assistant</h3>
-                <button 
-                  onClick={() => setIsChatOpen(false)}
-                  className="text-white hover:text-gray-200 transition-colors"
-                  aria-label="Close chat"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-              </div>
-              
-              <ChatBot isInWelcomeSection={true} />
-            </div>
-          </div>
-        )}
+
       </div>
     </section>
   );

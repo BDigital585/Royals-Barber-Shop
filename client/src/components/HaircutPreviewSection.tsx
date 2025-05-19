@@ -5,6 +5,7 @@ import { Send, MessageSquare } from 'lucide-react';
 import ShareButton from './ShareButton';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
+import ChatBot from './ChatBot';
 
 // Custom Link component that ensures scroll to top
 const ScrollToTopLink = ({ href, className, children }: { href: string, className?: string, children: React.ReactNode }) => {
@@ -170,21 +171,15 @@ const HaircutPreviewSection = () => {
         
         <div className="flex flex-col md:flex-row gap-6 mt-8 max-w-4xl mx-auto">
           <div className={`flex-1 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{ animationDelay: '200ms' }}>
-            <div className="bg-white rounded-lg shadow-md p-4 md:p-6 border border-gray-100">
-              <div className="flex items-center gap-2 mb-3">
-                <MessageSquare className="h-5 w-5 text-primary" />
-                <h3 className="font-medium text-lg">Have questions?</h3>
+            <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 flex flex-col h-72 sm:h-80 md:h-96">
+              {/* Chat Header */}
+              <div className="bg-primary text-white p-3 flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" />
+                <h3 className="font-medium">Ask Our Stylist Assistant</h3>
               </div>
-              <div className="mb-3">
-                <Textarea 
-                  placeholder="Ask about haircut styles, prices, or what might suit you best... For example: 'What's the difference between a taper and a fade?'" 
-                  className="min-h-[100px] text-sm" 
-                />
-              </div>
-              <Button className="w-full bg-primary hover:bg-[#B91C1C]" size="sm">
-                <Send className="h-4 w-4 mr-2" />
-                Send Message
-              </Button>
+              
+              {/* Chat Content */}
+              <ChatBot isInWelcomeSection={true} />
             </div>
           </div>
           
