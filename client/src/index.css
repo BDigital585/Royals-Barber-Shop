@@ -462,7 +462,7 @@
     position: relative;
     overflow: hidden;
     margin-top: 0; /* No negative margin to avoid overlap with hero */
-    padding: 4px 0 40px; /* Small top padding for slight separation */
+    padding: 4px 0 30px; /* Reduced bottom padding for more compact layout */
     color: white;
     animation: fadeIn 0.5s ease-in;
     border-top: none;
