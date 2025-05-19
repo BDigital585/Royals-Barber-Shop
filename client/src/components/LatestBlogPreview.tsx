@@ -79,18 +79,18 @@ const LatestBlogPreview = () => {
         <h2 className="text-xl md:text-2xl font-heading mb-2 pb-2">Latest From Our Blog</h2>
         <div className="my-3 flex flex-row gap-3">
           {latestPost.featuredImage && (
-            <div className="hidden sm:block flex-shrink-0">
+            <div className="flex-shrink-0">
               <img 
                 src={latestPost.featuredImage} 
                 alt={latestPost.title} 
-                className="w-20 h-20 object-cover rounded-md shadow-sm"
+                className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-md shadow-sm"
               />
             </div>
           )}
           <div className="flex-grow">
             <h3 className="text-lg md:text-xl font-semibold">{latestPost.title}</h3>
             <p className="text-sm text-gray-500 mb-2">{formattedDate}</p>
-            <p className="text-base mb-3">
+            <p className="text-xs sm:text-sm md:text-base mb-2 md:mb-3 line-clamp-3">
               {displayText}
             </p>
             <Link 

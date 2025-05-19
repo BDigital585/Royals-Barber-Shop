@@ -214,7 +214,7 @@ const ContentfulHeroSection = () => {
                 Royals
               </h1>
               <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight mb-2 md:mb-4">
-                Barber Shop
+                Ready for a fresh cut?
               </h2>
               <p className="text-[10px] sm:text-xs md:text-base uppercase tracking-wider mb-3 md:mb-6 max-w-[280px] sm:max-w-[500px]">
                 10 years in Batavia, NY<br />
