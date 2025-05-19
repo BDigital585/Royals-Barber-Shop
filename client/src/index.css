@@ -912,7 +912,8 @@
   background-color: #0F172A;
   color: white;
   text-align: center;
-  padding: 2rem 0;
+  padding: 0;
+  margin-top: -1px; /* Ensure no gap with hero section */
   position: relative;
 }
 

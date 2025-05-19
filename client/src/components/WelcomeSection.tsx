@@ -3,7 +3,7 @@ import React from 'react';
 const WelcomeSection: React.FC = () => {
   return (
     <section className="welcome-section">
-      <div className="container mx-auto px-4 text-center">
+      <div className="container mx-auto px-4 text-center pt-6 pb-4">
         <h2 className="welcome-title">Welcome to Royals</h2>
         <p className="welcome-subtitle">
           Celebrating 10 years of barbering in Batavia, NY. Thank you for growing with us!
