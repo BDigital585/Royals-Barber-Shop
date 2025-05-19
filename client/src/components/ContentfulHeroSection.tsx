@@ -207,16 +207,16 @@ const ContentfulHeroSection = () => {
         )}
         
         {/* Gradient overlay for text visibility */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-center justify-center md:items-start md:justify-center">
-          <div className="container mx-auto px-4 md:px-6 flex flex-col items-center md:items-start">
-            <div className="max-w-[600px] text-white text-center md:text-left">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight mb-1 md:mb-3">
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-center">
+          <div className="container mx-auto px-4 md:px-6 flex flex-col items-start">
+            <div className="max-w-[600px] text-white text-left">
+              <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight mb-1 md:mb-3">
                 Royals
               </h1>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight mb-3 md:mb-4">
+              <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight mb-2 md:mb-4">
                 Barber Shop
               </h2>
-              <p className="text-xs sm:text-sm md:text-base uppercase tracking-wider mb-4 md:mb-6 max-w-[500px]">
+              <p className="text-[10px] sm:text-xs md:text-base uppercase tracking-wider mb-3 md:mb-6 max-w-[500px]">
                 Celebrating 10 years of barbering in Batavia, New York<br />
                 Thanks for growing with us.
               </p>
@@ -231,8 +231,8 @@ const ContentfulHeroSection = () => {
             </div>
             
             {/* Contact and social links */}
-            <div className="w-full max-w-md mt-4 md:mt-0">
-              <div className="grid grid-cols-5 gap-1 sm:gap-2">
+            <div className="w-full max-w-md mt-2 md:mt-0">
+              <div className="grid grid-cols-5 gap-0 xs:gap-1 sm:gap-2">
                 {/* Address */}
                 <a 
                   href="https://maps.google.com/?q=317+Ellicott+Street,+Batavia,+NY" 
