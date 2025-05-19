@@ -233,6 +233,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get Royals Body content from Contentful
+  app.get(`${apiPrefix}/contentful/royals-body`, async (req, res) => {
+    try {
+      const { createClient } = await import('contentful');
+      
+      // Create client with environment variables
+      const client = createClient({
+        space: process.env.CONTENTFUL_SPACE_ID || '',
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN || '',
+        environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
+      });
+      
+      // Fetch Royals Body entries (get the latest one)
+      const entries = await client.getEntries({
+        content_type: 'royalsBody',
+        order: ['-sys.updatedAt'],
+        limit: 1,
+        include: 2
+      });
+      
+      console.log(`Found ${entries.items.length} Royals Body entries`);
+      
+      if (!entries.items.length) {
+        return res.status(404).json({ message: 'No Royals Body content found' });
+      }
+      
+      const entry = entries.items[0];
+      const fields = entry.fields as any;
+      
+      // Return the content
+      return res.status(200).json({
+        id: entry.sys.id,
+        content: fields.content || null
+      });
+    } catch (error) {
+      console.error('Error fetching Royals Body content from Contentful:', error);
+      return res.status(500).json({ 
+        message: 'Failed to fetch Royals Body content',
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // Get Contentful hero content
   app.get(`${apiPrefix}/contentful/hero`, async (req, res) => {
     try {

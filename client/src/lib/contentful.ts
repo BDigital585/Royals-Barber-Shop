@@ -12,6 +12,12 @@ export interface SiteHero {
   backgroundImage?: string | null;
 }
 
+// Types for the Royals Body Content from Contentful
+export interface RoyalsBody {
+  id: string;
+  content?: any; // Rich text content from Contentful
+}
+
 // Types for Blog Posts from Contentful
 export interface BlogPost {
   id: string;
@@ -60,6 +66,25 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
   } catch (error) {
     console.error('Error fetching blog posts from API:', error);
     return [];
+  }
+}
+
+// Function to fetch the Royals Body content
+export async function getRoyalsBodyContent(): Promise<RoyalsBody | null> {
+  try {
+    const response = await fetch('/api/contentful/royals-body');
+    
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    console.log('Royals Body content from API:', data);
+    
+    return data;
+  } catch (error) {
+    console.error('Error fetching Royals Body content from API:', error);
+    return null;
   }
 }
 
