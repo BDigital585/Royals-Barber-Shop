@@ -209,12 +209,12 @@ const ContentfulHeroSection = () => {
         {/* Gradient overlay for text visibility */}
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-center">
           <div className="container mx-auto px-4 md:px-6 flex flex-col items-start">
-            <div className="max-w-[600px] text-white text-left">
-              <h1 className="text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight mb-2 md:mb-4">
-                Ready for a fresh cut?
+            <div className="max-w-[400px] text-white text-left pl-2 sm:pl-4 md:pl-6">
+              <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight leading-tight mb-2 md:mb-3">
+                Ready for a<br />fresh cut?
               </h1>
-              <p className="text-[10px] sm:text-xs md:text-base uppercase tracking-wider mb-3 md:mb-6 max-w-[280px] sm:max-w-[500px]">
-                walk-ins welcome or schedule online today
+              <p className="text-[10px] sm:text-xs md:text-sm uppercase tracking-wider mb-2 md:mb-4 max-w-[220px] sm:max-w-[280px]">
+                walk-ins welcome or<br />schedule online today
               </p>
               <a 
                 href="https://royalsbarbershop.setmore.com/" 
