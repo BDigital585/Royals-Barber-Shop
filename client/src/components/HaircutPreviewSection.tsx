@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import { useHaircutImages } from '../features/haircuts/useHaircutImages';
+import { Send, MessageSquare } from 'lucide-react';
+import ShareButton from './ShareButton';
+import { Button } from './ui/button';
+import { Textarea } from './ui/textarea';
 
 // Custom Link component that ensures scroll to top
 const ScrollToTopLink = ({ href, className, children }: { href: string, className?: string, children: React.ReactNode }) => {
@@ -95,13 +99,17 @@ const HaircutPreviewSection = () => {
       className="py-12 md:py-16 bg-white"
     >
       <div className="container mx-auto px-4">
-        <div className={`mb-8 text-center ${isVisible ? 'animate-fadeIn' : 'opacity-0'}`}>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-heading text-primary mb-2">
-            Not Sure What to Ask For?
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-base md:text-lg">
-            Explore popular haircut styles so you know exactly what to book.
-          </p>
+
+        
+        <div className={`mb-8 ${isVisible ? 'animate-fadeIn' : 'opacity-0'}`}>
+          <div className="border-l-4 border-primary pl-3 md:pl-4 py-1 max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
+              Not Sure What <span className="inline-block">to Ask For?</span>
+            </h2>
+            <p className="text-gray-600 text-sm sm:text-base md:text-lg">
+              Explore popular styles so you know exactly what to book.
+            </p>
+          </div>
         </div>
         
         {randomImages.length > 0 ? (
@@ -160,10 +168,35 @@ const HaircutPreviewSection = () => {
           </div>
         )}
         
-        <div className={`text-center mt-8 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{ animationDelay: '200ms' }}>
-          <ScrollToTopLink href="/browse-haircuts" className="inline-block bg-primary hover:bg-[#B91C1C] text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
-            See Full Haircut Guide
-          </ScrollToTopLink>
+        <div className="flex flex-col md:flex-row gap-6 mt-8 max-w-4xl mx-auto">
+          <div className={`flex-1 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{ animationDelay: '200ms' }}>
+            <div className="bg-white rounded-lg shadow-md p-4 md:p-6 border border-gray-100">
+              <div className="flex items-center gap-2 mb-3">
+                <MessageSquare className="h-5 w-5 text-primary" />
+                <h3 className="font-medium text-lg">Have questions?</h3>
+              </div>
+              <div className="mb-3">
+                <Textarea 
+                  placeholder="Ask about haircut styles, prices, or what might suit you best... For example: 'What's the difference between a taper and a fade?'" 
+                  className="min-h-[100px] text-sm" 
+                />
+              </div>
+              <Button className="w-full bg-primary hover:bg-[#B91C1C]" size="sm">
+                <Send className="h-4 w-4 mr-2" />
+                Send Message
+              </Button>
+            </div>
+          </div>
+          
+          <div className={`flex-1 flex flex-col justify-center ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{ animationDelay: '300ms' }}>
+            <h3 className="text-lg font-medium mb-3 text-center md:text-left">Want to see all styles?</h3>
+            <ScrollToTopLink 
+              href="/browse-haircuts" 
+              className="inline-flex items-center justify-center bg-primary hover:bg-[#B91C1C] text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+            >
+              See Full Haircut Guide
+            </ScrollToTopLink>
+          </div>
         </div>
       </div>
     </section>
