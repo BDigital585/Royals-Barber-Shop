@@ -77,18 +77,29 @@ const LatestBlogPreview = () => {
     <section className="latest-blog-preview py-6 px-4 bg-white text-black">
       <div className="container mx-auto max-w-3xl">
         <h2 className="text-xl md:text-2xl font-heading mb-2 pb-2">Latest From Our Blog</h2>
-        <div className="my-3">
-          <h3 className="text-lg md:text-xl font-semibold">{latestPost.title}</h3>
-          <p className="text-sm text-gray-500 mb-2">{formattedDate}</p>
-          <p className="text-base mb-3">
-            {displayText}
-          </p>
-          <Link href={`/blog/${latestPost.slug}`} className="inline-flex items-center text-blue-700 hover:text-red-600 font-semibold transition-colors">
-            Read more
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
+        <div className="my-3 flex flex-row gap-3">
+          {latestPost.featuredImage && (
+            <div className="hidden sm:block flex-shrink-0">
+              <img 
+                src={latestPost.featuredImage} 
+                alt={latestPost.title} 
+                className="w-20 h-20 object-cover rounded-md shadow-sm"
+              />
+            </div>
+          )}
+          <div className="flex-grow">
+            <h3 className="text-lg md:text-xl font-semibold">{latestPost.title}</h3>
+            <p className="text-sm text-gray-500 mb-2">{formattedDate}</p>
+            <p className="text-base mb-3">
+              {displayText}
+            </p>
+            <Link href={`/blog/${latestPost.slug}`} className="inline-flex items-center text-blue-700 hover:text-red-600 font-semibold transition-colors">
+              Read more
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
         </div>
       </div>
     </section>

@@ -123,17 +123,17 @@ const WelcomeSection = () => {
               </a>
               
               {/* Chat Button - Icon only */}
-              <button
-                onClick={() => setIsChatOpen(true)}
-                className="flex flex-col items-center border-0 bg-transparent outline-none focus:outline-none"
-                aria-label="Chat with us"
-                style={{ boxShadow: "none" }}
-              >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+              <div className="flex flex-col items-center">
+                <button
+                  onClick={() => setIsChatOpen(true)}
+                  className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all border-0 outline-none"
+                  aria-label="Chat with us"
+                  style={{ boxShadow: "none" }}
+                >
                   <FaComments size={20} />
-                </div>
+                </button>
                 <span className="text-xs text-center mt-1 font-medium text-gray-900">Chat</span>
-              </button>
+              </div>
             </div>
           </div>
         </div>
