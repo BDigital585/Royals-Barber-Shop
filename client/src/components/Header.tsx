@@ -61,11 +61,8 @@ const Header = () => {
         
         {/* Mobile Navigation and Action Buttons */}
         <div className="md:hidden flex items-center gap-4">
-          {/* Mobile Quick Nav Links */}
+          {/* Mobile Quick Nav Links - Empty after removing Browse */}
           <div className="flex mr-2 gap-4 items-center">
-            <ScrollToTopLink href="/browse-haircuts" className="mobile-nav-link">
-              Browse
-            </ScrollToTopLink>
           </div>
           
           {/* Mobile Book Now Link - Desktop version shown in the nav bar */}
@@ -100,10 +97,6 @@ const Header = () => {
           >
             Book Now
           </a>
-          
-          <ScrollToTopLink href="/browse-haircuts" className="font-medium nav-link">
-            Browse Haircuts
-          </ScrollToTopLink>
           
           <ScrollToTopLink href="/blog" className="font-medium nav-link">
             Blog
