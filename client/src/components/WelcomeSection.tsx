@@ -46,7 +46,7 @@ const WelcomeSection = () => {
             <h2 className="welcome-title text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4 text-black">
               Welcome to Royals
             </h2>
-            <p className="welcome-subtitle text-gray-900 text-lg md:text-xl mb-6 font-medium max-w-2xl mx-auto px-3 py-2 bg-gradient-to-r from-gray-50 to-transparent rounded-lg shadow-sm">
+            <p className="welcome-subtitle text-black text-lg md:text-xl mb-6 font-bold max-w-2xl mx-auto px-3 py-2 bg-gray-50 rounded-lg shadow">
               Celebrating 10 years of barbering in Batavia, NY. Thank you for growing with us!
             </p>
           </div>
