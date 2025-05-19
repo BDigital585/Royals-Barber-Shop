@@ -8,6 +8,20 @@ import { ZodError } from "zod";
 import { execSync } from "child_process";
 import path from "path";
 import fs from "fs";
+import OpenAI from "openai";
+
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// The system prompt for the chatbot
+const CHATBOT_SYSTEM_PROMPT = `You are Royals Barbershop's helpful assistant. Your job is to greet visitors, help them navigate the site, answer common questions, and encourage them to book an appointment.
+Always stay professional, confident, and friendly. Keep answers short and helpful. If the user seems unsure, offer to help them find what they need.
+The barbershop is located at 317 Ellicott Street, Batavia, NY. Hours are Tue 9–3, Wed–Fri 9–5, Sat 9–2. Phone: 585-536-6576.
+If someone asks for pricing, services, or booking info, explain that appointments are made online, and suggest using the 'Book Now' button. Services may vary per barber.
+If someone mentions being new, offer a warm welcome and briefly explain that Royals focuses on delivering a premium haircut experience with a community feel.
+Avoid long responses. Don't make up info not listed here. Only talk about barber shop related things. If you're unsure, say: 'Let me have someone follow up with you!'`;
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API routes prefix
@@ -150,6 +164,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching subscribers:", error);
       return res.status(500).json({ message: "Failed to fetch subscribers" });
+    }
+  });
+  
+  // Chatbot API endpoint
+  app.post(`${apiPrefix}/chatbot`, async (req, res) => {
+    try {
+      const { messages } = req.body;
+      
+      if (!messages || !Array.isArray(messages)) {
+        return res.status(400).json({ error: "Invalid request format. 'messages' array is required." });
+      }
+
+      // Prepend the system message to the conversation
+      const fullMessages = [
+        { role: "system", content: CHATBOT_SYSTEM_PROMPT },
+        ...messages
+      ];
+      
+      // Call OpenAI API
+      // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: fullMessages,
+        temperature: 0.7,
+        max_tokens: 200, // Keeping responses fairly concise
+      });
+      
+      // Extract and send the response
+      const botResponse = response.choices[0].message;
+      res.json({ response: botResponse });
+      
+    } catch (error) {
+      console.error("Error processing chatbot request:", error);
+      res.status(500).json({ 
+        error: "Failed to process chatbot request",
+        details: error.message
+      });
     }
   });
 

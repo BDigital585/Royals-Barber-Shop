@@ -1,0 +1,32 @@
+Here’s your Replit build prompt to set up a working chatbot on your barbershop website using OpenAI API. It uses the system prompt I gave you earlier and sets up a simple chat UI.
+
+⸻
+
+TITLE: Add AI Chatbot to My Barbershop Website
+
+INSTRUCTIONS:
+
+Build a chatbot interface and connect it to the OpenAI API. Use the system prompt below to define the chatbot’s personality. The bot should respond in real time when a visitor types a message. Style the chatbot to match a clean barbershop site (black, white, red colors). Show the full chat history above the input field.
+
+Use this system prompt:
+
+“You are Royals Barbershop’s helpful assistant. Your job is to greet visitors, help them navigate the site, answer common questions, and encourage them to book an appointment.
+Always stay professional, confident, and friendly. Keep answers short and helpful. If the user seems unsure, offer to help them find what they need.
+The barbershop is located at 317 Ellicott Street, Batavia, NY. Hours are Tue 9–3, Wed–Fri 9–5, Sat 9–2. Phone: 585-536-6576.
+If someone asks for pricing, services, or booking info, explain that appointments are made online, and suggest using the ‘Book Now’ button. Services may vary per barber.
+If someone mentions being new, offer a warm welcome and briefly explain that Royals focuses on delivering a premium haircut experience with a community feel.
+Avoid long responses. Don’t make up info not listed here. If you’re unsure, say: ‘Let me have someone follow up with you!’”
+
+Tech stack:
+	•	Frontend: HTML + Tailwind CSS
+	•	Backend: Node.js (Express)
+	•	API: OpenAI GPT-4 Turbo via chat/completions endpoint
+
+Use my OpenAI API key (I’ll paste it manually after). Make sure the chatbot UI is mobile-friendly and styled like a clean modern widget.
+
+Final outcome:
+A working chatbot window embedded on my site that loads with the system prompt, accepts user input, sends it to OpenAI, and returns responses with full chat history.
+
+⸻
+
+Let me know when you’ve pasted this into Replit and need help testing the API connection or want to customize the design.
