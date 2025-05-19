@@ -8,13 +8,13 @@ const ContentfulHeroSection = () => {
   const [videoError, setVideoError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Fetch hero content from Contentful
   useEffect(() => {
     const fetchHeroContent = async () => {
       try {
         setLoading(true);
         const content = await getHeroContent();
         if (content) {
-          console.log('Contentful hero content fetched:', content);
           setHeroContent(content);
           setError(null);
         } else {
@@ -31,19 +31,82 @@ const ContentfulHeroSection = () => {
     fetchHeroContent();
   }, []);
 
-  // Handle video load success
+  // Handle video playback on mobile devices
+  useEffect(() => {
+    if (!heroContent?.videoUrl || !videoRef.current) return;
+
+    const video = videoRef.current;
+    
+    // Try to play the video automatically
+    const playVideo = () => {
+      if (!video) return;
+      
+      // Set video properties for mobile autoplay
+      video.muted = true;
+      video.playsInline = true;
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      
+      // Attempt to play
+      const playPromise = video.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log('Autoplay prevented:', error);
+          
+          // Try playing on user interaction
+          const handleUserInteraction = () => {
+            video.play().catch(e => console.log('Still failed to play:', e));
+            
+            // Clean up event listeners after first interaction
+            document.removeEventListener('touchstart', handleUserInteraction);
+            document.removeEventListener('click', handleUserInteraction);
+          };
+          
+          document.addEventListener('touchstart', handleUserInteraction, { once: true });
+          document.addEventListener('click', handleUserInteraction, { once: true });
+        });
+      }
+    };
+    
+    // Play video when it's loaded
+    const handleCanPlay = () => {
+      console.log('Video can play now');
+      playVideo();
+    };
+    
+    // Handle visibility changes (switching tabs, etc.)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        playVideo();
+      }
+    };
+    
+    // Attach event listeners
+    video.addEventListener('canplay', handleCanPlay);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    // Clean up
+    return () => {
+      if (video) {
+        video.removeEventListener('canplay', handleCanPlay);
+      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [heroContent?.videoUrl]);
+
+  // Video load handlers
   const handleVideoLoad = () => {
     console.log('Video loaded successfully');
     setVideoError(false);
   };
 
-  // Handle video load error
-  const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
-    console.error('Error loading video:', e);
-    console.log('Video source URL:', heroContent?.videoUrl);
+  const handleVideoError = () => {
+    console.error('Error loading video:', heroContent?.videoUrl);
     setVideoError(true);
   };
 
+  // Loading state
   if (loading) {
     return (
       <section id="home" className="relative bg-gray-900 pt-[48px] md:pt-16">
@@ -60,8 +123,8 @@ const ContentfulHeroSection = () => {
     );
   }
 
+  // Error state
   if (error || !heroContent) {
-    // Return the same layout but with an error message
     return (
       <section id="home" className="relative bg-gradient-to-r from-gray-900 to-black pt-[48px] md:pt-16">
         <div className="h-[35vh] md:h-[70vh] flex items-center justify-center">
@@ -87,22 +150,12 @@ const ContentfulHeroSection = () => {
     );
   }
 
-  // Check for video URL
-  console.log('Content video URL:', heroContent.videoUrl);
+  // Check if we have video or image
   const hasVideo = heroContent.videoUrl && heroContent.videoUrl.trim() !== '' && !videoError;
+  const hasImage = heroContent.backgroundImage && typeof heroContent.backgroundImage === 'string';
+  const backgroundStyle = hasImage ? { backgroundImage: `url(${heroContent.backgroundImage})` } : {};
 
-  // Check for background image URL
-  console.log('Content background image:', heroContent.backgroundImage);
-  const hasImage = heroContent.backgroundImage && 
-                  typeof heroContent.backgroundImage === 'string';
-  
-  // Prepare background style if image exists
-  const backgroundStyle = hasImage 
-    ? { backgroundImage: `url(${heroContent.backgroundImage})` } 
-    : {};
-
-  // If we have no media at all or if video failed to load and no image is available,
-  // show a fallback with the same branding text but on a gradient background
+  // Fallback if no media
   if ((!hasVideo && !hasImage) || (videoError && !hasImage)) {
     return (
       <section id="home" className="relative bg-gradient-to-r from-gray-900 to-black pt-[48px] md:pt-16">
@@ -124,56 +177,7 @@ const ContentfulHeroSection = () => {
     );
   }
 
-  // Add an effect to ensure video playback on mobile
-  useEffect(() => {
-    // Function to try playing the video on mobile
-    const attemptPlay = () => {
-      if (videoRef.current) {
-        // Try to play the video
-        const playPromise = videoRef.current.play();
-        
-        // Handle play promise (will be undefined on older browsers)
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              // Playback started successfully
-              console.log('Video playback started successfully');
-            })
-            .catch(error => {
-              // Auto-play was prevented, try again with user interaction
-              console.error('Error playing video:', error);
-              
-              // Try to make video silent and then play again
-              if (videoRef.current) {
-                videoRef.current.muted = true;
-                videoRef.current.play().catch(e => console.error('Still cannot play video:', e));
-              }
-            });
-        }
-      }
-    };
-    
-    // Attempt to play video
-    if (heroContent?.videoUrl) {
-      attemptPlay();
-      
-      // Also try to play when visibility changes (user switches tabs or apps)
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-          attemptPlay();
-        }
-      });
-      
-      // On mobile, try to play on touchstart events
-      document.addEventListener('touchstart', attemptPlay, { once: true });
-    }
-    
-    return () => {
-      document.removeEventListener('visibilitychange', attemptPlay);
-    };
-  }, [heroContent?.videoUrl, videoRef.current]);
-  
-  // Show the video with the main branding text overlaid
+  // Main render with video
   return (
     <section id="home" className="relative bg-black pt-[48px] md:pt-16 pb-0 mb-0">
       <div 
@@ -188,12 +192,9 @@ const ContentfulHeroSection = () => {
             loop 
             muted 
             playsInline
-            controls={false} /* Explicitly disable controls */
-            disablePictureInPicture /* Disable picture-in-picture */
-            disableRemotePlayback /* Disable remote playback */
-            onError={handleVideoError}
+            controls={false}
             onLoadedData={handleVideoLoad}
-            style={{ objectFit: 'cover' }} /* Ensure proper sizing */
+            onError={handleVideoError}
           >
             <source src={heroContent.videoUrl} type="video/mp4" />
             <source src={heroContent.videoUrl} type="video/quicktime" />
@@ -202,9 +203,9 @@ const ContentfulHeroSection = () => {
           </video>
         )}
         
-        {/* Simple dark overlay for video contrast without the button */}
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center px-2 sm:px-4">
-          {/* Empty overlay for contrast only */}
+        {/* Dark overlay for contrast */}
+        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+          {/* Empty overlay - no button */}
         </div>
       </div>
     </section>
