@@ -61,15 +61,17 @@ const ChatBot: React.FC = () => {
       
       const data = await response.json();
 
-      if (response) {
-        // Add assistant response to chat
+      // Add assistant response to chat
+      if (data && data.response && data.response.content) {
         setMessages(prev => [
           ...prev, 
           { 
             role: 'assistant', 
-            content: response.response.content
+            content: data.response.content
           }
         ]);
+      } else {
+        throw new Error('Invalid response format from server');
       }
     } catch (error) {
       console.error('Error sending message:', error);
