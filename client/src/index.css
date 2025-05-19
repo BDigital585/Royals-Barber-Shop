@@ -471,16 +471,15 @@
   /* Dark container for the carousel - matching blog card style */
   .carousel-white-container {
     background-color: #111; /* deep black base like blog cards */
-    border-radius: 10px;
-    border-left: 4px solid #1E3A8A; /* subtle royal blue stripe */
+    border-radius: 8px;
+    border-left: 3px solid #1E3A8A; /* subtle royal blue stripe */
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    padding: 16px;
-    max-width: 1000px;
+    padding: 10px;
+    max-width: 900px;
     margin: 0 auto;
     animation: slideUp 0.7s ease-out;
     transform-origin: center bottom;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-left 0.2s ease;
-    margin-top: 0.75rem; /* Small positive margin for spacing */
   }
   
   .carousel-white-container:hover {
@@ -906,6 +905,32 @@
     object-fit: cover;
     height: 100%;
   }
+}
+
+/* Welcome section styling */
+.welcome-section {
+  background-color: #0F172A;
+  color: white;
+  text-align: center;
+  padding: 2rem 0;
+  position: relative;
+}
+
+.welcome-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  animation: fadeIn 0.8s ease;
+}
+
+.welcome-subtitle {
+  font-size: 1.1rem;
+  color: #e5e5e5;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.5;
+  animation: fadeIn 0.8s ease 0.2s both;
 }
 
 /* Animation keyframes for site transitions */

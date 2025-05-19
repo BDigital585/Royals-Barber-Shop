@@ -142,13 +142,7 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
   
   return (
     <section className={`carousel-section ${className}`}>
-      {/* Title area outside the white container */}
-      <div className="carousel-title mx-auto px-4 max-w-4xl">
-        <h2 className="text-xl md:text-2xl font-heading">
-          Proudly serving Batavia for 10 years
-        </h2>
-        <span className="text-lg md:text-xl block">Thank you for growing with us!</span>
-      </div>
+      {/* Empty title area - text moved to welcome section */}
       
       {/* White container with the carousel */}
       <div className="carousel-white-container mx-4">
