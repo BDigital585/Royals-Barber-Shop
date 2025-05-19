@@ -47,6 +47,11 @@ const NewsletterSection = () => {
         <h2 className="text-3xl md:text-4xl font-heading text-white mb-6">JOIN OUR NEWSLETTER</h2>
         <p className="mb-8">Subscribe to get exclusive deals, style tips, and be the first to know about special events.</p>
         
+        <div className="bg-white/10 rounded-lg p-8 backdrop-blur-sm mb-6">
+          <h3 className="text-2xl font-heading mb-3">Coming Soon!</h3>
+          <p>Our newsletter signup is currently being updated. Check back soon to subscribe for exclusive offers and updates!</p>
+        </div>
+        
         <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4">
           <input 
             type="email" 
@@ -55,13 +60,14 @@ const NewsletterSection = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled
           />
           <button 
             type="submit" 
-            className="button-inverse"
-            disabled={subscribeNewsletter.isPending}
+            className="button-inverse opacity-70 cursor-not-allowed"
+            disabled={true}
           >
-            {subscribeNewsletter.isPending ? 'SUBSCRIBING...' : 'SUBSCRIBE'}
+            COMING SOON
           </button>
         </form>
       </div>

@@ -142,7 +142,7 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
   
   return (
     <section className={`carousel-section py-6 px-4 ${className}`}>
-      <div className="container mx-auto max-w-3xl">
+      <div className="container mx-auto max-w-3xl text-center">
         <h2 className="text-xl md:text-2xl font-heading mb-2 pb-2">Our Shop</h2>
         
         {/* Carousel card container */}
