@@ -46,46 +46,43 @@ const WelcomeSection = () => {
             <h2 className="welcome-title text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-700">
               Welcome to Royals
             </h2>
-            <p className="welcome-subtitle text-gray-700 text-lg md:text-xl mb-6">
+            <p className="welcome-subtitle text-gray-800 text-lg md:text-xl mb-6 font-medium max-w-2xl mx-auto px-3 py-2 bg-gradient-to-r from-gray-50 to-transparent rounded-lg shadow-sm">
               Celebrating 10 years of barbering in Batavia, NY. Thank you for growing with us!
             </p>
           </div>
           
-          {/* Contact and social info */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 w-full max-w-4xl mx-auto">
+          {/* Contact and social info - Mobile optimized */}
+          <div className="flex flex-wrap justify-center gap-3 w-full max-w-4xl mx-auto px-4">
             {/* Address */}
             <a 
               href="https://maps.google.com/?q=317+Ellicott+Street,+Batavia,+NY" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex flex-col items-center justify-center p-4 hover:bg-gray-50 rounded-lg transition-all duration-300 group"
+              className="flex items-center gap-2 py-2 px-3 hover:bg-gray-50 rounded-full shadow-sm transition-all duration-300 group bg-white"
             >
-              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white mb-3 group-hover:shadow-lg transition-all">
-                <FaMapMarkerAlt size={20} />
+              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white group-hover:shadow-md transition-all">
+                <FaMapMarkerAlt size={16} />
               </div>
-              <h3 className="font-medium text-gray-900 mb-1">Our Location</h3>
-              <p className="text-gray-600 text-center">317 Ellicott Street<br />Batavia, NY</p>
+              <span className="font-medium text-gray-900">317 Ellicott St, Batavia</span>
             </a>
             
             {/* Phone */}
             <a 
               href="tel:+15855366576" 
-              className="flex flex-col items-center justify-center p-4 hover:bg-gray-50 rounded-lg transition-all duration-300 group"
+              className="flex items-center gap-2 py-2 px-3 hover:bg-gray-50 rounded-full shadow-sm transition-all duration-300 group bg-white"
             >
-              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white mb-3 group-hover:shadow-lg transition-all">
-                <FaPhone size={20} />
+              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white group-hover:shadow-md transition-all">
+                <FaPhone size={16} />
               </div>
-              <h3 className="font-medium text-gray-900 mb-1">Call Us</h3>
-              <p className="text-gray-600">(585) 536-6576</p>
+              <span className="font-medium text-gray-900">(585) 536-6576</span>
             </a>
             
-            {/* Social Links */}
-            <div className="flex flex-col items-center justify-center p-4 hover:bg-gray-50 rounded-lg transition-all duration-300">
-              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white mb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+            {/* Social Links - Combined in one row */}
+            <div className="flex items-center gap-2 py-2 px-4 hover:bg-gray-50 rounded-full shadow-sm transition-all duration-300 bg-white">
+              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
               </div>
-              <h3 className="font-medium text-gray-900 mb-2">Connect With Us</h3>
-              <div className="flex space-x-4">
+              <div className="flex space-x-3">
                 <a 
                   href="https://www.instagram.com/royalsbarbershop585" 
                   target="_blank" 
@@ -93,7 +90,7 @@ const WelcomeSection = () => {
                   className="text-gray-600 hover:text-[#E1306C] transition-colors"
                   aria-label="Instagram"
                 >
-                  <FaInstagram size={24} />
+                  <FaInstagram size={20} />
                 </a>
                 <a 
                   href="https://www.facebook.com/share/19UCgP9N1f/?mibextid=wwXIfr" 
@@ -102,7 +99,7 @@ const WelcomeSection = () => {
                   className="text-gray-600 hover:text-[#1877F2] transition-colors"
                   aria-label="Facebook"
                 >
-                  <FaFacebook size={24} />
+                  <FaFacebook size={20} />
                 </a>
                 <a 
                   href="https://g.page/r/CXiCN-AOTXGtEBM/review" 
@@ -111,7 +108,7 @@ const WelcomeSection = () => {
                   className="text-gray-600 hover:text-[#DB4437] transition-colors"
                   aria-label="Google Reviews"
                 >
-                  <FaGoogle size={24} />
+                  <FaGoogle size={20} />
                 </a>
               </div>
             </div>
