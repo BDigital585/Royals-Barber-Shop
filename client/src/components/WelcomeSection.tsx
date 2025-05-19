@@ -1,9 +1,11 @@
-import { useEffect, useRef } from 'react';
-import { FaMapMarkerAlt, FaPhone, FaInstagram, FaFacebook } from 'react-icons/fa';
+import { useEffect, useRef, useState } from 'react';
+import { FaMapMarkerAlt, FaPhone, FaInstagram, FaFacebook, FaComments } from 'react-icons/fa';
 import { FaGoogle } from 'react-icons/fa';
+import ChatBot from './ChatBot';
 
 const WelcomeSection = () => {
   const shimmerRef = useRef<HTMLDivElement>(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Shimmer light effect on scroll
   useEffect(() => {
@@ -37,6 +39,27 @@ const WelcomeSection = () => {
         ref={shimmerRef}
         className="absolute inset-0 opacity-30 z-10 shimmer-effect"
       ></div>
+      
+      {/* Chat Interface */}
+      {isChatOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl flex flex-col w-full max-w-md h-[30rem] overflow-hidden">
+            {/* Chat header */}
+            <div className="bg-primary text-white p-4 flex justify-between items-center">
+              <h3 className="font-semibold">Royals Barbershop Assistant</h3>
+              <button 
+                onClick={() => setIsChatOpen(false)}
+                className="text-white hover:text-gray-200 transition-colors"
+                aria-label="Close chat"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+            
+            <ChatBot isInWelcomeSection={true} />
+          </div>
+        </div>
+      )}
       
       {/* Main content */}
       <div className="container mx-auto px-4 py-10 md:py-14 relative z-20">
@@ -103,6 +126,18 @@ const WelcomeSection = () => {
                 </a>
               </div>
             </div>
+            
+            {/* Chat Button */}
+            <button
+              onClick={() => setIsChatOpen(true)}
+              className="flex items-center gap-2 py-2 px-3 hover:bg-gray-50 rounded-full shadow-sm transition-all duration-300 group bg-white"
+              aria-label="Chat with us"
+            >
+              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white group-hover:shadow-md transition-all">
+                <FaComments size={16} />
+              </div>
+              <span className="font-medium text-gray-900">Chat with us</span>
+            </button>
           </div>
         </div>
       </div>
