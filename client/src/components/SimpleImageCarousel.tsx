@@ -147,7 +147,7 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
       {/* White container with the carousel */}
       <div className="carousel-white-container mx-4">
         <div 
-          className="simple-carousel-container relative bg-white rounded-lg shadow-md overflow-hidden"
+          className="simple-carousel-container relative bg-black rounded-lg shadow-md overflow-hidden"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
         >
