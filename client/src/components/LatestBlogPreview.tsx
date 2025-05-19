@@ -93,7 +93,11 @@ const LatestBlogPreview = () => {
             <p className="text-base mb-3">
               {displayText}
             </p>
-            <Link href={`/blog/${latestPost.slug}`} className="inline-flex items-center text-blue-700 hover:text-red-600 font-semibold transition-colors">
+            <Link 
+              href={`/blog/${latestPost.slug}`} 
+              className="inline-flex items-center text-blue-700 hover:text-red-600 font-semibold transition-colors"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
               Read more
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

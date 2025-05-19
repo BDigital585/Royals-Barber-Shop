@@ -126,13 +126,14 @@ const WelcomeSection = () => {
               <div className="flex flex-col items-center">
                 <button
                   onClick={() => setIsChatOpen(true)}
-                  className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all border-0 outline-none"
+                  className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all border-0 outline-none relative"
                   aria-label="Chat with us"
                   style={{ boxShadow: "none" }}
                 >
-                  <FaComments size={20} />
+                  <FaComments size={22} />
+                  <span className="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold">1</span>
                 </button>
-                <span className="text-xs text-center mt-1 font-medium text-gray-900">Chat</span>
+                <span className="text-xs text-center mt-1 font-medium text-gray-900">Chat Now</span>
               </div>
             </div>
           </div>
