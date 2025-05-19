@@ -96,13 +96,13 @@ const BrowseHaircuts = () => {
       <SchemaMarkup type="website" />
       
       <Header />
-      <main className="pt-[64px] md:pt-[80px] pb-16">
-        <div className="container mx-auto px-4">
-          <div className="border-l-4 border-primary pl-3 md:pl-4 py-1 mb-6">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mt-8 mb-2 leading-tight">
+      <main className="pt-[64px] md:pt-[72px] pb-16">
+        <div className="container mx-auto px-4 py-3 md:py-6 mt-6 md:mt-8">
+          <div className="border-l-4 border-primary pl-3 md:pl-4 py-1 mb-5 md:mb-6">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
               Find Your <span className="inline-block">Perfect Style</span>
             </h1>
-            <p className="text-gray-600 text-sm sm:text-base mb-2 max-w-xl">
+            <p className="text-gray-600 text-sm sm:text-base mb-1 max-w-xl">
               Not sure what to ask for? Browse our visual guide to popular cuts and styles.
             </p>
           </div>

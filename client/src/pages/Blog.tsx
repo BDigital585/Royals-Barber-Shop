@@ -31,7 +31,7 @@ export default function Blog() {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-3 md:py-6 mt-12 md:mt-14">
+      <div className="container mx-auto px-4 py-3 md:py-6 mt-6 md:mt-8">
         <MetaTags 
           title="Behind the Barber Chair | Royals Barbershop" 
           description="Dive into authentic barbershop culture with unfiltered insights, style talk, and real wisdom from Royals Barbershop in Batavia, NY."
