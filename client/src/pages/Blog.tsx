@@ -31,14 +31,14 @@ export default function Blog() {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-6 md:py-12 mt-16 md:mt-20">
         <MetaTags 
           title="Behind the Barber Chair | Royals Barbershop" 
           description="Dive into authentic barbershop culture with unfiltered insights, style talk, and real wisdom from Royals Barbershop in Batavia, NY."
         />
         <SchemaMarkup />
         
-        <section className="blog-header mb-8">
+        <section className="blog-header mb-6 md:mb-8">
           <div className="border-l-4 border-primary pl-3 md:pl-4 py-1">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
               Behind the <span className="inline-block">Barber Chair</span>
@@ -51,38 +51,38 @@ export default function Blog() {
       
         {isLoading ? (
           // Loading state with skeletons
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {[...Array(6)].map((_, index) => (
-              <Card key={index} className="overflow-hidden h-[400px]">
-                <Skeleton className="h-48 w-full" />
-                <CardHeader>
-                  <Skeleton className="h-6 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-2/3 mt-1" />
+              <Card key={index} className="overflow-hidden h-[300px] md:h-[350px]">
+                <Skeleton className="h-32 md:h-48 w-full" />
+                <CardHeader className="p-3 md:p-4">
+                  <Skeleton className="h-5 w-3/4 mb-2" />
+                  <Skeleton className="h-3 w-full" />
+                  <Skeleton className="h-3 w-2/3 mt-1" />
                 </CardHeader>
-                <CardFooter>
-                  <Skeleton className="h-10 w-32" />
+                <CardFooter className="p-3">
+                  <Skeleton className="h-8 w-24" />
                 </CardFooter>
               </Card>
             ))}
           </div>
         ) : isError ? (
           // Error state
-          <div className="text-center py-12">
+          <div className="text-center py-8">
             <h3 className="text-xl font-semibold mb-4">Oops! Something went wrong</h3>
             <p className="text-gray-600 mb-6">We're having trouble loading the blog posts. Please try again later.</p>
             <Button onClick={() => window.location.reload()}>Refresh Page</Button>
           </div>
         ) : blogPosts && blogPosts.length > 0 ? (
           // Content when blog posts are available
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {blogPosts.map((post: BlogPost) => (
               <BlogPostCard key={post.id} post={post} />
             ))}
           </div>
         ) : (
           // Empty state when no blog posts are found
-          <div className="text-center py-12">
+          <div className="text-center py-8">
             <h3 className="text-xl font-semibold mb-2">No Blog Posts Found</h3>
             <p className="text-gray-600">
               We're working on creating great content. Check back soon!
@@ -98,40 +98,45 @@ export default function Blog() {
 function BlogPostCard({ post }: { post: BlogPost }) {
   const formattedDate = new Date(post.publishedAt).toLocaleDateString('en-US', {
     year: 'numeric',
-    month: 'long',
+    month: 'short', // Use abbreviated month format for mobile
     day: 'numeric'
   });
 
   return (
-    <div className="blog-card">
+    <div className="blog-card border border-gray-200 rounded-lg shadow-sm overflow-hidden bg-white h-full flex flex-col">
       {post.featuredImage && (
-        <div className="h-48 overflow-hidden -mx-5 -mt-5 mb-4 relative">
+        <div className="h-32 md:h-40 overflow-hidden relative">
           <img 
             src={post.featuredImage} 
             alt={post.title} 
             className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
           />
-          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#111] to-transparent"></div>
+          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#111] to-transparent"></div>
         </div>
       )}
       
-      <div className="blog-card-date">
-        {formattedDate}
-        {post.authorName && <span> • By {post.authorName}</span>}
+      <div className="p-3 md:p-4 flex flex-col flex-grow">
+        <div className="text-xs md:text-sm text-gray-500 mb-1">
+          {formattedDate}
+          {post.authorName && <span className="hidden md:inline"> • By {post.authorName}</span>}
+        </div>
+        
+        <h2 className="text-base md:text-lg font-bold text-gray-900 mb-2 line-clamp-2">{post.title}</h2>
+        
+        {post.excerpt && (
+          <p className="text-xs md:text-sm text-gray-600 line-clamp-2 md:line-clamp-3 mb-3">{post.excerpt}</p>
+        )}
+        
+        <Link 
+          href={`/blog/${post.slug}`} 
+          className="mt-auto inline-flex items-center text-xs md:text-sm font-medium text-blue-600 hover:text-blue-800"
+        >
+          Read More
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 md:h-4 md:w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
       </div>
-      
-      <h2>{post.title}</h2>
-      
-      {post.excerpt && (
-        <p className="line-clamp-3">{post.excerpt}</p>
-      )}
-      
-      <Link href={`/blog/${post.slug}`} className="blog-card-read-more">
-        Read More
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </Link>
     </div>
   );
 }
