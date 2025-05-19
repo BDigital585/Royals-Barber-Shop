@@ -125,8 +125,9 @@ const WelcomeSection = () => {
               {/* Chat Button - Icon only */}
               <button
                 onClick={() => setIsChatOpen(true)}
-                className="flex flex-col items-center"
+                className="flex flex-col items-center border-0 bg-transparent outline-none focus:outline-none"
                 aria-label="Chat with us"
+                style={{ boxShadow: "none" }}
               >
                 <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
                   <FaComments size={20} />
