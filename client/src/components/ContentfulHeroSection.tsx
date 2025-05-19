@@ -124,6 +124,55 @@ const ContentfulHeroSection = () => {
     );
   }
 
+  // Add an effect to ensure video playback on mobile
+  useEffect(() => {
+    // Function to try playing the video on mobile
+    const attemptPlay = () => {
+      if (videoRef.current) {
+        // Try to play the video
+        const playPromise = videoRef.current.play();
+        
+        // Handle play promise (will be undefined on older browsers)
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              // Playback started successfully
+              console.log('Video playback started successfully');
+            })
+            .catch(error => {
+              // Auto-play was prevented, try again with user interaction
+              console.error('Error playing video:', error);
+              
+              // Try to make video silent and then play again
+              if (videoRef.current) {
+                videoRef.current.muted = true;
+                videoRef.current.play().catch(e => console.error('Still cannot play video:', e));
+              }
+            });
+        }
+      }
+    };
+    
+    // Attempt to play video
+    if (heroContent?.videoUrl) {
+      attemptPlay();
+      
+      // Also try to play when visibility changes (user switches tabs or apps)
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          attemptPlay();
+        }
+      });
+      
+      // On mobile, try to play on touchstart events
+      document.addEventListener('touchstart', attemptPlay, { once: true });
+    }
+    
+    return () => {
+      document.removeEventListener('visibilitychange', attemptPlay);
+    };
+  }, [heroContent?.videoUrl, videoRef.current]);
+  
   // Show the video with the main branding text overlaid
   return (
     <section id="home" className="relative bg-black pt-[48px] md:pt-16 pb-0 mb-0">
@@ -139,21 +188,24 @@ const ContentfulHeroSection = () => {
             loop 
             muted 
             playsInline
+            controls={false} /* Explicitly disable controls */
+            disablePictureInPicture /* Disable picture-in-picture */
+            disableRemotePlayback /* Disable remote playback */
             onError={handleVideoError}
             onLoadedData={handleVideoLoad}
+            style={{ objectFit: 'cover' }} /* Ensure proper sizing */
           >
             <source src={heroContent.videoUrl} type="video/mp4" />
             <source src={heroContent.videoUrl} type="video/quicktime" />
+            <source src={heroContent.videoUrl} type="video/mov" />
             Your browser does not support the video tag.
           </video>
         )}
         
         {/* Simple dark overlay for video contrast without the button */}
         <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center px-2 sm:px-4">
-          {/* Removed Book Now button as requested since it's already in the header */}
+          {/* Empty overlay for contrast only */}
         </div>
-        
-        {/* Removed blur gradient as requested */}
       </div>
     </section>
   );
