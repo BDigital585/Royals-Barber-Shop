@@ -10,6 +10,7 @@ import ContactSection from '@/components/ContactSection';
 import SocialSection from '@/components/SocialSection';
 import NewsletterSection from '@/components/NewsletterSection';
 import Footer from '@/components/Footer';
+import SimpleImageCarousel from '@/components/SimpleImageCarousel';
 import SchemaMarkup from '@/components/SchemaMarkup';
 import MetaTags from '@/components/MetaTags';
 
@@ -31,6 +32,7 @@ const Home = () => {
       <Header />
       <main>
         <ContentfulHeroSection />
+        <SimpleImageCarousel className="py-4" />
         <RoyalsBodyContent />
         <QuoteSection />
         <HaircutPreviewSection />
