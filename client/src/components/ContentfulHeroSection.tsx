@@ -210,14 +210,14 @@ const ContentfulHeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-center">
           <div className="container mx-auto px-4 md:px-6 flex flex-col items-start">
             <div className="max-w-[600px] text-white text-left">
-              <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight mb-1 md:mb-3">
+              <h1 className="text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight mb-1 md:mb-3">
                 Royals
               </h1>
-              <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight mb-2 md:mb-4">
+              <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight mb-2 md:mb-4">
                 Barber Shop
               </h2>
-              <p className="text-[10px] sm:text-xs md:text-base uppercase tracking-wider mb-3 md:mb-6 max-w-[500px]">
-                Celebrating 10 years of barbering in Batavia, New York<br />
+              <p className="text-[10px] sm:text-xs md:text-base uppercase tracking-wider mb-3 md:mb-6 max-w-[280px] sm:max-w-[500px]">
+                10 years in Batavia, NY<br />
                 Thanks for growing with us.
               </p>
               <a 
