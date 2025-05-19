@@ -147,7 +147,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900"
             disabled={isTyping}
           />
           <button
@@ -240,7 +240,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
-              className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900"
               disabled={isTyping}
             />
             <button

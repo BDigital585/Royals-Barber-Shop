@@ -65,8 +65,8 @@ const WelcomeSection = () => {
       <div className="container mx-auto px-4 py-10 md:py-14 relative z-20">
         <div className="flex flex-col items-center">
           
-          {/* Contact and social info - Mobile optimized */}
-          <div className="flex flex-wrap justify-center gap-3 w-full max-w-4xl mx-auto px-4">
+          {/* Contact and social info - Horizontal scrolling for mobile */}
+          <div className="flex overflow-x-auto no-scrollbar pb-2 w-full max-w-4xl mx-auto px-4 gap-3">
             {/* Address */}
             <a 
               href="https://maps.google.com/?q=317+Ellicott+Street,+Batavia,+NY" 
