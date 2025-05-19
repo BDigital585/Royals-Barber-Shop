@@ -203,9 +203,30 @@ const ContentfulHeroSection = () => {
           </video>
         )}
         
-        {/* Dark overlay for contrast */}
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-          {/* Empty overlay - no button */}
+        {/* Gradient overlay for text visibility */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex items-center">
+          <div className="container mx-auto px-6">
+            <div className="max-w-[600px] text-white">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight mb-2 md:mb-6">
+                Royals
+              </h1>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight mb-6 md:mb-8">
+                Barber Shop
+              </h2>
+              <p className="text-sm md:text-base uppercase tracking-wider mb-6 md:mb-8 max-w-[500px]">
+                Celebrating 10 years of barbering in Batavia, New York<br />
+                Thanks for growing with us.
+              </p>
+              <a 
+                href="https://royalsbarbershop.setmore.com/" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-black text-white font-medium uppercase py-3 px-8 rounded text-sm md:text-base border border-white/20 hover:bg-primary transition-colors duration-300"
+              >
+                Book Now
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
