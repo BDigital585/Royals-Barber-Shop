@@ -4,6 +4,7 @@ import WelcomeSection from '@/components/WelcomeSection';
 import QuoteSection from '@/components/QuoteSection';
 import BookingSection from '@/components/BookingSection';
 import HaircutPreviewSection from '@/components/HaircutPreviewSection';
+import LatestBlogPreview from '@/components/LatestBlogPreview';
 import CommunitySection from '@/components/CommunitySection';
 import ContactSection from '@/components/ContactSection';
 import SocialSection from '@/components/SocialSection';
@@ -34,6 +35,7 @@ const Home = () => {
         <QuoteSection />
         <BookingSection />
         <HaircutPreviewSection />
+        <LatestBlogPreview />
         <CommunitySection />
         <ContactSection />
         <SocialSection />
