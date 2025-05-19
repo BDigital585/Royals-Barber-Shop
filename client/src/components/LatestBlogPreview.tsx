@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'wouter';
 import { getBlogPosts, type BlogPost } from '../lib/contentful';
 import { Skeleton } from './ui/skeleton';
-import { BLOCKS } from '@contentful/rich-text-types';
 
 const LatestBlogPreview = () => {
   // Fetch blog posts from Contentful
@@ -19,21 +17,25 @@ const LatestBlogPreview = () => {
   // Get only the most recent blog post
   const latestPost = blogPosts && blogPosts.length > 0 ? blogPosts[0] : null;
 
-  // Get the first paragraph of content as plain text
-  const getFirstParagraph = (content: any) => {
-    if (!content || !content.content) return null;
-
-    // Find the first paragraph node
-    const firstParagraph = content.content.find(
-      (node: any) => node.nodeType === BLOCKS.PARAGRAPH
-    );
-
-    if (firstParagraph && firstParagraph.content && firstParagraph.content[0]) {
-      // Extract text content from the paragraph
-      return firstParagraph.content[0].value || null;
+  // Simple function to extract text from the first paragraph
+  const getFirstParagraphText = (content: any) => {
+    try {
+      if (!content || !content.content) return null;
+      
+      // Find the first paragraph
+      const paragraph = content.content.find(
+        (node: any) => node.nodeType === 'paragraph'
+      );
+      
+      if (paragraph && paragraph.content && paragraph.content[0]) {
+        return paragraph.content[0].value || '';
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error parsing blog content:', error);
+      return null;
     }
-
-    return null;
   };
 
   if (isLoading) {
@@ -52,9 +54,17 @@ const LatestBlogPreview = () => {
     return null; // Don't show anything if there's an error or no posts
   }
 
-  // Get first paragraph or use excerpt as fallback
-  const paragraphText = latestPost.content ? getFirstParagraph(latestPost.content) : null;
-  const contentText = paragraphText || latestPost.excerpt || 'Check out our latest blog post!';
+  // Get text content
+  let displayText = 'Check out our latest blog post!';
+  
+  if (latestPost.excerpt && latestPost.excerpt.trim() !== '') {
+    displayText = latestPost.excerpt;
+  } else if (latestPost.content) {
+    const paragraphText = getFirstParagraphText(latestPost.content);
+    if (paragraphText) {
+      displayText = paragraphText;
+    }
+  }
 
   // Format the date nicely
   const formattedDate = new Date(latestPost.publishedAt).toLocaleDateString('en-US', {
@@ -71,7 +81,7 @@ const LatestBlogPreview = () => {
           <h3 className="text-lg md:text-xl font-semibold">{latestPost.title}</h3>
           <p className="text-sm text-gray-500 mb-2">{formattedDate}</p>
           <p className="text-base mb-3">
-            {contentText}
+            {displayText}
           </p>
           <Link href={`/blog/${latestPost.slug}`} className="inline-flex items-center text-blue-700 hover:text-red-600 font-semibold transition-colors">
             Read more
