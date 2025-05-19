@@ -41,15 +41,6 @@ const WelcomeSection = () => {
       {/* Main content */}
       <div className="container mx-auto px-4 py-10 md:py-14 relative z-20">
         <div className="flex flex-col items-center">
-          {/* Welcome text */}
-          <div className="text-center max-w-2xl mx-auto mb-8">
-            <h2 className="welcome-title text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4 text-black">
-              Welcome to Royals
-            </h2>
-            <p className="welcome-subtitle text-black text-lg md:text-xl mb-6 font-bold max-w-2xl mx-auto px-3 py-2 bg-gray-50 rounded-lg shadow">
-              Celebrating 10 years of barbering in Batavia, NY. Thank you for growing with us!
-            </p>
-          </div>
           
           {/* Contact and social info - Mobile optimized */}
           <div className="flex flex-wrap justify-center gap-3 w-full max-w-4xl mx-auto px-4">
