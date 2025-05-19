@@ -147,7 +147,7 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
       {/* White container with the carousel */}
       <div className="carousel-white-container mx-4">
         <div 
-          className="simple-carousel-container relative"
+          className="simple-carousel-container relative bg-white rounded-lg shadow-md overflow-hidden"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
         >
@@ -166,7 +166,7 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
           
           {/* Navigation Controls */}
           <button 
-            className="carousel-control carousel-prev absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-md text-primary"
+            className="carousel-control carousel-prev absolute left-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-br from-primary to-blue-700 hover:from-blue-800 hover:to-blue-900 rounded-full p-2 shadow-md text-white transition-all"
             onClick={prevImage}
             aria-label="Previous image"
           >
@@ -174,7 +174,7 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
           </button>
           
           <button 
-            className="carousel-control carousel-next absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-md text-primary"
+            className="carousel-control carousel-next absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-br from-primary to-blue-700 hover:from-blue-800 hover:to-blue-900 rounded-full p-2 shadow-md text-white transition-all"
             onClick={nextImage}
             aria-label="Next image"
           >
