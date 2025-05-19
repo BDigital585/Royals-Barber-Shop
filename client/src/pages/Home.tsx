@@ -33,8 +33,8 @@ const Home = () => {
         <ContentfulHeroSection />
         <WelcomeSection />
         <QuoteSection />
-        <BookingSection />
         <HaircutPreviewSection />
+        <BookingSection />
         <LatestBlogPreview />
         <CommunitySection />
         <ContactSection />
