@@ -32,10 +32,9 @@ const Home = () => {
       <Header />
       <main>
         <ContentfulHeroSection />
-        <SimpleImageCarousel className="py-4" />
+        <HaircutPreviewSection />
         <RoyalsBodyContent />
         <QuoteSection />
-        <HaircutPreviewSection />
         <BookingSection />
         <LatestBlogPreview />
         <CommunitySection />
