@@ -6,8 +6,16 @@ const ScrollToTopLink = ({ href, className, children, onClick }: { href: string,
     // Execute the onClick handler if provided
     if (onClick) onClick();
     
-    // Manually scroll to top when link is clicked (in addition to navigation)
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Force immediate scroll to top with no smooth behavior
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'auto'
+    });
+    
+    // Extra scroll commands to ensure browser compatibility
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   };
   
   return (

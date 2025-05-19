@@ -17,8 +17,20 @@ function ScrollToTop() {
   const [location] = useLocation();
   
   useEffect(() => {
-    // When location changes, scroll to top of page immediately
-    window.scrollTo(0, 0);
+    // When location changes, scroll to top of page immediately with no smooth behavior
+    // This forces an immediate jump to the top
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'auto'
+    });
+    
+    // For some browsers, we need an extra push to ensure scroll position is reset
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 0);
   }, [location]);
   
   return null;
