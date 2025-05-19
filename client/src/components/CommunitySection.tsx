@@ -34,7 +34,7 @@ const CommunitySection = () => {
 
   return (
     <section 
-      className="community-section py-8 md:py-10 px-4" 
+      className="community-section py-6 md:py-8 px-4" 
       ref={sectionRef}
     >
       <div className="container mx-auto">

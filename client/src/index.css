@@ -458,22 +458,23 @@
   
   /* Simplified Image Carousel Styling */
   .carousel-section {
-    background-color: #0F172A; /* Dark navy/blue background to match community section */
+    background-color: white; /* White background as requested */
     position: relative;
     overflow: hidden;
     margin-top: 0; /* No negative margin to avoid overlap with hero */
     padding: 4px 0 30px; /* Reduced bottom padding for more compact layout */
-    color: white;
+    color: black; /* Black text for visibility on white background */
     animation: fadeIn 0.5s ease-in;
     border-top: none;
   }
   
-  /* Dark container for the carousel - matching blog card style */
+  /* Light container for the carousel with border */
   .carousel-white-container {
-    background-color: #111; /* deep black base like blog cards */
+    background-color: white; /* White background */
     border-radius: 8px;
+    border: 1px solid #ddd; /* Light border */
     border-left: 3px solid #1E3A8A; /* subtle royal blue stripe */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     padding: 10px;
     max-width: 900px;
     margin: 0 auto;
@@ -483,9 +484,9 @@
   }
   
   .carousel-white-container:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-    border-left: 4px solid #B91C1C; /* subtle crimson red on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border-left: 3px solid #B91C1C; /* subtle crimson red on hover */
   }
   
   /* Title section in the dark black background */
@@ -840,12 +841,12 @@
 .community-card {
   background-color: #111; /* deep black base like blog cards */
   border-radius: 10px;
-  border-left: 4px solid #1E3A8A; /* royal blue accent */
-  padding: 12px; /* Further reduced padding on mobile */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  border-left: 3px solid #1E3A8A; /* royal blue accent */
+  padding: 10px; /* Further reduced padding on mobile */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
-  gap: 12px; /* Further reduced gap on mobile */
+  gap: 10px; /* Further reduced gap on mobile */
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.6s ease;
@@ -887,17 +888,17 @@
   .community-card {
     flex-direction: row;
     align-items: center;
-    padding: 20px;
+    padding: 16px;
   }
   
   .community-content {
-    padding-right: 20px;
+    padding-right: 16px;
   }
   
   .community-image-container {
-    flex-basis: 40%;
-    min-width: 40%;
-    max-height: 240px;
+    flex-basis: 30%;
+    min-width: 30%;
+    max-height: 200px;
     overflow: hidden;
   }
   
