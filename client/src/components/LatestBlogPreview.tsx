@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'wouter';
 import { getBlogPosts, type BlogPost } from '../lib/contentful';
 import { Skeleton } from './ui/skeleton';
-import { DocumentToReactComponents } from '@contentful/rich-text-react-renderer'; 
 import { BLOCKS } from '@contentful/rich-text-types';
 
 const LatestBlogPreview = () => {
@@ -20,22 +19,18 @@ const LatestBlogPreview = () => {
   // Get only the most recent blog post
   const latestPost = blogPosts && blogPosts.length > 0 ? blogPosts[0] : null;
 
-  // Get the first paragraph of content
+  // Get the first paragraph of content as plain text
   const getFirstParagraph = (content: any) => {
-    if (!content) return null;
+    if (!content || !content.content) return null;
 
     // Find the first paragraph node
-    const firstParagraph = content.content?.find(
+    const firstParagraph = content.content.find(
       (node: any) => node.nodeType === BLOCKS.PARAGRAPH
     );
 
-    if (firstParagraph) {
-      // Process the paragraph using DocumentToReactComponents
-      return DocumentToReactComponents({ 
-        nodeType: 'document',
-        data: {},
-        content: [firstParagraph]
-      });
+    if (firstParagraph && firstParagraph.content && firstParagraph.content[0]) {
+      // Extract text content from the paragraph
+      return firstParagraph.content[0].value || null;
     }
 
     return null;
@@ -58,8 +53,8 @@ const LatestBlogPreview = () => {
   }
 
   // Get first paragraph or use excerpt as fallback
-  const firstParagraph = latestPost.content ? getFirstParagraph(latestPost.content) : null;
-  const displayText = firstParagraph || (latestPost.excerpt ? <p>{latestPost.excerpt}</p> : <p>Check out our latest blog post!</p>);
+  const paragraphText = latestPost.content ? getFirstParagraph(latestPost.content) : null;
+  const contentText = paragraphText || latestPost.excerpt || 'Check out our latest blog post!';
 
   // Format the date nicely
   const formattedDate = new Date(latestPost.publishedAt).toLocaleDateString('en-US', {
@@ -75,9 +70,9 @@ const LatestBlogPreview = () => {
         <div className="my-3">
           <h3 className="text-lg md:text-xl font-semibold">{latestPost.title}</h3>
           <p className="text-sm text-gray-500 mb-2">{formattedDate}</p>
-          <div className="text-base mb-3">
-            {displayText}
-          </div>
+          <p className="text-base mb-3">
+            {contentText}
+          </p>
           <Link href={`/blog/${latestPost.slug}`} className="inline-flex items-center text-blue-700 hover:text-red-600 font-semibold transition-colors">
             Read more
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
