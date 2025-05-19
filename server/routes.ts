@@ -47,6 +47,10 @@ Brandon has been cutting hair for 16 years. He's the owner of Royals Barbershop 
 Yes, walk-ins are welcome — but availability is not guaranteed. Booking online is the best way to ensure your spot.
 • Do you cut curly or straight hair (or other hair types)?
 Yes. Royals Barbershop serves all hair types — curly, straight, coarse, fine, and everything in between.
+• What's the difference between a fade and a taper?
+A fade blends the hair evenly all the way around the head, while a taper focuses only on the temple area and the neckline. You can check the 'Browse Haircuts' section on our website to see visual examples of both — we break each style down to help you choose the right look.
+• What are your hours? / When are you open? / Is a specific barber available?
+Each of our barbers sets their own schedule, so availability can vary. The best way to find out is to check our online booking system — it shows up-to-date availability for every barber. Or feel free to call the shop during open hours if you'd like to ask about a specific schedule.
 
 ⸻
 
