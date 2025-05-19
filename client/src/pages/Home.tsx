@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
 import ContentfulHeroSection from '@/components/ContentfulHeroSection';
+import RoyalsBodyContent from '@/components/RoyalsBodyContent';
 import WelcomeSection from '@/components/WelcomeSection';
 import QuoteSection from '@/components/QuoteSection';
 import BookingSection from '@/components/BookingSection';
@@ -31,6 +32,7 @@ const Home = () => {
       <Header />
       <main>
         <ContentfulHeroSection />
+        <RoyalsBodyContent />
         <WelcomeSection />
         <QuoteSection />
         <HaircutPreviewSection />
