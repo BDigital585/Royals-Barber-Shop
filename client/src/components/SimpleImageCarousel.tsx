@@ -141,16 +141,21 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
   }
   
   return (
-    <section className={`carousel-section ${className}`}>
-      {/* Empty title area - text moved to welcome section */}
-      
-      {/* White container with the carousel */}
-      <div className="carousel-white-container mx-4">
+    <section className={`carousel-section py-6 px-4 ${className}`}>
+      <div className="container mx-auto max-w-3xl">
+        <h2 className="text-xl md:text-2xl font-heading mb-2 pb-2">Our Shop</h2>
+        
+        {/* Carousel card container */}
         <div 
           className="simple-carousel-container relative bg-black rounded-lg shadow-md overflow-hidden"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
         >
+          {/* Image Counter - Added to help track all images */}
+          <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full z-10">
+            {currentIndex + 1} / {shopImages.length}
+          </div>
+          
           {/* Main Image */}
           {shopImages.length > 0 && (
             <div className="simple-carousel-image relative overflow-hidden">
@@ -180,8 +185,6 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
           >
             <ChevronRight size={24} />
           </button>
-          
-          {/* Removed autoplay toggle button and image counter as requested */}
         </div>
       </div>
     </section>
