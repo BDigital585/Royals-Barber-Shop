@@ -172,12 +172,6 @@ const HaircutPreviewSection = () => {
         <div className="flex flex-col md:flex-row gap-6 mt-8 max-w-4xl mx-auto">
           <div className={`flex-1 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{ animationDelay: '200ms' }}>
             <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 flex flex-col h-72 sm:h-80 md:h-96">
-              {/* Chat Header */}
-              <div className="bg-primary text-white p-3 flex items-center gap-2">
-                <MessageSquare className="h-4 w-4" />
-                <h3 className="font-medium">Ask Our Stylist Assistant</h3>
-              </div>
-              
               {/* Chat Content */}
               <ChatBot isInWelcomeSection={true} />
             </div>
