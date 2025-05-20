@@ -99,13 +99,25 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
   // If in Welcome section, only render the chat content without the button and container
   if (isInWelcomeSection) {
     return (
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="flex flex-col flex-1 overflow-hidden bg-white rounded-xl shadow-xl border border-gray-100">
+        {/* Welcome Section Chat Header */}
+        <div className="bg-gradient-to-r from-black to-primary text-white p-3 flex items-center justify-between">
+          <div className="flex items-center">
+            <MessageSquare size={18} className="mr-2 text-secondary" />
+            <h3 className="font-bold">Royals Assistant</h3>
+          </div>
+          <span className="text-xs bg-black/20 px-2 py-1 rounded-full">Live Chat</span>
+        </div>
+        
         {/* Messages container */}
         <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
           {messages.length === 0 ? (
-            <div className="text-center text-gray-500 my-8">
-              <MessageSquare className="mx-auto mb-2 text-primary" size={32} />
-              <p>Welcome to Royals Barbershop! How can I help you today?</p>
+            <div className="text-center my-4 bg-black/5 p-4 rounded-xl">
+              <div className="bg-black text-secondary w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
+                <MessageSquare size={20} />
+              </div>
+              <h4 className="font-semibold mb-2">Need Help Choosing a Style?</h4>
+              <p className="text-gray-600 text-sm">Ask me about haircuts, pricing, or any other questions!</p>
             </div>
           ) : (
             messages.map((msg, index) => (
@@ -114,11 +126,11 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
                 className={`mb-4 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}
               >
                 <div 
-                  className={`inline-block p-3 rounded-lg ${
+                  className={`inline-block p-3 rounded-xl shadow-sm ${
                     msg.role === 'user' 
-                      ? 'bg-primary text-white rounded-tr-none' 
-                      : 'bg-gray-200 text-gray-800 rounded-tl-none'
-                  } max-w-[85%]`}
+                      ? 'bg-black text-white rounded-tr-none' 
+                      : 'bg-white border border-gray-200 text-gray-800 rounded-tl-none'
+                  } max-w-[85%] text-sm`}
                 >
                   {msg.content}
                 </div>
@@ -127,11 +139,11 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
           )}
           {isTyping && (
             <div className="text-left mb-4">
-              <div className="inline-block p-3 rounded-lg bg-gray-200 text-gray-800 rounded-tl-none">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+              <div className="inline-block p-3 rounded-xl shadow-sm bg-white border border-gray-200 text-gray-800 rounded-tl-none">
+                <div className="flex space-x-2">
+                  <div className="w-2 h-2 bg-secondary rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2 h-2 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
                 </div>
               </div>
             </div>
@@ -140,24 +152,24 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
         </div>
 
         {/* Input form */}
-        <form onSubmit={handleSubmit} className="p-3 border-t border-gray-200 flex bg-white">
+        <form onSubmit={handleSubmit} className="p-2 border-t border-gray-100 bg-white shadow-inner flex">
           <input
             type="text"
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900"
+            placeholder="Ask about haircuts, services..."
+            className="flex-1 p-2 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-gray-900 text-sm"
             disabled={isTyping}
           />
           <button
             type="submit"
             disabled={isTyping || !input.trim()}
-            className={`p-2 bg-primary text-white rounded-r-md ${
-              isTyping || !input.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
+            className={`p-2 bg-black text-white rounded-r-lg transition-all ${
+              isTyping || !input.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-black/90'
             }`}
           >
-            <Send size={20} />
+            <Send size={18} className="text-secondary" />
           </button>
         </form>
       </div>
@@ -166,39 +178,53 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
 
   // Default floating chat UI
   return (
-    <div className="fixed bottom-4 right-4 z-50">
-      {/* Chat button */}
+    <div className="fixed bottom-6 right-6 z-50">
+      {/* Chat button - modernized with pulse animation */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-primary hover:bg-blue-700 text-white p-4 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-105"
+          className="bg-black hover:bg-black/90 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-105 relative"
           aria-label="Open chat"
         >
-          <MessageSquare size={24} />
+          {/* Pulsing circle effect */}
+          <span className="absolute w-full h-full rounded-full bg-secondary/50 animate-ping opacity-75"></span>
+          <span className="relative flex items-center justify-center">
+            <MessageSquare size={24} className="text-secondary" />
+          </span>
+          {/* Chat label */}
+          <span className="absolute -top-10 right-0 bg-black text-white text-sm px-3 py-1 rounded-lg shadow-md whitespace-nowrap font-medium">
+            Chat with us
+          </span>
         </button>
       )}
 
-      {/* Chat window */}
+      {/* Chat window - modernized with gradient headers and better shadows */}
       {isOpen && (
-        <div className="bg-white rounded-lg shadow-xl flex flex-col w-80 sm:w-96 h-[30rem] border border-gray-200 overflow-hidden">
-          {/* Chat header */}
-          <div className="bg-primary text-white p-4 flex justify-between items-center">
-            <h3 className="font-semibold">Royals Barbershop Assistant</h3>
+        <div className="bg-white rounded-2xl shadow-2xl flex flex-col w-80 sm:w-96 h-[30rem] border border-gray-100 overflow-hidden">
+          {/* Chat header with gradient */}
+          <div className="bg-gradient-to-r from-black to-primary text-white p-4 flex justify-between items-center">
+            <div className="flex items-center">
+              <MessageSquare size={20} className="mr-2 text-secondary" />
+              <h3 className="font-bold">Royals Assistant</h3>
+            </div>
             <button 
               onClick={() => setIsOpen(false)}
-              className="text-white hover:text-gray-200 transition-colors"
+              className="bg-black/20 hover:bg-black/30 text-white p-1.5 rounded-full transition-colors"
               aria-label="Close chat"
             >
-              <X size={20} />
+              <X size={16} />
             </button>
           </div>
 
-          {/* Messages container */}
+          {/* Messages container with updated styling */}
           <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
             {messages.length === 0 ? (
-              <div className="text-center text-gray-500 my-8">
-                <MessageSquare className="mx-auto mb-2 text-primary" size={32} />
-                <p>Welcome to Royals Barbershop! How can I help you today?</p>
+              <div className="text-center my-8 bg-black/5 p-6 rounded-xl">
+                <div className="bg-black text-secondary w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+                  <MessageSquare size={28} />
+                </div>
+                <h4 className="font-semibold text-lg mb-2">Welcome to Royals Barbershop</h4>
+                <p className="text-gray-600">Ask about our services, haircuts, or book an appointment!</p>
               </div>
             ) : (
               messages.map((msg, index) => (
@@ -207,10 +233,10 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
                   className={`mb-4 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}
                 >
                   <div 
-                    className={`inline-block p-3 rounded-lg ${
+                    className={`inline-block p-3 rounded-xl shadow-sm ${
                       msg.role === 'user' 
-                        ? 'bg-primary text-white rounded-tr-none' 
-                        : 'bg-gray-200 text-gray-800 rounded-tl-none'
+                        ? 'bg-black text-white rounded-tr-none' 
+                        : 'bg-white border border-gray-200 text-gray-800 rounded-tl-none'
                     } max-w-[85%]`}
                   >
                     {msg.content}
@@ -220,11 +246,11 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
             )}
             {isTyping && (
               <div className="text-left mb-4">
-                <div className="inline-block p-3 rounded-lg bg-gray-200 text-gray-800 rounded-tl-none">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                <div className="inline-block p-3 rounded-xl shadow-sm bg-white border border-gray-200 text-gray-800 rounded-tl-none">
+                  <div className="flex space-x-2">
+                    <div className="w-2 h-2 bg-secondary rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-secondary rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
                   </div>
                 </div>
               </div>
@@ -232,25 +258,25 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input form */}
-          <form onSubmit={handleSubmit} className="p-3 border-t border-gray-200 flex bg-white">
+          {/* Input form with modernized styling */}
+          <form onSubmit={handleSubmit} className="p-3 border-t border-gray-100 bg-white shadow-inner flex">
             <input
               type="text"
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
-              className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900"
+              className="flex-1 p-3 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-gray-900"
               disabled={isTyping}
             />
             <button
               type="submit"
               disabled={isTyping || !input.trim()}
-              className={`p-2 bg-primary text-white rounded-r-md ${
-                isTyping || !input.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
+              className={`p-3 bg-black text-white rounded-r-lg transition-all ${
+                isTyping || !input.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-black/90'
               }`}
             >
-              <Send size={20} />
+              <Send size={20} className="text-secondary" />
             </button>
           </form>
         </div>
