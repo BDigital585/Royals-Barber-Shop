@@ -61,8 +61,8 @@ const WelcomeSection = () => {
         </div>
       )}
       
-      {/* Main content */}
-      <div className="container mx-auto px-4 py-6 md:py-8 relative z-20">
+      {/* Main content - compressed spacing */}
+      <div className="container mx-auto px-4 py-3 md:py-4 relative z-20">
         <div className="flex flex-col items-center">
           
           {/* Contact and social info - Grid layout for better mobile display */}

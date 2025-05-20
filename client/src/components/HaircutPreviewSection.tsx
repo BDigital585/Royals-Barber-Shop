@@ -97,12 +97,10 @@ const HaircutPreviewSection = () => {
   return (
     <section 
       id="haircut-preview-section"
-      className="py-12 md:py-16 bg-white"
+      className="py-8 md:py-10 bg-white"
     >
       <div className="container mx-auto px-4">
-
-        
-        <div className={`mb-8 ${isVisible ? 'animate-fadeIn' : 'opacity-0'}`}>
+        <div className={`mb-5 ${isVisible ? 'animate-fadeIn' : 'opacity-0'}`}>
           <div className="border-l-4 border-primary pl-3 md:pl-4 py-1 max-w-2xl mx-auto">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
               Not Sure What <span className="inline-block">to Ask For?</span>
