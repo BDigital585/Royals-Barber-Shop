@@ -106,7 +106,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
             <MessageSquare size={18} className="mr-2 text-secondary" />
             <h3 className="font-bold">Royals Assistant</h3>
           </div>
-          <span className="text-xs bg-black/20 px-2 py-1 rounded-full">Live Chat</span>
+          <span className="text-xs bg-red-600/80 px-2 py-1 rounded-full animate-pulse shadow-[0_0_5px_#ff0000] font-medium">Live Chat</span>
         </div>
         
         {/* Messages container */}
@@ -116,7 +116,6 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
               <div className="bg-black text-secondary w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
                 <MessageSquare size={20} />
               </div>
-              <h4 className="font-semibold mb-2">Need Help Choosing a Style?</h4>
               <p className="text-gray-600 text-sm">Ask me about haircuts, pricing, or any other questions!</p>
             </div>
           ) : (
@@ -192,7 +191,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
             <MessageSquare size={24} className="text-secondary" />
           </span>
           {/* Chat label */}
-          <span className="absolute -top-10 right-0 bg-black text-white text-sm px-3 py-1 rounded-lg shadow-md whitespace-nowrap font-medium">
+          <span className="absolute -top-10 right-0 bg-black text-secondary text-sm px-3 py-1 rounded-lg shadow-md whitespace-nowrap font-medium">
             Chat with us
           </span>
         </button>
