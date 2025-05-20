@@ -76,26 +76,26 @@ const LatestBlogPreview = () => {
   return (
     <section className="latest-blog-preview py-6 px-4 bg-white text-black">
       <div className="container mx-auto max-w-3xl">
-        <h2 className="text-xl md:text-2xl font-heading mb-2 pb-2">Latest From Our Blog</h2>
-        <div className="my-3 flex flex-row gap-3">
+        <h2 className="text-xl md:text-2xl font-heading mb-4 border-l-4 border-primary pl-3 py-1">Latest From Our Blog</h2>
+        <div className="flex flex-col sm:flex-row gap-4 bg-gray-50 rounded-lg shadow-sm overflow-hidden">
           {latestPost.featuredImage && (
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 sm:w-1/3">
               <img 
                 src={latestPost.featuredImage} 
                 alt={latestPost.title} 
-                className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-md shadow-sm"
+                className="w-full h-48 sm:h-full object-cover"
               />
             </div>
           )}
-          <div className="flex-grow">
+          <div className="flex-grow p-4">
             <h3 className="text-lg md:text-xl font-semibold">{latestPost.title}</h3>
-            <p className="text-sm text-gray-500 mb-2">{formattedDate}</p>
-            <p className="text-xs sm:text-sm md:text-base mb-2 md:mb-3 line-clamp-3">
+            <p className="text-sm text-gray-500 mb-3">{formattedDate}</p>
+            <p className="text-sm md:text-base mb-4 line-clamp-3 text-gray-700">
               {displayText}
             </p>
             <Link 
               href={`/blog/${latestPost.slug}`} 
-              className="inline-flex items-center text-blue-700 hover:text-red-600 font-semibold transition-colors"
+              className="inline-flex items-center text-primary hover:text-black font-semibold transition-colors py-2 px-3 bg-gray-100 rounded-md hover:bg-gray-200"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               Read more
