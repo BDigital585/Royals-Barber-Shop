@@ -62,18 +62,18 @@ export default function ContentfulHeroSection() {
         {/* Gradient overlay for text visibility */}
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-between py-8 md:py-12">
           <div className="container mx-auto px-3 md:px-6 flex flex-col items-start">
-            <div className="max-w-[400px] text-white text-left pl-2 sm:pl-4 md:pl-6 mb-2 md:mb-4">
-              <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight leading-tight mb-1 md:mb-2">
+            <div className="max-w-[400px] text-white text-left pl-2 sm:pl-4 md:pl-6 mb-2 md:mb-4 mt-4">
+              <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight leading-tight mb-2 md:mb-3">
                 Ready for a<br />fresh look?
               </h1>
-              <p className="text-[10px] sm:text-xs md:text-sm uppercase tracking-wider mb-2 sm:mb-3 max-w-[220px] sm:max-w-[280px]">
+              <p className="text-xs sm:text-sm md:text-base uppercase tracking-wider mb-3 sm:mb-4 max-w-[240px] sm:max-w-[300px]">
                 walk-ins welcome or<br />schedule online today
               </p>
               <a 
                 href="https://royalsbarbershop.setmore.com/" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-black text-white font-medium uppercase py-2 px-6 md:py-3 md:px-8 rounded text-xs sm:text-sm md:text-base border border-white/20 hover:bg-primary transition-colors duration-300"
+                className="inline-block bg-gradient-to-r from-primary to-blue-700 text-white font-medium uppercase py-2 px-6 md:py-3 md:px-8 rounded-md text-xs sm:text-sm md:text-base shadow-md hover:shadow-lg hover:brightness-105 transition-all duration-300"
               >
                 Book Now
               </a>
@@ -81,7 +81,7 @@ export default function ContentfulHeroSection() {
           </div>
           
           {/* Contact buttons at bottom of hero */}
-          <div className="container mx-auto px-3 md:px-6 w-full mt-auto pb-8 md:pb-10">
+          <div className="container mx-auto px-3 md:px-6 w-full mt-auto pb-4 md:pb-5">
             <div className="flex justify-center space-x-8">
               {/* Location */}
               <a 
