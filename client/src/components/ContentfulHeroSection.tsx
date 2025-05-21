@@ -81,7 +81,7 @@ export default function ContentfulHeroSection() {
           </div>
           
           {/* Contact buttons at bottom of hero - more compact */}
-          <div className="container mx-auto px-3 md:px-6 w-full mt-auto pb-20">
+          <div className="container mx-auto px-3 md:px-6 w-full mt-auto pb-6 md:pb-8">
             <div className="flex justify-center space-x-6">
               {/* Location */}
               <a 
