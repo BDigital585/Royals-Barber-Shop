@@ -174,7 +174,7 @@ const BrowseHaircuts = () => {
         {/* Hero video section for BrowseHaircuts page */}
         <section className="relative w-full bg-black">
           <div className="w-full h-[70vh] min-h-[450px] max-h-[700px] relative overflow-hidden bg-black">
-            {/* Static background image that shows immediately */}
+            {/* Static background with logo */}
             <div 
               className="absolute inset-0 w-full h-full bg-cover bg-center" 
               style={{ 
@@ -182,35 +182,9 @@ const BrowseHaircuts = () => {
                 backgroundSize: '30%',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
-                opacity: videoLoaded ? 0 : 1,
-                transition: 'opacity 0.3s ease-in-out',
                 backgroundColor: '#000'
               }}
             />
-            
-            {/* Video background with optimized loading */}
-            <video 
-              ref={videoRef}
-              className="absolute inset-0 w-full h-full object-cover opacity-80"
-              autoPlay 
-              loop 
-              muted 
-              playsInline
-              preload="auto"
-              controlsList="nodownload"
-              style={{ 
-                willChange: 'transform',
-                opacity: videoLoaded ? 0.8 : 0,
-                transition: 'opacity 0.3s ease-in-out'
-              }}
-              onLoadedData={(e) => {
-                e.currentTarget.play();
-                setVideoLoaded(true);
-              }}
-            >
-              <source src="/images/guy-chair.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
             
             {/* Overlay gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent flex items-end justify-end flex-col">
