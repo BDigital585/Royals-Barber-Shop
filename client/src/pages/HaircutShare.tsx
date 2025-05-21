@@ -256,7 +256,7 @@ const HaircutShare = () => {
                 
                 <div className="mt-8 p-4 bg-gray-50 rounded-lg">
                   <p className="text-gray-700">
-                    Ready to get this look? Book an appointment at Royals Barbershop today!
+                    Ready to get this look? Book an appointment at Royals Barber Shop today!
                   </p>
                   <Button 
                     className="mt-4 bg-primary hover:bg-white hover:text-primary border-2 border-primary transition-colors"

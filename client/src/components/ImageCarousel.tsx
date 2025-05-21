@@ -43,7 +43,7 @@ const carouselImages: CarouselImage[] = [
   },
   {
     src: "/shop/IMG_0680.JPG",
-    alt: "Precision haircut by Royals Barbershop professionals"
+    alt: "Precision haircut by Royals Barber Shop professionals"
   },
   {
     src: "/shop/IMG_9364.JPG",
@@ -122,7 +122,7 @@ const ImageCarousel = () => {
           <span className="font-medium text-gray-700 text-lg md:text-xl">Thank you for growing with us!</span>
         </h2>
         
-        <Carousel className="relative w-full" aria-label="Royals Barbershop images">
+        <Carousel className="relative w-full" aria-label="Royals Barber Shop images">
           <CarouselContent>
             {carouselImages.map((image, index) => (
               <CarouselItem key={index} className="flex justify-center">

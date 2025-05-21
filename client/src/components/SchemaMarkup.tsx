@@ -46,8 +46,8 @@ const SchemaMarkup = ({
     const baseSchema: BaseSchemaType = {
       "@context": "https://schema.org",
       "@type": "Barbershop",
-      "name": "Royals Barbershop",
-      "image": "https://www.royalsbatavia.com/logo.png",
+      "name": "Royals Barber Shop",
+      "image": "https://www.royalsbatavia.com/logo.png", 
       "url": "https://www.royalsbatavia.com",
       "telephone": "585-536-6576",
       "address": {
@@ -71,7 +71,7 @@ const SchemaMarkup = ({
       ],
       "priceRange": "$$",
       "paymentAccepted": "Cash, Credit Card",
-      "description": "Royals Barbershop offers premium men's haircuts, fades, tapers, and facial hair styling in Batavia, NY. Our experienced barbers provide personalized service for all types of men's hairstyles."
+      "description": "Royals Barber Shop offers premium men's haircuts, fades, tapers, and facial hair styling in Batavia, NY. Our experienced barbers provide personalized service for all types of men's hairstyles."
     };
     
     let schema: BaseSchemaType = {...baseSchema};
