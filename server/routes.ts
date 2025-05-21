@@ -10,10 +10,24 @@ import path from "path";
 import fs from "fs";
 import OpenAI from "openai";
 
+// Function to initialize or reinitialize the OpenAI client
+// This allows us to update the API key without restarting the server
+function createOpenAIClient() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  
+  if (!apiKey) {
+    console.warn('⚠️ OpenAI API key is missing. Chatbot functionality will be unavailable.');
+    return null;
+  }
+  
+  console.log('OpenAI client initialized with API key');
+  return new OpenAI({
+    apiKey: apiKey,
+  });
+}
+
 // Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let openai = createOpenAIClient();
 
 // The system prompt for the chatbot
 const CHATBOT_SYSTEM_PROMPT = `You are Royals Barber Shop's helpful assistant. Your job is to greet visitors, help them navigate the site, answer common questions, and encourage them to book an appointment.
@@ -209,6 +223,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid request format. 'messages' array is required." });
       }
 
+      // Check if OpenAI client is available
+      if (!openai) {
+        // Try to reinitialize the client (in case API key was added after server start)
+        openai = createOpenAIClient();
+        
+        // If still not available, return a friendly error message
+        if (!openai) {
+          return res.status(503).json({ 
+            error: "Chatbot temporarily unavailable",
+            message: "The chatbot is currently being updated. Please try again in a few minutes."
+          });
+        }
+      }
+
       // Prepend the system message to the conversation
       const fullMessages = [
         { role: "system", content: CHATBOT_SYSTEM_PROMPT },
@@ -230,6 +258,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
     } catch (error: any) {
       console.error("Error processing chatbot request:", error);
+      
+      // More descriptive error messages
+      if (error.message && error.message.includes('API key')) {
+        return res.status(503).json({
+          error: "Chatbot configuration issue",
+          message: "The chatbot is being updated with new credentials. Please try again in a few minutes."
+        });
+      }
+      
       res.status(500).json({ 
         error: "Failed to process chatbot request",
         details: error.message || "Unknown error"
