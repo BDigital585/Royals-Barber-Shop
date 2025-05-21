@@ -209,7 +209,7 @@ const ContentfulHeroSection = () => {
           <div className="container mx-auto px-4 md:px-6 flex flex-col items-start">
             <div className="max-w-[400px] text-white text-left pl-2 sm:pl-4 md:pl-6">
               <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight leading-tight mb-2 md:mb-3">
-                Ready for a<br />fresh cut?
+                Ready for a<br />fresh look?
               </h1>
               <p className="text-[10px] sm:text-xs md:text-sm uppercase tracking-wider mb-2 md:mb-4 max-w-[220px] sm:max-w-[280px]">
                 walk-ins welcome or<br />schedule online today

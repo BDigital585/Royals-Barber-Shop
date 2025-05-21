@@ -99,18 +99,7 @@ const HaircutPreviewSection = () => {
       id="haircut-preview-section"
       className="py-8 md:py-10 bg-white"
     >
-      <div className="container mx-auto px-4">
-        <div className={`mb-5 ${isVisible ? 'animate-fadeIn' : 'opacity-0'}`}>
-          <div className="border-l-4 border-primary pl-3 md:pl-4 py-1 max-w-2xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
-              Not Sure What <span className="inline-block">to Ask For?</span>
-            </h2>
-            <p className="text-gray-600 text-sm sm:text-base md:text-lg">
-              Explore popular styles so you know exactly what to book.
-            </p>
-          </div>
-        </div>
-        
+      <div className="container mx-auto px-4">        
         {randomImages.length > 0 ? (
           <div className={`${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`}>
             {/* Horizontal scrollable container for mobile */}
@@ -167,14 +156,19 @@ const HaircutPreviewSection = () => {
           </div>
         )}
         
-        <div className="flex flex-col md:flex-row gap-6 mt-8 max-w-4xl mx-auto">
-          <div className={`flex-1 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{ animationDelay: '200ms' }}>
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 flex flex-col h-72 sm:h-80 md:h-96">
-              {/* Chat Content */}
-              <ChatBot isInWelcomeSection={true} />
-            </div>
+        {/* Heading moved below the images */}
+        <div className={`mt-8 mb-6 ${isVisible ? 'animate-fadeIn' : 'opacity-0'}`}>
+          <div className="border-l-4 border-primary pl-3 md:pl-4 py-1 max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
+              Not Sure What <span className="inline-block">to Ask For?</span>
+            </h2>
+            <p className="text-gray-600 text-sm sm:text-base md:text-lg">
+              Explore popular styles so you know exactly what to book.
+            </p>
           </div>
-          
+        </div>
+        
+        <div className="flex flex-col md:flex-row gap-6 mt-8 max-w-4xl mx-auto">
           <div className={`flex-1 flex flex-col justify-center ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{ animationDelay: '300ms' }}>
             <h3 className="text-lg font-medium mb-3 text-center md:text-left">Want to see all styles?</h3>
             <ScrollToTopLink 
