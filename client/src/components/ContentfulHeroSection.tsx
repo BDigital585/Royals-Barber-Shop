@@ -44,6 +44,9 @@ export default function ContentfulHeroSection() {
 
   return (
     <section className="w-full h-[70vh] min-h-[480px] md:min-h-[550px] max-h-[650px] relative bg-black overflow-hidden">
+      {/* LED Ticker positioned at bottom of the hero */}
+      <LedTicker />
+      
       <div className="absolute inset-0 z-0">
         {videoUrl && (
           <video 
@@ -59,9 +62,6 @@ export default function ContentfulHeroSection() {
             Your browser does not support the video tag.
           </video>
         )}
-        
-        {/* LED Ticker at bottom of the hero */}
-        <LedTicker />
         
         {/* Gradient overlay for text visibility */}
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-between py-8 md:py-12">
@@ -85,7 +85,7 @@ export default function ContentfulHeroSection() {
           </div>
           
           {/* Contact buttons at bottom of hero - more compact */}
-          <div className="container mx-auto px-3 md:px-6 w-full mt-auto pb-14">
+          <div className="container mx-auto px-3 md:px-6 w-full mt-auto pb-20">
             <div className="flex justify-center space-x-6">
               {/* Location */}
               <a 
