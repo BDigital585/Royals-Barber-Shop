@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { useState } from 'react';
 import MetaTags from '@/components/MetaTags';
 import SchemaMarkup from '@/components/SchemaMarkup';
 import ImageSchemaMarkup from '@/components/ImageSchemaMarkup';
+import Layout from '@/components/Layout';
 import { useHaircutImages } from '../features/haircuts/useHaircutImages';
 
 // Valid category IDs (used for validation)
@@ -24,83 +23,9 @@ const categoryNames: Record<string, string> = {
   'other styles': 'Other Styles'
 };
 
-const BrowseHaircuts = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+export default function BrowseHaircuts() {
   const imagesByFolder = useHaircutImages();
   const [activeFilter, setActiveFilter] = useState('all');
-  
-  // State to track video loading
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  
-  // Optimize video loading for instant playback
-  useEffect(() => {
-    // Cache the video in browser memory
-    const prefetchVideo = () => {
-      // Create a link tag to prefetch the video
-      const link = document.createElement('link');
-      link.rel = 'prefetch';
-      link.href = '/images/guy-chair.mp4';
-      link.as = 'video';
-      document.head.appendChild(link);
-      
-      // Also preload directly
-      const videoPreload = document.createElement('video');
-      videoPreload.style.display = 'none';
-      videoPreload.src = '/images/guy-chair.mp4';
-      videoPreload.preload = 'auto';
-      document.body.appendChild(videoPreload);
-      
-      // Clean up
-      return () => {
-        document.head.removeChild(link);
-        document.body.removeChild(videoPreload);
-      };
-    };
-    
-    // Function to handle immediate video playback
-    const handleVideoPlayback = () => {
-      const video = videoRef.current;
-      if (!video) return;
-      
-      // Set highest loading priority
-      video.preload = "auto";
-      
-      // Force load and immediate play
-      video.load();
-      
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log("Video playing successfully");
-            setVideoLoaded(true);
-          })
-          .catch(error => {
-            console.log("Video autoplay prevented:", error);
-            // Try again on user interaction
-            document.addEventListener('click', () => {
-              video.play()
-                .then(() => setVideoLoaded(true))
-                .catch(() => {});
-            }, { once: true });
-          });
-      }
-    };
-    
-    // Run both strategies
-    const cleanup = prefetchVideo();
-    handleVideoPlayback();
-    
-    // Set up fallback timers to make sure video appears
-    const timer = setTimeout(() => {
-      setVideoLoaded(true); // Force showing video after a delay
-    }, 300);
-    
-    return () => {
-      cleanup();
-      clearTimeout(timer);
-    };
-  }, []);
   
   /**
    * Helper function to get the display name for a category
@@ -156,139 +81,133 @@ const BrowseHaircuts = () => {
   const displayImages = getDisplayImages();
 
   return (
-    <>
-      {/* SEO meta tags for haircuts gallery page */}
-      <MetaTags
-        title="Pick a Style That Fits You | Royals Barbershop, Batavia NY"
-        description="Explore our gallery of premium men's haircuts including fades, tapers, kids cuts and facial hair styling at Royals Barbershop in Batavia, NY."
-        imageUrl="/src/assets/haircuts/fades/low-skin-fade.png"
-        type="website"
-        url="https://www.royalsbatavia.com/browse-haircuts"
-      />
-      
-      {/* Schema markup for haircuts gallery page */}
-      <SchemaMarkup type="website" />
-      
-      <Header />
-      <main className="pb-16">
-        <div className="container mx-auto px-4 py-3 md:py-6 mt-6 md:mt-8">
-          <section className="haircuts-header mb-5 md:mb-6">
-            <div className="border-l-4 border-primary pl-3 md:pl-4 py-1">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
-                Find Your Perfect <span className="inline-block">Style</span>
-              </h1>
-              <p className="text-gray-600 text-sm sm:text-base mb-1 max-w-xl">
-                Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barber Shop.
-              </p>
-            </div>
-          </section>
-          
-          {/* Scrollable Filter Bar */}
-          <div className="relative mb-8 overflow-x-auto pb-2">
-            <div className="flex space-x-2 min-w-max">
-              {filterCategories.map(category => (
-                <button
-                  key={category.id}
-                  className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-colors duration-200 ${
-                    activeFilter === category.id
-                    ? 'bg-primary text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                  onClick={() => handleFilterChange(category.id)}
-                >
-                  {category.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          {/* Display haircut images in a responsive grid */}
-          {displayImages.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayImages.map((imageUrl, index) => {
-                // Extract folder and filename from the imageUrl
-                const matches = imageUrl.match(/\/src\/assets\/haircuts\/([^/]+)\/([^/]+)$/);
-                if (!matches) return null;
-                
-                const [, folder, filename] = matches;
-                const imageTitle = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '').replace(/-/g, ' ');
-                const formattedTitle = imageTitle
-                  .split(' ')
-                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(' ');
-                
-                // Create the share link
-                const shareLink = `/haircut/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}`;
-                
-                return (
-                  <div key={index} className="group relative aspect-square rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
-                    <a href={shareLink} className="block w-full h-full">
-                      <img 
-                        src={imageUrl} 
-                        alt={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barbershop, Batavia NY`}
-                        className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
-                      />
-                      {/* Add ImageObject schema markup for this image */}
-                      <ImageSchemaMarkup 
-                        imageUrl={imageUrl}
-                        description={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barbershop, Batavia NY`}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="absolute bottom-0 left-0 right-0 p-4">
-                          <h3 className="text-white font-medium truncate">{formattedTitle}</h3>
-                          {/* Only show category if it's valid */}
-                          {getCategoryName(folder) && (
-                            <div className="flex items-center mt-1">
-                              <span className="inline-block w-2 h-2 rounded-full bg-secondary mr-2"></span>
-                              <p className="text-white/90 text-sm font-medium">{getCategoryName(folder)}</p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </a>
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <button 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          window.location.href = shareLink;
-                        }}
-                        className="p-2 bg-white/90 backdrop-blur-sm rounded-md shadow-lg hover:bg-white transition-colors flex items-center"
-                        aria-label="Share haircut"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-black">
-                          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                          <polyline points="16 6 12 2 8 6"></polyline>
-                          <line x1="12" y1="2" x2="12" y2="15"></line>
-                        </svg>
-                        <span className="ml-1 text-xs font-medium text-black">Share</span>
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="min-h-[400px] flex items-center justify-center bg-gray-50 rounded-lg">
-              <p className="text-gray-500 text-center">
-                No images available for this category yet. Check back soon!
-              </p>
-            </div>
-          )}
-          
-          {/* Professional Disclaimer */}
-          <div className="mt-12 mb-8 px-4 py-5 bg-gray-50 rounded-lg">
-            <p className="text-gray-500 text-sm text-center max-w-3xl mx-auto leading-relaxed">
-              Disclaimer: The haircuts displayed on this page were not performed by barbers currently employed at this establishment. 
-              These images are provided for promotional and educational purposes only. 
-              Our licensed barbers are capable of performing most of the styles shown.
+    <Layout>
+      <div className="container mx-auto px-4 py-3 md:py-6 mt-6 md:mt-8">
+        {/* SEO meta tags for haircuts gallery page */}
+        <MetaTags
+          title="Pick a Style That Fits You | Royals Barber Shop, Batavia NY"
+          description="Explore our gallery of premium men's haircuts including fades, tapers, kids cuts and facial hair styling at Royals Barber Shop in Batavia, NY."
+          imageUrl="/src/assets/haircuts/fades/low-skin-fade.png"
+          type="website"
+          url="https://www.royalsbatavia.com/browse-haircuts"
+        />
+        
+        {/* Schema markup for haircuts gallery page */}
+        <SchemaMarkup type="website" />
+        
+        <section className="haircuts-header mb-5 md:mb-6">
+          <div className="border-l-4 border-primary pl-3 md:pl-4 py-1">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
+              Find Your Perfect <span className="inline-block">Style</span>
+            </h1>
+            <p className="text-gray-600 text-sm sm:text-base mb-1 max-w-xl">
+              Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barber Shop.
             </p>
           </div>
+        </section>
+        
+        {/* Scrollable Filter Bar */}
+        <div className="relative mb-8 overflow-x-auto pb-2">
+          <div className="flex space-x-2 min-w-max">
+            {filterCategories.map(category => (
+              <button
+                key={category.id}
+                className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-colors duration-200 ${
+                  activeFilter === category.id
+                  ? 'bg-primary text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+                onClick={() => handleFilterChange(category.id)}
+              >
+                {category.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </main>
-      <Footer />
-    </>
+        
+        {/* Display haircut images in a responsive grid */}
+        {displayImages.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {displayImages.map((imageUrl, index) => {
+              // Extract folder and filename from the imageUrl
+              const matches = imageUrl.match(/\/src\/assets\/haircuts\/([^/]+)\/([^/]+)$/);
+              if (!matches) return null;
+              
+              const [, folder, filename] = matches;
+              const imageTitle = filename.replace(/\.(jpg|jpeg|png|webp)$/i, '').replace(/-/g, ' ');
+              const formattedTitle = imageTitle
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+              
+              // Create the share link
+              const shareLink = `/haircut/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}`;
+              
+              return (
+                <div key={index} className="group relative aspect-square rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+                  <a href={shareLink} className="block w-full h-full">
+                    <img 
+                      src={imageUrl} 
+                      alt={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barber Shop, Batavia NY`}
+                      className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
+                    />
+                    {/* Add ImageObject schema markup for this image */}
+                    <ImageSchemaMarkup 
+                      imageUrl={imageUrl}
+                      description={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barber Shop, Batavia NY`}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 className="text-white font-medium truncate">{formattedTitle}</h3>
+                        {/* Only show category if it's valid */}
+                        {getCategoryName(folder) && (
+                          <div className="flex items-center mt-1">
+                            <span className="inline-block w-2 h-2 rounded-full bg-secondary mr-2"></span>
+                            <p className="text-white/90 text-sm font-medium">{getCategoryName(folder)}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </a>
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <button 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.location.href = shareLink;
+                      }}
+                      className="p-2 bg-white/90 backdrop-blur-sm rounded-md shadow-lg hover:bg-white transition-colors flex items-center"
+                      aria-label="Share haircut"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-black">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                        <polyline points="16 6 12 2 8 6"></polyline>
+                        <line x1="12" y1="2" x2="12" y2="15"></line>
+                      </svg>
+                      <span className="ml-1 text-xs font-medium text-black">Share</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="min-h-[400px] flex items-center justify-center bg-gray-50 rounded-lg">
+            <p className="text-gray-500 text-center">
+              No images available for this category yet. Check back soon!
+            </p>
+          </div>
+        )}
+        
+        {/* Professional Disclaimer */}
+        <div className="mt-12 mb-8 px-4 py-5 bg-gray-50 rounded-lg">
+          <p className="text-gray-500 text-sm text-center max-w-3xl mx-auto leading-relaxed">
+            Disclaimer: The haircuts displayed on this page were not performed by barbers currently employed at this establishment. 
+            These images are provided for promotional and educational purposes only. 
+            Our licensed barbers are capable of performing most of the styles shown.
+          </p>
+        </div>
+      </div>
+    </Layout>
   );
-};
-
-export default BrowseHaircuts;
+}
