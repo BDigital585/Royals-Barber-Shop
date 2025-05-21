@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { FaMapMarkerAlt, FaPhone, FaInstagram, FaFacebook, FaComments } from 'react-icons/fa';
 import { FaGoogle } from 'react-icons/fa';
-import ChatBot from './ChatBot';
 
 const WelcomeSection = () => {
   const shimmerRef = useRef<HTMLDivElement>(null);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  // No chat state anymore - removed chat functionality from this component
 
   // Shimmer light effect on scroll
   useEffect(() => {
@@ -40,26 +39,7 @@ const WelcomeSection = () => {
         className="absolute inset-0 opacity-30 z-10 shimmer-effect"
       ></div>
       
-      {/* Chat Interface */}
-      {isChatOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-xl flex flex-col w-full max-w-md h-[30rem] overflow-hidden">
-            {/* Chat header */}
-            <div className="bg-primary text-white p-4 flex justify-between items-center">
-              <h3 className="font-semibold">Royals Barbershop Assistant</h3>
-              <button 
-                onClick={() => setIsChatOpen(false)}
-                className="text-white hover:text-gray-200 transition-colors"
-                aria-label="Close chat"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              </button>
-            </div>
-            
-            <ChatBot isInWelcomeSection={true} />
-          </div>
-        </div>
-      )}
+      {/* No chat interface here anymore - moved to Home component */}
       
       {/* Main content - compressed spacing */}
       <div className="container mx-auto px-4 py-3 md:py-4 relative z-20">
@@ -122,21 +102,19 @@ const WelcomeSection = () => {
                 <span className="text-xs text-center mt-1 font-medium text-gray-900">Facebook</span>
               </a>
               
-              {/* Chat Button - Icon only */}
-              <div className="flex flex-col items-center">
-                <button
-                  onClick={() => setIsChatOpen(true)}
-                  className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 shadow-md hover:shadow-lg hover:scale-105 transition-all border-0 outline-none relative"
-                  aria-label="Chat with us"
-                  style={{ boxShadow: "none" }}
-                >
-                  <div className="bg-white rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
-                    <FaComments size={20} className="text-primary" />
-                  </div>
-                  <span className="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold text-white">1</span>
-                </button>
-                <span className="text-xs text-center mt-1 font-medium text-gray-900">Chat Now</span>
-              </div>
+              {/* Google Reviews - replaced chat button */}
+              <a 
+                href="https://www.google.com/search?q=royals+barbershop+batavia+ny+reviews" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex flex-col items-center"
+                aria-label="Google Reviews"
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gradient-to-br from-[#4285F4] to-[#EA4335] text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
+                  <FaGoogle size={20} />
+                </div>
+                <span className="text-xs text-center mt-1 font-medium text-gray-900">Reviews</span>
+              </a>
             </div>
           </div>
         </div>
