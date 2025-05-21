@@ -113,8 +113,8 @@ const BrowseHaircuts = () => {
             </video>
             
             {/* Overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent flex items-end">
-              <div className="container mx-auto px-4 md:px-6 pb-12 md:pb-16">
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent flex items-end justify-end flex-col">
+              <div className="container mx-auto px-4 md:px-6 pb-16 md:pb-20">
                 <div className="max-w-3xl">
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4">
                     Find Your <span className="text-primary">Style</span>

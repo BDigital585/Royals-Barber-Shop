@@ -80,38 +80,38 @@ export default function ContentfulHeroSection() {
             </div>
           </div>
           
-          {/* Contact buttons at bottom of hero - more compact */}
-          <div className="container mx-auto px-3 md:px-6 w-full mt-auto pb-6 md:pb-8">
-            <div className="flex justify-center space-x-6">
+          {/* Contact buttons at bottom of hero */}
+          <div className="container mx-auto px-3 md:px-6 w-full mt-auto pb-8 md:pb-10">
+            <div className="flex justify-center space-x-8">
               {/* Location */}
               <a 
                 href="https://maps.google.com/?q=317+Ellicott+Street,+Batavia,+NY"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col items-center rounded-lg bg-black/70 backdrop-blur-sm px-2 py-1.5 shadow-md hover:bg-black/80 transition-all"
+                className="flex flex-col items-center"
               >
                 <div className="flex-shrink-0">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md">
-                    <FaMapMarkerAlt size={18} />
+                  <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md">
+                    <FaMapMarkerAlt size={20} />
                   </div>
                 </div>
-                <div className="text-white text-center mt-1">
-                  <span className="text-[10px] sm:text-xs font-semibold">Address</span>
+                <div className="text-white text-center mt-2">
+                  <span className="text-xs sm:text-sm font-semibold">Address</span>
                 </div>
               </a>
               
               {/* Phone */}
               <a 
                 href="tel:+15855366576"
-                className="flex flex-col items-center rounded-lg bg-black/70 backdrop-blur-sm px-2 py-1.5 shadow-md hover:bg-black/80 transition-all" 
+                className="flex flex-col items-center" 
               >
                 <div className="flex-shrink-0">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md">
-                    <FaPhone size={18} />
+                  <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md">
+                    <FaPhone size={20} />
                   </div>
                 </div>
-                <div className="text-white text-center mt-1">
-                  <span className="text-[10px] sm:text-xs font-semibold">Call Now</span>
+                <div className="text-white text-center mt-2">
+                  <span className="text-xs sm:text-sm font-semibold">Call Now</span>
                 </div>
               </a>
             </div>
