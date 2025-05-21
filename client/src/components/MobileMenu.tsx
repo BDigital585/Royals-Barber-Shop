@@ -39,9 +39,15 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
         <ScrollToTopLink href="/" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
           Home
         </ScrollToTopLink>
-        <ScrollToTopLink href="/#book" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
+        <a
+          href="https://royalsbarbershop.setmore.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onClose}
+          className="text-white text-xl font-medium nav-link text-center"
+        >
           Book Now
-        </ScrollToTopLink>
+        </a>
         
         <ScrollToTopLink href="/browse-haircuts" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
           Browse Haircuts
