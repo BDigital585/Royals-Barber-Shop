@@ -97,11 +97,42 @@ const BrowseHaircuts = () => {
       
       <Header />
       <main className="pt-[64px] md:pt-[72px] pb-16">
-        <div className="container mx-auto px-4 py-3 md:py-6 mt-6 md:mt-8">
+        {/* Hero video section for BrowseHaircuts page */}
+        <section className="relative w-full bg-black">
+          <div className="w-full h-[60vh] min-h-[400px] max-h-[600px] relative overflow-hidden">
+            {/* Video background */}
+            <video 
+              className="absolute inset-0 w-full h-full object-cover opacity-80"
+              autoPlay 
+              loop 
+              muted 
+              playsInline 
+            >
+              <source src="/guy-chair.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            
+            {/* Overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent flex items-end">
+              <div className="container mx-auto px-4 md:px-6 pb-8 md:pb-12">
+                <div className="max-w-3xl">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4">
+                    Find Your <span className="text-primary">Perfect Style</span>
+                  </h1>
+                  <p className="text-white/90 text-sm md:text-base lg:text-lg max-w-xl mb-4">
+                    Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barbershop.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <div className="container mx-auto px-4 py-6 md:py-8">
           <div className="border-l-4 border-primary pl-3 md:pl-4 py-1 mb-5 md:mb-6">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
-              Find Your <span className="inline-block">Perfect Style</span>
-            </h1>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-heading text-primary mb-2 leading-tight">
+              Find Your <span className="inline-block">Signature Look</span>
+            </h2>
             <p className="text-gray-600 text-sm sm:text-base mb-1 max-w-xl">
               Not sure what to ask for? Browse our visual guide to popular cuts and styles.
             </p>
