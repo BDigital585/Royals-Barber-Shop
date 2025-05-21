@@ -96,7 +96,7 @@ const BrowseHaircuts = () => {
       <SchemaMarkup type="website" />
       
       <Header />
-      <main className="pt-[64px] md:pt-[72px] pb-16">
+      <main className="pb-16">
         {/* Hero video section for BrowseHaircuts page */}
         <section className="relative w-full bg-black">
           <div className="w-full h-[60vh] min-h-[400px] max-h-[600px] relative overflow-hidden">
@@ -117,7 +117,7 @@ const BrowseHaircuts = () => {
               <div className="container mx-auto px-4 md:px-6 pb-8 md:pb-12">
                 <div className="max-w-3xl">
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4">
-                    Find Your <span className="text-primary">Perfect Style</span>
+                    Find Your <span className="text-primary">Style</span>
                   </h1>
                   <p className="text-white/90 text-sm md:text-base lg:text-lg max-w-xl mb-4">
                     Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barbershop.

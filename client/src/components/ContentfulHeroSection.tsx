@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { FaMapMarkerAlt, FaPhone, FaStar, FaStarHalfAlt, FaGoogle } from 'react-icons/fa';
-import LedTicker from './LedTicker';
 
 export default function ContentfulHeroSection() {
   const { data, isLoading, error } = useQuery({
@@ -116,9 +115,6 @@ export default function ContentfulHeroSection() {
                 </div>
               </a>
             </div>
-            
-            {/* LED Ticker positioned under the contact buttons */}
-            <LedTicker />
           </div>
         </div>
       </div>
