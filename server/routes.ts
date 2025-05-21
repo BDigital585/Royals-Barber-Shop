@@ -13,6 +13,7 @@ import OpenAI from "openai";
 // Function to initialize or reinitialize the OpenAI client
 // This allows us to update the API key without restarting the server
 function createOpenAIClient() {
+  // Force reload environment variables to get the latest API key
   const apiKey = process.env.OPENAI_API_KEY;
   
   if (!apiKey) {
@@ -20,14 +21,14 @@ function createOpenAIClient() {
     return null;
   }
   
-  console.log('OpenAI client initialized with API key');
+  console.log('Creating new OpenAI client with refreshed API key - length:', apiKey.length);
   return new OpenAI({
     apiKey: apiKey,
   });
 }
 
-// Initialize OpenAI client
-let openai = createOpenAIClient();
+// Initialize OpenAI client - will be refreshed on each request
+let openai = null;
 
 // The system prompt for the chatbot
 const CHATBOT_SYSTEM_PROMPT = `You are Royals Barber Shop's helpful assistant. Your job is to greet visitors, help them navigate the site, answer common questions, and encourage them to book an appointment.
