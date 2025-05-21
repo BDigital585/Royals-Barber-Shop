@@ -48,7 +48,7 @@ const LedTicker: React.FC = () => {
   return (
     <div className="led-ticker-container w-full absolute bottom-0 left-0 h-16 bg-black overflow-hidden z-10">
       <div className="led-ticker-wrapper whitespace-nowrap animate-marquee relative z-10">
-        <div className="led-ticker-content font-mono inline-block py-4 text-lg md:text-2xl">
+        <div className="led-ticker-content inline-block py-3 text-sm md:text-base">
           <span className="px-5 led-text">
             <FaMapMarkerAlt className="inline-block mr-2 text-blue-500" /> BATAVIA NY 
           </span>

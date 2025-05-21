@@ -20,11 +20,12 @@
 }
 
 .led-text {
-  font-family: 'VT323', monospace;
+  font-family: 'Inter', sans-serif;
   color: white;
-  letter-spacing: 0.05em;
-  font-weight: bold;
-  font-size: 1.3rem;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+  font-size: 1.2rem;
+  text-transform: uppercase;
 }
 
 @keyframes shimmer {

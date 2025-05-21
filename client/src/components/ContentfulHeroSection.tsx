@@ -44,9 +44,6 @@ export default function ContentfulHeroSection() {
 
   return (
     <section className="w-full h-[70vh] min-h-[480px] md:min-h-[550px] max-h-[650px] relative bg-black overflow-hidden">
-      {/* LED Ticker positioned at bottom of the hero */}
-      <LedTicker />
-      
       <div className="absolute inset-0 z-0">
         {videoUrl && (
           <video 
@@ -119,6 +116,9 @@ export default function ContentfulHeroSection() {
                 </div>
               </a>
             </div>
+            
+            {/* LED Ticker positioned under the contact buttons */}
+            <LedTicker />
           </div>
         </div>
       </div>
