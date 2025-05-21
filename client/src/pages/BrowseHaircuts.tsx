@@ -99,8 +99,8 @@ const BrowseHaircuts = () => {
       <main className="pb-16">
         {/* Hero video section for BrowseHaircuts page */}
         <section className="relative w-full bg-black">
-          <div className="w-full h-[60vh] min-h-[400px] max-h-[600px] relative overflow-hidden">
-            {/* Video background */}
+          <div className="w-full h-[70vh] min-h-[450px] max-h-[700px] relative overflow-hidden bg-black">
+            {/* Video background with immediate playback */}
             <video 
               className="absolute inset-0 w-full h-full object-cover opacity-80"
               autoPlay 
@@ -108,7 +108,7 @@ const BrowseHaircuts = () => {
               muted 
               playsInline
               preload="auto"
-              poster="/images/haircut-poster.jpg"
+              controlsList="nodownload"
             >
               <source src="/images/guy-chair.mp4" type="video/mp4" />
               Your browser does not support the video tag.
@@ -116,10 +116,10 @@ const BrowseHaircuts = () => {
             
             {/* Overlay gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent flex items-end justify-end flex-col">
-              <div className="container mx-auto px-4 md:px-6 pb-20 md:pb-24">
-                <div className="max-w-3xl mb-4 md:mb-0">
+              <div className="container mx-auto px-4 md:px-6 pb-10 md:pb-12">
+                <div className="max-w-3xl mb-8 md:mb-10">
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4">
-                    Find Your <span className="text-primary">Style</span>
+                    Find Your Perfect <span className="text-primary">Style</span>
                   </h1>
                   <p className="text-white/90 text-sm md:text-base lg:text-lg max-w-xl mb-6">
                     Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barber Shop.
