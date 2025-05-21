@@ -3,7 +3,6 @@ import MetaTags from '@/components/MetaTags';
 import SchemaMarkup from '@/components/SchemaMarkup';
 import ImageSchemaMarkup from '@/components/ImageSchemaMarkup';
 import Layout from '@/components/Layout';
-import BrowseHaircutsHeroSection from '@/components/BrowseHaircutsHeroSection';
 import { useHaircutImages } from '../features/haircuts/useHaircutImages';
 
 // Valid category IDs (used for validation)
@@ -83,22 +82,29 @@ export default function BrowseHaircuts() {
 
   return (
     <Layout>
-      {/* SEO meta tags for haircuts gallery page */}
-      <MetaTags
-        title="Pick a Style That Fits You | Royals Barber Shop, Batavia NY"
-        description="Explore our gallery of premium men's haircuts including fades, tapers, kids cuts and facial hair styling at Royals Barber Shop in Batavia, NY."
-        imageUrl="/src/assets/haircuts/fades/low-skin-fade.png"
-        type="website"
-        url="https://www.royalsbatavia.com/browse-haircuts"
-      />
-      
-      {/* Schema markup for haircuts gallery page */}
-      <SchemaMarkup type="website" />
-      
-      {/* Dynamic Hero Section from Contentful */}
-      <BrowseHaircutsHeroSection />
-      
       <div className="container mx-auto px-4 py-3 md:py-6 mt-6 md:mt-8">
+        {/* SEO meta tags for haircuts gallery page */}
+        <MetaTags
+          title="Pick a Style That Fits You | Royals Barber Shop, Batavia NY"
+          description="Explore our gallery of premium men's haircuts including fades, tapers, kids cuts and facial hair styling at Royals Barber Shop in Batavia, NY."
+          imageUrl="/src/assets/haircuts/fades/low-skin-fade.png"
+          type="website"
+          url="https://www.royalsbatavia.com/browse-haircuts"
+        />
+        
+        {/* Schema markup for haircuts gallery page */}
+        <SchemaMarkup type="website" />
+        
+        <section className="haircuts-header mb-5 md:mb-6">
+          <div className="border-l-4 border-primary pl-3 md:pl-4 py-1">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
+              Find Your Perfect <span className="inline-block">Style</span>
+            </h1>
+            <p className="text-gray-600 text-sm sm:text-base mb-1 max-w-xl">
+              Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barber Shop.
+            </p>
+          </div>
+        </section>
         
         {/* Scrollable Filter Bar */}
         <div className="relative mb-8 overflow-x-auto pb-2">
