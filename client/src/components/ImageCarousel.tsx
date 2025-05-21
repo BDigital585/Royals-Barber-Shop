@@ -19,7 +19,7 @@ interface CarouselImage {
 const carouselImages: CarouselImage[] = [
   {
     src: "/shop/cut.JPG",
-    alt: "Professional haircut at Royals Barbershop"
+    alt: "Professional haircut at Royals Barber Shop"
   },
   {
     src: "/shop/cut2.JPG",
@@ -27,11 +27,11 @@ const carouselImages: CarouselImage[] = [
   },
   {
     src: "/shop/IMG_0674.JPG",
-    alt: "Precise fade haircut technique from Royals Barbershop"
+    alt: "Precise fade haircut technique from Royals Barber Shop"
   },
   {
     src: "/shop/IMG_0675.JPG",
-    alt: "Classic men's haircut at Royals Barbershop in Batavia"
+    alt: "Classic men's haircut at Royals Barber Shop in Batavia"
   },
   {
     src: "/shop/IMG_0676.JPG",
