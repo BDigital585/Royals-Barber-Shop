@@ -205,58 +205,69 @@ const ContentfulHeroSection = () => {
         )}
         
         {/* Gradient overlay for text visibility */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-start pt-12 md:pt-16">
-          <div className="container mx-auto px-4 md:px-6 flex flex-col items-start">
-            <div className="max-w-[400px] text-white text-left pl-2 sm:pl-4 md:pl-6">
-              <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight leading-tight mb-2 md:mb-3">
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-start pt-6 md:pt-10">
+          <div className="container mx-auto px-3 md:px-6 flex flex-col items-start">
+            <div className="max-w-[400px] text-white text-left pl-2 sm:pl-4 md:pl-6 mb-2 md:mb-4">
+              <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight leading-tight mb-1 md:mb-2">
                 Ready for a<br />fresh look?
               </h1>
-              <p className="text-[10px] sm:text-xs md:text-sm uppercase tracking-wider mb-2 md:mb-4 max-w-[220px] sm:max-w-[280px]">
+              <p className="text-[10px] sm:text-xs md:text-sm uppercase tracking-wider mb-2 sm:mb-3 max-w-[220px] sm:max-w-[280px]">
                 walk-ins welcome or<br />schedule online today
               </p>
               <a 
                 href="https://royalsbarbershop.setmore.com/" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-black text-white font-medium uppercase py-2 px-6 md:py-3 md:px-8 rounded text-xs sm:text-sm md:text-base border border-white/20 hover:bg-primary transition-colors duration-300 mb-4 md:mb-8"
+                className="inline-block bg-black text-white font-medium uppercase py-2 px-6 md:py-3 md:px-8 rounded text-xs sm:text-sm md:text-base border border-white/20 hover:bg-primary transition-colors duration-300"
               >
                 Book Now
               </a>
             </div>
             
-            {/* Contact info and reviews */}
-            <div className="w-full max-w-md mt-2">
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                {/* Location and Phone Combined */}
-                <div className="flex items-center space-x-2 rounded-full bg-black/70 backdrop-blur-sm px-3 py-1.5 shadow-md">
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white">
-                      <FaMapMarkerAlt size={14} />
+            {/* Contact info and reviews - More mobile friendly layout */}
+            <div className="w-full max-w-md">
+              <div className="flex flex-col space-y-2 sm:space-y-3">
+                {/* Mobile-friendly contact row */}
+                <div className="flex space-x-2 sm:space-x-3">
+                  {/* Location */}
+                  <a 
+                    href="https://maps.google.com/?q=317+Ellicott+Street,+Batavia,+NY"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center space-x-2 rounded-full bg-black/70 backdrop-blur-sm px-3 py-1.5 shadow-md hover:bg-black/80 transition-all"
+                  >
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white">
+                        <FaMapMarkerAlt size={14} />
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-white">
-                    <span className="text-[10px] sm:text-xs font-medium">317 Ellicott St, Batavia</span>
-                  </div>
+                    <div className="text-white truncate">
+                      <span className="text-[10px] sm:text-xs font-medium">317 Ellicott St</span>
+                    </div>
+                  </a>
+                  
+                  {/* Phone */}
+                  <a 
+                    href="tel:+15855366576"
+                    className="flex-1 flex items-center space-x-2 rounded-full bg-black/70 backdrop-blur-sm px-3 py-1.5 shadow-md hover:bg-black/80 transition-all" 
+                  >
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white">
+                        <FaPhone size={14} />
+                      </div>
+                    </div>
+                    <div className="text-white">
+                      <span className="text-[10px] sm:text-xs font-medium">(585) 536-6576</span>
+                    </div>
+                  </a>
                 </div>
                 
-                {/* Phone */}
-                <div className="flex items-center space-x-2 rounded-full bg-black/70 backdrop-blur-sm px-3 py-1.5 shadow-md">
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white">
-                      <FaPhone size={14} />
-                    </div>
-                  </div>
-                  <div className="text-white">
-                    <span className="text-[10px] sm:text-xs font-medium">(585) 536-6576</span>
-                  </div>
-                </div>
-                
-                {/* Google Reviews */}
+                {/* Google Reviews - Full width for mobile */}
                 <a 
                   href="https://www.google.com/search?q=royals+barbershop+batavia+ny+reviews" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="col-span-2 flex items-center space-x-2 rounded-full bg-black/70 backdrop-blur-sm px-3 py-1.5 shadow-md hover:bg-black/80 transition-all"
+                  className="flex items-center space-x-2 rounded-full bg-black/70 backdrop-blur-sm px-3 py-1.5 shadow-md hover:bg-black/80 transition-all"
                   aria-label="Google Reviews"
                 >
                   <div className="flex-shrink-0">
@@ -264,9 +275,9 @@ const ContentfulHeroSection = () => {
                       <FaGoogle className="text-[#4285F4] text-lg" />
                     </div>
                   </div>
-                  <div className="flex flex-col text-white">
+                  <div className="flex-grow flex items-center justify-between">
                     <div className="flex items-center">
-                      <span className="text-xs font-bold mr-1.5">4.9</span>
+                      <span className="text-xs font-bold text-white mr-1.5">4.9</span>
                       <div className="flex">
                         <FaStar className="w-3 h-3 text-yellow-400" />
                         <FaStar className="w-3 h-3 text-yellow-400" />
@@ -274,17 +285,14 @@ const ContentfulHeroSection = () => {
                         <FaStar className="w-3 h-3 text-yellow-400" />
                         <FaStarHalfAlt className="w-3 h-3 text-yellow-400" />
                       </div>
-                      <span className="text-[10px] text-gray-200 ml-1.5">(99 reviews)</span>
                     </div>
+                    <span className="text-[10px] text-white ml-1.5 font-medium">(99 Google reviews)</span>
                   </div>
                 </a>
-
               </div>
             </div>
           </div>
         </div>
-        
-
       </div>
     </section>
   );
