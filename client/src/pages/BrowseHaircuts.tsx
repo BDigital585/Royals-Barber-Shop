@@ -174,32 +174,43 @@ const BrowseHaircuts = () => {
         {/* Hero video section for BrowseHaircuts page */}
         <section className="relative w-full bg-black">
           <div className="w-full h-[70vh] min-h-[450px] max-h-[700px] relative overflow-hidden bg-black">
-            {/* Hero background with immediate visibility */}
+            {/* Static background image that shows immediately */}
             <div 
-              className="absolute inset-0 w-full h-full bg-gradient-to-b from-gray-900 to-black"
-              style={{
-                backgroundImage: "linear-gradient(to bottom, #000000, #1a1a1a)",
-                opacity: 1
+              className="absolute inset-0 w-full h-full bg-cover bg-center" 
+              style={{ 
+                backgroundImage: 'url(/images/Royals\ Text\ Only\ Logo\ on\ Dark.png)',
+                backgroundSize: '30%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                opacity: videoLoaded ? 0 : 1,
+                transition: 'opacity 0.3s ease-in-out',
+                backgroundColor: '#000'
+              }}
+            />
+            
+            {/* Video background with optimized loading */}
+            <video 
+              ref={videoRef}
+              className="absolute inset-0 w-full h-full object-cover opacity-80"
+              autoPlay 
+              loop 
+              muted 
+              playsInline
+              preload="auto"
+              controlsList="nodownload"
+              style={{ 
+                willChange: 'transform',
+                opacity: videoLoaded ? 0.8 : 0,
+                transition: 'opacity 0.3s ease-in-out'
+              }}
+              onLoadedData={(e) => {
+                e.currentTarget.play();
+                setVideoLoaded(true);
               }}
             >
-              {/* Static logo that shows immediately */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                <div
-                  className="w-[200px] h-[200px] bg-contain bg-center bg-no-repeat"
-                  style={{ 
-                    backgroundImage: 'url(/images/Royals\\ Text\\ Only\\ Logo\\ on\\ Dark.png)',
-                  }}
-                ></div>
-              </div>
-            </div>
-            
-            {/* Background with gradient pattern that shows immediately */}
-            <div 
-              className="absolute inset-0 w-full h-full opacity-50"
-              style={{
-                backgroundImage: "radial-gradient(circle at 25% 25%, rgba(50, 50, 50, 0.3) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(80, 80, 80, 0.3) 0%, transparent 50%)"
-              }}
-            ></div>
+              <source src="/images/guy-chair.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
             
             {/* Overlay gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent flex items-end justify-end flex-col">
