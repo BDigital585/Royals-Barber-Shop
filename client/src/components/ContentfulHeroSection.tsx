@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { FaMapMarkerAlt, FaPhone, FaStar, FaStarHalfAlt, FaGoogle } from 'react-icons/fa';
+import LedTicker from './LedTicker';
 
 export default function ContentfulHeroSection() {
   const { data, isLoading, error } = useQuery({
@@ -59,6 +60,9 @@ export default function ContentfulHeroSection() {
           </video>
         )}
         
+        {/* LED Ticker at bottom of the hero */}
+        <LedTicker />
+        
         {/* Gradient overlay for text visibility */}
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-between py-8 md:py-12">
           <div className="container mx-auto px-3 md:px-6 flex flex-col items-start">
@@ -81,8 +85,8 @@ export default function ContentfulHeroSection() {
           </div>
           
           {/* Contact buttons at bottom of hero - more compact */}
-          <div className="container mx-auto px-3 md:px-6 w-full mt-auto pb-3 md:pb-4">
-            <div className="flex justify-center space-x-3 sm:space-x-4">
+          <div className="container mx-auto px-3 md:px-6 w-full mt-auto pb-14">
+            <div className="flex justify-center space-x-6">
               {/* Location */}
               <a 
                 href="https://maps.google.com/?q=317+Ellicott+Street,+Batavia,+NY"
@@ -91,8 +95,8 @@ export default function ContentfulHeroSection() {
                 className="flex flex-col items-center rounded-lg bg-black/70 backdrop-blur-sm px-2 py-1.5 shadow-md hover:bg-black/80 transition-all"
               >
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md">
-                    <FaMapMarkerAlt size={15} />
+                  <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md">
+                    <FaMapMarkerAlt size={18} />
                   </div>
                 </div>
                 <div className="text-white text-center mt-1">
@@ -106,31 +110,12 @@ export default function ContentfulHeroSection() {
                 className="flex flex-col items-center rounded-lg bg-black/70 backdrop-blur-sm px-2 py-1.5 shadow-md hover:bg-black/80 transition-all" 
               >
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md">
-                    <FaPhone size={15} />
+                  <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md">
+                    <FaPhone size={18} />
                   </div>
                 </div>
                 <div className="text-white text-center mt-1">
                   <span className="text-[10px] sm:text-xs font-semibold">Call Now</span>
-                </div>
-              </a>
-              
-              {/* Google Reviews - Compact */}
-              <a 
-                href="https://www.google.com/search?q=royals+barbershop+batavia+ny+reviews" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex flex-col items-center rounded-lg bg-black/70 backdrop-blur-sm px-2 py-1.5 shadow-md hover:bg-black/80 transition-all"
-                aria-label="Google Reviews"
-              >
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md">
-                    <FaGoogle className="text-[#4285F4] text-sm" />
-                  </div>
-                </div>
-                <div className="flex items-center mt-1">
-                  <span className="text-[10px] sm:text-xs font-bold text-white mr-1">4.9</span>
-                  <FaStar className="w-2.5 h-2.5 text-yellow-400" />
                 </div>
               </a>
             </div>
