@@ -168,16 +168,13 @@ const HaircutPreviewSection = () => {
           </div>
         </div>
         
-        <div className="flex flex-col md:flex-row gap-6 mt-8 max-w-4xl mx-auto">
-          <div className={`flex-1 flex flex-col justify-center ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`} style={{ animationDelay: '300ms' }}>
-            <h3 className="text-lg font-medium mb-3 text-center md:text-left">Want to see all styles?</h3>
-            <ScrollToTopLink 
-              href="/browse-haircuts" 
-              className="inline-flex items-center justify-center bg-primary hover:bg-[#B91C1C] text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
-            >
-              See Full Haircut Guide
-            </ScrollToTopLink>
-          </div>
+        <div className="flex justify-center mt-8 mb-6">
+          <ScrollToTopLink 
+            href="/browse-haircuts" 
+            className="inline-flex items-center justify-center bg-primary hover:bg-[#B91C1C] text-white font-medium py-3 px-8 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+          >
+            See Full Haircut Guide
+          </ScrollToTopLink>
         </div>
       </div>
     </section>
