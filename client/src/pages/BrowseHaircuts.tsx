@@ -29,46 +29,76 @@ const BrowseHaircuts = () => {
   const imagesByFolder = useHaircutImages();
   const [activeFilter, setActiveFilter] = useState('all');
   
+  // State to track video loading
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  
   // Optimize video loading for instant playback
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    // Cache the video in browser memory
+    const prefetchVideo = () => {
+      // Create a link tag to prefetch the video
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = '/images/guy-chair.mp4';
+      link.as = 'video';
+      document.head.appendChild(link);
+      
+      // Also preload directly
+      const videoPreload = document.createElement('video');
+      videoPreload.style.display = 'none';
+      videoPreload.src = '/images/guy-chair.mp4';
+      videoPreload.preload = 'auto';
+      document.body.appendChild(videoPreload);
+      
+      // Clean up
+      return () => {
+        document.head.removeChild(link);
+        document.body.removeChild(videoPreload);
+      };
+    };
     
-    // Preload the video with highest priority
-    video.preload = "auto";
-    
-    // Handle video loading strategies
-    const loadVideo = () => {
-      try {
-        video.load();
-        // Force play start immediately
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(e => {
-            console.log("Video autoplay was prevented:", e);
-            // Try playing again after user interaction
+    // Function to handle immediate video playback
+    const handleVideoPlayback = () => {
+      const video = videoRef.current;
+      if (!video) return;
+      
+      // Set highest loading priority
+      video.preload = "auto";
+      
+      // Force load and immediate play
+      video.load();
+      
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log("Video playing successfully");
+            setVideoLoaded(true);
+          })
+          .catch(error => {
+            console.log("Video autoplay prevented:", error);
+            // Try again on user interaction
             document.addEventListener('click', () => {
-              video.play().catch(() => {});
+              video.play()
+                .then(() => setVideoLoaded(true))
+                .catch(() => {});
             }, { once: true });
           });
-        }
-      } catch (err) {
-        console.error("Video loading error:", err);
       }
     };
     
-    // Try multiple approaches to ensure fast loading
-    loadVideo();
+    // Run both strategies
+    const cleanup = prefetchVideo();
+    handleVideoPlayback();
     
-    // Also try loading on window load event for fallback
-    if (document.readyState === 'complete') {
-      loadVideo();
-    } else {
-      window.addEventListener('load', loadVideo, { once: true });
-    }
+    // Set up fallback timers to make sure video appears
+    const timer = setTimeout(() => {
+      setVideoLoaded(true); // Force showing video after a delay
+    }, 300);
     
     return () => {
-      window.removeEventListener('load', loadVideo);
+      cleanup();
+      clearTimeout(timer);
     };
   }, []);
   
@@ -144,7 +174,21 @@ const BrowseHaircuts = () => {
         {/* Hero video section for BrowseHaircuts page */}
         <section className="relative w-full bg-black">
           <div className="w-full h-[70vh] min-h-[450px] max-h-[700px] relative overflow-hidden bg-black">
-            {/* Video background with immediate playback */}
+            {/* Static background image that shows immediately */}
+            <div 
+              className="absolute inset-0 w-full h-full bg-cover bg-center" 
+              style={{ 
+                backgroundImage: 'url(/images/Royals\ Text\ Only\ Logo\ on\ Dark.png)',
+                backgroundSize: '30%',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                opacity: videoLoaded ? 0 : 1,
+                transition: 'opacity 0.3s ease-in-out',
+                backgroundColor: '#000'
+              }}
+            />
+            
+            {/* Video background with optimized loading */}
             <video 
               ref={videoRef}
               className="absolute inset-0 w-full h-full object-cover opacity-80"
@@ -154,8 +198,15 @@ const BrowseHaircuts = () => {
               playsInline
               preload="auto"
               controlsList="nodownload"
-              style={{ willChange: 'transform' }}
-              onLoadedData={(e) => e.currentTarget.play()}
+              style={{ 
+                willChange: 'transform',
+                opacity: videoLoaded ? 0.8 : 0,
+                transition: 'opacity 0.3s ease-in-out'
+              }}
+              onLoadedData={(e) => {
+                e.currentTarget.play();
+                setVideoLoaded(true);
+              }}
             >
               <source src="/images/guy-chair.mp4" type="video/mp4" />
               Your browser does not support the video tag.
