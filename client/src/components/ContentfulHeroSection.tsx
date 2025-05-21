@@ -82,61 +82,66 @@ export default function ContentfulHeroSection() {
           
           {/* Contact buttons at bottom of hero */}
           <div className="container mx-auto px-3 md:px-6 w-full mt-auto">
-            <div className="grid grid-cols-3 gap-1 max-w-md">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 max-w-3xl">
               {/* Location */}
               <a 
                 href="https://maps.google.com/?q=317+Ellicott+Street,+Batavia,+NY"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-1 rounded-lg bg-black/70 backdrop-blur-sm px-2 py-1 shadow-md hover:bg-black/80 transition-all"
+                className="flex items-center space-x-3 rounded-lg bg-black/80 backdrop-blur-sm px-3 py-2 shadow-md hover:bg-black/90 transition-all"
               >
                 <div className="flex-shrink-0">
-                  <div className="w-5 h-5 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white">
-                    <FaMapMarkerAlt size={10} />
+                  <div className="w-9 h-9 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md">
+                    <FaMapMarkerAlt size={16} />
                   </div>
                 </div>
-                <div className="text-white truncate">
-                  <span className="text-[9px] font-medium">317 Ellicott</span>
+                <div className="text-white">
+                  <span className="text-xs sm:text-sm font-medium block">317 Ellicott Street</span>
+                  <span className="text-[10px] sm:text-xs text-gray-300">Batavia, NY 14020</span>
                 </div>
               </a>
               
               {/* Phone */}
               <a 
                 href="tel:+15855366576"
-                className="flex items-center space-x-1 rounded-lg bg-black/70 backdrop-blur-sm px-2 py-1 shadow-md hover:bg-black/80 transition-all" 
+                className="flex items-center space-x-3 rounded-lg bg-black/80 backdrop-blur-sm px-3 py-2 shadow-md hover:bg-black/90 transition-all" 
               >
                 <div className="flex-shrink-0">
-                  <div className="w-5 h-5 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white">
-                    <FaPhone size={10} />
+                  <div className="w-9 h-9 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md">
+                    <FaPhone size={16} />
                   </div>
                 </div>
-                <div className="text-white truncate">
-                  <span className="text-[9px] font-medium">536-6576</span>
+                <div className="text-white">
+                  <span className="text-xs sm:text-sm font-medium block">(585) 536-6576</span>
+                  <span className="text-[10px] sm:text-xs text-gray-300">Tap to call us now</span>
                 </div>
               </a>
               
-              {/* Google Reviews - Streamlined */}
+              {/* Google Reviews - Enhanced */}
               <a 
                 href="https://www.google.com/search?q=royals+barbershop+batavia+ny+reviews" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center space-x-1 rounded-lg bg-black/70 backdrop-blur-sm px-2 py-1 shadow-md hover:bg-black/80 transition-all"
+                className="flex items-center space-x-3 rounded-lg bg-black/80 backdrop-blur-sm px-3 py-2 shadow-md hover:bg-black/90 transition-all"
                 aria-label="Google Reviews"
               >
                 <div className="flex-shrink-0">
-                  <div className="w-5 h-5 flex items-center justify-center rounded-full bg-white shadow-md">
-                    <FaGoogle className="text-[#4285F4] text-xs" />
+                  <div className="w-9 h-9 flex items-center justify-center rounded-full bg-white shadow-md">
+                    <FaGoogle className="text-[#4285F4] text-lg" />
                   </div>
                 </div>
-                <div className="flex items-center">
-                  <span className="text-[10px] font-bold text-white">4.9</span>
-                  <div className="flex ml-0.5">
-                    <FaStar className="w-2 h-2 text-yellow-400" />
-                    <FaStar className="w-2 h-2 text-yellow-400" />
-                    <FaStar className="w-2 h-2 text-yellow-400" />
-                    <FaStar className="w-2 h-2 text-yellow-400" />
-                    <FaStarHalfAlt className="w-2 h-2 text-yellow-400" />
+                <div className="flex flex-col">
+                  <div className="flex items-center">
+                    <span className="text-sm font-bold text-white mr-1.5">4.9</span>
+                    <div className="flex">
+                      <FaStar className="w-3.5 h-3.5 text-yellow-400" />
+                      <FaStar className="w-3.5 h-3.5 text-yellow-400" />
+                      <FaStar className="w-3.5 h-3.5 text-yellow-400" />
+                      <FaStar className="w-3.5 h-3.5 text-yellow-400" />
+                      <FaStarHalfAlt className="w-3.5 h-3.5 text-yellow-400" />
+                    </div>
                   </div>
+                  <span className="text-[10px] sm:text-xs text-gray-300">(99 Google reviews)</span>
                 </div>
               </a>
             </div>

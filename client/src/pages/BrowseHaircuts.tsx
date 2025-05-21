@@ -108,7 +108,7 @@ const BrowseHaircuts = () => {
               muted 
               playsInline 
             >
-              <source src="/videos/guy-chair.mp4" type="video/mp4" />
+              <source src="/images/guy-chair.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
             
@@ -129,14 +129,6 @@ const BrowseHaircuts = () => {
         </section>
         
         <div className="container mx-auto px-4 py-6 md:py-8">
-          <div className="border-l-4 border-primary pl-3 md:pl-4 py-1 mb-5 md:mb-6">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-heading text-primary mb-2 leading-tight">
-              Find Your <span className="inline-block">Signature Look</span>
-            </h2>
-            <p className="text-gray-600 text-sm sm:text-base mb-1 max-w-xl">
-              Not sure what to ask for? Browse our visual guide to popular cuts and styles.
-            </p>
-          </div>
           
           {/* Scrollable Filter Bar */}
           <div className="relative mb-8 overflow-x-auto pb-2">
