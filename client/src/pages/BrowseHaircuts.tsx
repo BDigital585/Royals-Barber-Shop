@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MetaTags from '@/components/MetaTags';
@@ -25,8 +25,52 @@ const categoryNames: Record<string, string> = {
 };
 
 const BrowseHaircuts = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
   const imagesByFolder = useHaircutImages();
   const [activeFilter, setActiveFilter] = useState('all');
+  
+  // Optimize video loading for instant playback
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    // Preload the video with highest priority
+    video.preload = "auto";
+    
+    // Handle video loading strategies
+    const loadVideo = () => {
+      try {
+        video.load();
+        // Force play start immediately
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(e => {
+            console.log("Video autoplay was prevented:", e);
+            // Try playing again after user interaction
+            document.addEventListener('click', () => {
+              video.play().catch(() => {});
+            }, { once: true });
+          });
+        }
+      } catch (err) {
+        console.error("Video loading error:", err);
+      }
+    };
+    
+    // Try multiple approaches to ensure fast loading
+    loadVideo();
+    
+    // Also try loading on window load event for fallback
+    if (document.readyState === 'complete') {
+      loadVideo();
+    } else {
+      window.addEventListener('load', loadVideo, { once: true });
+    }
+    
+    return () => {
+      window.removeEventListener('load', loadVideo);
+    };
+  }, []);
   
   /**
    * Helper function to get the display name for a category
@@ -102,6 +146,7 @@ const BrowseHaircuts = () => {
           <div className="w-full h-[70vh] min-h-[450px] max-h-[700px] relative overflow-hidden bg-black">
             {/* Video background with immediate playback */}
             <video 
+              ref={videoRef}
               className="absolute inset-0 w-full h-full object-cover opacity-80"
               autoPlay 
               loop 
@@ -109,6 +154,8 @@ const BrowseHaircuts = () => {
               playsInline
               preload="auto"
               controlsList="nodownload"
+              style={{ willChange: 'transform' }}
+              onLoadedData={(e) => e.currentTarget.play()}
             >
               <source src="/images/guy-chair.mp4" type="video/mp4" />
               Your browser does not support the video tag.

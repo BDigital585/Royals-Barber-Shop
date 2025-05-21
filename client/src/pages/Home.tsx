@@ -40,7 +40,7 @@ const Home = () => {
                 <div className="bg-gradient-to-r from-black to-primary text-white p-3 flex items-center justify-between">
                   <div className="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                    <h3 className="font-bold">Royals Assistant</h3>
+                    <h3 className="font-bold">Royals AI Assistant</h3>
                   </div>
                   <span className="text-xs bg-red-600/80 px-2 py-1 rounded-full animate-pulse shadow-[0_0_5px_#ff0000] font-medium">Live Chat</span>
                 </div>
