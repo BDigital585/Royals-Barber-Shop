@@ -287,8 +287,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Create Contentful client
-      const contentful = require('contentful');
-      const client = contentful.createClient({
+      const { createClient } = await import('contentful');
+      const client = createClient({
         space: process.env.CONTENTFUL_SPACE_ID,
         accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
         environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',

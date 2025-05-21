@@ -49,6 +49,8 @@ export default function BrowseHaircutsHeroSection() {
             className="absolute object-cover w-full h-full opacity-70"
             onLoadedData={() => console.log("Haircuts hero video loaded successfully")}
             preload="auto"
+            poster={backgroundImage || undefined}
+            style={{ width: "100%", height: "100%" }}
           >
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
