@@ -46,17 +46,17 @@ const LedTicker: React.FC = () => {
   }, []);
   
   return (
-    <div className="led-ticker-container w-full absolute bottom-0 left-0 h-10 bg-black overflow-hidden z-10">
+    <div className="led-ticker-container w-full absolute bottom-0 left-0 h-14 bg-black overflow-hidden z-10">
       <div className="led-ticker-wrapper whitespace-nowrap animate-marquee">
-        <div className="led-ticker-content font-mono inline-block py-2.5 text-sm">
+        <div className="led-ticker-content font-mono inline-block py-3 text-base md:text-xl">
           <span className="px-4 led-text">
-            <FaMapMarkerAlt className="inline-block mr-1 text-blue-500" /> Batavia NY 
+            <FaMapMarkerAlt className="inline-block mr-2 text-blue-500" /> BATAVIA NY 
           </span>
           <span className="px-4 led-text">
-            | {currentDate} 
+            | {currentDate.toUpperCase()} 
           </span>
           <span className="px-4 led-text">
-            | {currentTime} 
+            | {currentTime.toUpperCase()} 
           </span>
           <span className="px-4 led-text">
             | {temperature}°F
@@ -64,13 +64,13 @@ const LedTicker: React.FC = () => {
           
           {/* Duplicate content for continuous scrolling effect */}
           <span className="px-4 led-text">
-            <FaMapMarkerAlt className="inline-block mr-1 text-blue-500" /> Batavia NY 
+            <FaMapMarkerAlt className="inline-block mr-2 text-blue-500" /> BATAVIA NY 
           </span>
           <span className="px-4 led-text">
-            | {currentDate} 
+            | {currentDate.toUpperCase()} 
           </span>
           <span className="px-4 led-text">
-            | {currentTime} 
+            | {currentTime.toUpperCase()} 
           </span>
           <span className="px-4 led-text">
             | {temperature}°F
@@ -78,13 +78,13 @@ const LedTicker: React.FC = () => {
           
           {/* Triple duplicate for long screens */}
           <span className="px-4 led-text">
-            <FaMapMarkerAlt className="inline-block mr-1 text-blue-500" /> Batavia NY 
+            <FaMapMarkerAlt className="inline-block mr-2 text-blue-500" /> BATAVIA NY 
           </span>
           <span className="px-4 led-text">
-            | {currentDate} 
+            | {currentDate.toUpperCase()} 
           </span>
           <span className="px-4 led-text">
-            | {currentTime} 
+            | {currentTime.toUpperCase()} 
           </span>
           <span className="px-4 led-text">
             | {temperature}°F
