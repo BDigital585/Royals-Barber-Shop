@@ -171,38 +171,17 @@ const BrowseHaircuts = () => {
       
       <Header />
       <main className="pb-16">
-        {/* Hero video section for BrowseHaircuts page */}
-        <section className="relative w-full bg-black">
-          <div className="w-full h-[70vh] min-h-[450px] max-h-[700px] relative overflow-hidden bg-black">
-            {/* Static background with logo */}
-            <div 
-              className="absolute inset-0 w-full h-full bg-cover bg-center" 
-              style={{ 
-                backgroundImage: 'url(/images/Royals\ Text\ Only\ Logo\ on\ Dark.png)',
-                backgroundSize: '30%',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                backgroundColor: '#000'
-              }}
-            />
-            
-            {/* Overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent flex items-end justify-end flex-col">
-              <div className="container mx-auto px-4 md:px-6 pb-10 md:pb-12">
-                <div className="max-w-3xl mb-8 md:mb-10">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4">
-                    Find Your Style <span className="text-primary">Style</span>
-                  </h1>
-                  <p className="text-white/90 text-sm md:text-base lg:text-lg max-w-xl mb-6">
-                    Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barber Shop.
-                  </p>
-                </div>
-              </div>
+        <div className="container mx-auto px-4 py-3 md:py-6 mt-6 md:mt-8">
+          <section className="haircuts-header mb-5 md:mb-6">
+            <div className="border-l-4 border-primary pl-3 md:pl-4 py-1">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
+                Find Your Perfect <span className="inline-block">Style</span>
+              </h1>
+              <p className="text-gray-600 text-sm sm:text-base mb-1 max-w-xl">
+                Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barber Shop.
+              </p>
             </div>
-          </div>
-        </section>
-        
-        <div className="container mx-auto px-4 py-6 md:py-8">
+          </section>
           
           {/* Scrollable Filter Bar */}
           <div className="relative mb-8 overflow-x-auto pb-2">
