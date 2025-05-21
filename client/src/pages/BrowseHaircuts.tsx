@@ -108,7 +108,7 @@ const BrowseHaircuts = () => {
               muted 
               playsInline 
             >
-              <source src="/guy-chair.mp4" type="video/mp4" />
+              <source src="/videos/guy-chair.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
             

@@ -42,7 +42,7 @@ export default function ContentfulHeroSection() {
   const { title, subtitle, videoUrl, backgroundImage } = data;
 
   return (
-    <section className="w-full h-screen min-h-[600px] relative bg-black overflow-hidden">
+    <section className="w-full h-[70vh] min-h-[480px] md:min-h-[550px] max-h-[650px] relative bg-black overflow-hidden">
       <div className="absolute inset-0 z-0">
         {videoUrl && (
           <video 
