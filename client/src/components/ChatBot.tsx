@@ -99,16 +99,8 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
   // If in Welcome section, only render the chat content without the button and container
   if (isInWelcomeSection) {
     return (
-      <div className="flex flex-col flex-1 overflow-hidden bg-white rounded-xl shadow-xl border border-gray-100">
-        {/* Welcome Section Chat Header */}
-        <div className="bg-gradient-to-r from-black to-primary text-white p-3 flex items-center justify-between">
-          <div className="flex items-center">
-            <MessageSquare size={18} className="mr-2 text-secondary" />
-            <h3 className="font-bold">Royals Assistant</h3>
-          </div>
-          <span className="text-xs bg-red-600/80 px-2 py-1 rounded-full animate-pulse shadow-[0_0_5px_#ff0000] font-medium">Live Chat</span>
-        </div>
-        
+      <div className="flex flex-col flex-1 overflow-hidden bg-white">
+        {/* Welcome Section Chat - No header here, already in parent component */}
         {/* Messages container */}
         <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
           {messages.length === 0 ? (
