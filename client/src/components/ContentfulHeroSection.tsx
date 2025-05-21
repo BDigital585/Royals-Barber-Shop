@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { SiteHero, getHeroContent } from '@/lib/contentful';
-import { FaMapMarkerAlt, FaPhone, FaInstagram, FaFacebook } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhone, FaStar, FaStarHalfAlt, FaGoogle } from 'react-icons/fa';
 
 const ContentfulHeroSection = () => {
   const [heroContent, setHeroContent] = useState<SiteHero | null>(null);
@@ -205,7 +205,7 @@ const ContentfulHeroSection = () => {
         )}
         
         {/* Gradient overlay for text visibility */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-center">
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-start pt-12 md:pt-16">
           <div className="container mx-auto px-4 md:px-6 flex flex-col items-start">
             <div className="max-w-[400px] text-white text-left pl-2 sm:pl-4 md:pl-6">
               <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight leading-tight mb-2 md:mb-3">
@@ -224,63 +224,60 @@ const ContentfulHeroSection = () => {
               </a>
             </div>
             
-            {/* Contact and social links */}
-            <div className="w-full max-w-md mt-2 md:mt-0">
-              <div className="grid grid-cols-4 gap-0 xs:gap-1 sm:gap-2">
-                {/* Address */}
-                <a 
-                  href="https://maps.google.com/?q=317+Ellicott+Street,+Batavia,+NY" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex flex-col items-center"
-                  aria-label="317 Ellicott St, Batavia, NY"
-                >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
-                    <FaMapMarkerAlt size={16} className="sm:text-lg" />
+            {/* Contact info and reviews */}
+            <div className="w-full max-w-md mt-2">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                {/* Location and Phone Combined */}
+                <div className="flex items-center space-x-2 rounded-full bg-black/70 backdrop-blur-sm px-3 py-1.5 shadow-md">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white">
+                      <FaMapMarkerAlt size={14} />
+                    </div>
                   </div>
-                  <span className="text-[10px] sm:text-xs text-center mt-1 font-medium text-white">Location</span>
-                </a>
+                  <div className="text-white">
+                    <span className="text-[10px] sm:text-xs font-medium">317 Ellicott St, Batavia</span>
+                  </div>
+                </div>
                 
                 {/* Phone */}
-                <a 
-                  href="tel:+15855366576"
-                  className="flex flex-col items-center" 
-                  aria-label="Call (585) 536-6576"
-                >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
-                    <FaPhone size={16} className="sm:text-lg" />
+                <div className="flex items-center space-x-2 rounded-full bg-black/70 backdrop-blur-sm px-3 py-1.5 shadow-md">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-blue-700 text-white">
+                      <FaPhone size={14} />
+                    </div>
                   </div>
-                  <span className="text-[10px] sm:text-xs text-center mt-1 font-medium text-white">Call</span>
-                </a>
+                  <div className="text-white">
+                    <span className="text-[10px] sm:text-xs font-medium">(585) 536-6576</span>
+                  </div>
+                </div>
                 
-                {/* Instagram */}
+                {/* Google Reviews */}
                 <a 
-                  href="https://www.instagram.com/royalsbarbershop585" 
+                  href="https://www.google.com/search?q=royals+barbershop+batavia+ny+reviews" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="flex flex-col items-center"
-                  aria-label="Instagram"
+                  className="col-span-2 flex items-center space-x-2 rounded-full bg-black/70 backdrop-blur-sm px-3 py-1.5 shadow-md hover:bg-black/80 transition-all"
+                  aria-label="Google Reviews"
                 >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-[#833AB4] to-[#E1306C] text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
-                    <FaInstagram size={16} className="sm:text-lg" />
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md">
+                      <FaGoogle className="text-[#4285F4] text-lg" />
+                    </div>
                   </div>
-                  <span className="text-[10px] sm:text-xs text-center mt-1 font-medium text-white">Instagram</span>
-                </a>
-                
-                {/* Facebook */}
-                <a 
-                  href="https://www.facebook.com/share/19UCgP9N1f/?mibextid=wwXIfr" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex flex-col items-center"
-                  aria-label="Facebook"
-                >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-[#1877F2] to-[#0A66C2] text-white shadow-md hover:shadow-lg hover:scale-105 transition-all">
-                    <FaFacebook size={16} className="sm:text-lg" />
+                  <div className="flex flex-col text-white">
+                    <div className="flex items-center">
+                      <span className="text-xs font-bold mr-1.5">4.9</span>
+                      <div className="flex">
+                        <FaStar className="w-3 h-3 text-yellow-400" />
+                        <FaStar className="w-3 h-3 text-yellow-400" />
+                        <FaStar className="w-3 h-3 text-yellow-400" />
+                        <FaStar className="w-3 h-3 text-yellow-400" />
+                        <FaStarHalfAlt className="w-3 h-3 text-yellow-400" />
+                      </div>
+                      <span className="text-[10px] text-gray-200 ml-1.5">(99 reviews)</span>
+                    </div>
                   </div>
-                  <span className="text-[10px] sm:text-xs text-center mt-1 font-medium text-white">Facebook</span>
                 </a>
-                
 
               </div>
             </div>
