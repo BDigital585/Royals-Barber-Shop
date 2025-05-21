@@ -275,6 +275,93 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get Browse Haircuts Hero content from Contentful
+  app.get(`${apiPrefix}/contentful/browse-haircuts-hero`, async (req, res) => {
+    try {
+      console.log('Fetching Browse Haircuts Hero content from Contentful');
+      
+      // Verify we have the required environment variables
+      if (!process.env.CONTENTFUL_SPACE_ID || !process.env.CONTENTFUL_ACCESS_TOKEN || !process.env.CONTENTFUL_ENVIRONMENT) {
+        console.error('Missing Contentful environment variables');
+        return res.status(500).json({ message: 'Contentful configuration missing' });
+      }
+      
+      // Create Contentful client
+      const contentful = require('contentful');
+      const client = contentful.createClient({
+        space: process.env.CONTENTFUL_SPACE_ID,
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
+        environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
+      });
+      
+      // Query for entries of type 'browseHaircutsHero' (per your content model)
+      const entries = await client.getEntries({
+        content_type: 'browseHaircutsHero',
+        limit: 1
+      });
+      
+      // Check if we found any entries
+      if (entries.items.length === 0) {
+        console.log('No Browse Haircuts Hero entries found in Contentful');
+        return res.status(404).json({ message: 'No Browse Haircuts Hero content found' });
+      }
+      
+      // Get the first entry
+      const heroContent = entries.items[0];
+      console.log('Found Browse Haircuts Hero entry:', heroContent.sys.id);
+      
+      // Extract the fields we need
+      const title = heroContent.fields?.title || '';
+      const subtitle = heroContent.fields?.subtitle || '';
+      
+      // Extract video URL if available
+      let videoUrl = '';
+      
+      // Check if videoUrl is directly in the fields or in a file field
+      if (heroContent.fields?.videoFile && heroContent.fields.videoFile.fields?.file?.url) {
+        // Video from a linked asset
+        videoUrl = heroContent.fields.videoFile.fields.file.url.startsWith('//') 
+          ? `https:${heroContent.fields.videoFile.fields.file.url}` 
+          : heroContent.fields.videoFile.fields.file.url;
+        console.log('Video URL from videoFile field:', videoUrl);
+      }
+      else if (heroContent.fields?.file && heroContent.fields.file.url) {
+        // Direct file field
+        videoUrl = heroContent.fields.file.url.startsWith('//') 
+          ? `https:${heroContent.fields.file.url}` 
+          : heroContent.fields.file.url;
+        console.log('Video URL from direct file field:', videoUrl);
+      }
+      
+      // Extract background image if available
+      let backgroundImageUrl = null;
+      
+      if (heroContent.fields?.backgroundImage && heroContent.fields.backgroundImage.fields?.file?.url) {
+        backgroundImageUrl = heroContent.fields.backgroundImage.fields.file.url.startsWith('//') 
+          ? `https:${heroContent.fields.backgroundImage.fields.file.url}`
+          : heroContent.fields.backgroundImage.fields.file.url;
+        console.log('Background image URL:', backgroundImageUrl);
+      }
+      
+      // Format and return the response
+      const heroData = {
+        id: heroContent.sys.id,
+        title,
+        subtitle,
+        videoUrl,
+        backgroundImage: backgroundImageUrl
+      };
+      
+      return res.status(200).json(heroData);
+    } catch (error) {
+      console.error("Error fetching Browse Haircuts Hero content from Contentful:", error);
+      return res.status(500).json({ 
+        message: "Failed to fetch Browse Haircuts Hero content",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+  
   // Get Royals Body content from Contentful
   app.get(`${apiPrefix}/contentful/royals-body`, async (req, res) => {
     try {

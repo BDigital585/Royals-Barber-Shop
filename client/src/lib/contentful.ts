@@ -107,3 +107,35 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     return null;
   }
 }
+
+// Type for Browse Haircuts Hero content from Contentful
+export interface BrowseHaircutsHero {
+  id: string;
+  title?: string;
+  subtitle?: string;
+  videoUrl?: string;
+  backgroundImage?: string | null;
+}
+
+// Function to fetch the Browse Haircuts Hero content
+export async function getBrowseHaircutsHero(): Promise<BrowseHaircutsHero | null> {
+  try {
+    const response = await fetch('/api/contentful/browse-haircuts-hero');
+    
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.log('No Browse Haircuts hero content found');
+        return null;
+      }
+      throw new Error(`API returned ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    console.log('Browse Haircuts Hero content from API:', data);
+    
+    return data;
+  } catch (error) {
+    console.error('Error fetching Browse Haircuts Hero content from API:', error);
+    return null;
+  }
+}
