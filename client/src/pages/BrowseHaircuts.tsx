@@ -106,7 +106,9 @@ const BrowseHaircuts = () => {
               autoPlay 
               loop 
               muted 
-              playsInline 
+              playsInline
+              preload="auto"
+              poster="/images/haircut-poster.jpg"
             >
               <source src="/images/guy-chair.mp4" type="video/mp4" />
               Your browser does not support the video tag.
@@ -114,12 +116,12 @@ const BrowseHaircuts = () => {
             
             {/* Overlay gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent flex items-end justify-end flex-col">
-              <div className="container mx-auto px-4 md:px-6 pb-16 md:pb-20">
-                <div className="max-w-3xl">
+              <div className="container mx-auto px-4 md:px-6 pb-20 md:pb-24">
+                <div className="max-w-3xl mb-4 md:mb-0">
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4">
-                    Find Your Style <span className="text-primary">Style</span>
+                    Find Your <span className="text-primary">Style</span>
                   </h1>
-                  <p className="text-white/90 text-sm md:text-base lg:text-lg max-w-xl mb-4">
+                  <p className="text-white/90 text-sm md:text-base lg:text-lg max-w-xl mb-6">
                     Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barber Shop.
                   </p>
                 </div>
