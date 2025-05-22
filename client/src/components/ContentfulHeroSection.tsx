@@ -55,7 +55,7 @@ export default function ContentfulHeroSection() {
   return (
     <section className="w-full h-[70vh] min-h-[480px] md:min-h-[550px] max-h-[650px] relative bg-black overflow-hidden">
       <div className="absolute inset-0 z-0">
-        {/* Always try to load the video, with better error logging */}
+        {/* Direct video element with hardcoded path */}
         <video 
           autoPlay 
           loop 
@@ -65,8 +65,8 @@ export default function ContentfulHeroSection() {
           onLoadedData={() => console.log("Homepage video loaded successfully")}
           onCanPlay={() => console.log("Homepage video can play now")}
           onError={(e) => console.error("Homepage video error:", e)}
+          src="/newset.mp4"
         >
-          <source src={videoUrl || '/videos/newset.mp4'} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         
