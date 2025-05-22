@@ -322,12 +322,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get(`${apiPrefix}/contentful/hero`, async (req, res) => {
     try {
       // Return the specific homepage hero video
-      console.log('Using the specified video for homepage hero: /videos/newset.mp4');
+      console.log('Using the specified video for homepage hero: /superhero.mp4');
       
       return res.status(200).json({
         title: 'Ready for a fresh look?',
         subtitle: 'Walk-ins welcome or schedule online today',
-        videoUrl: '/videos/newset.mp4', // Use the specified video from public folder
+        videoUrl: '/superhero.mp4', // Use the specified video from public folder
         backgroundImage: null
       });
     } catch (error) {
@@ -337,7 +337,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(200).json({
         title: 'Ready for a fresh look?',
         subtitle: 'Walk-ins welcome or schedule online today',
-        videoUrl: '/videos/newset.mp4', 
+        videoUrl: '/superhero.mp4', 
         backgroundImage: null
       });
     }
