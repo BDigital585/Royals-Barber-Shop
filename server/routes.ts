@@ -321,21 +321,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get Homepage hero content from Contentful
   app.get(`${apiPrefix}/contentful/hero`, async (req, res) => {
     try {
-      // Return the original homepage hero video URL
-      return res.status(200).json({
-        title: 'Ready for a fresh look?',
-        subtitle: 'Walk-ins welcome or schedule online today',
-        videoUrl: '/videos/guy-chair.mp4', // Use the original video from public folder
-        backgroundImage: null
+      const { createClient } = await import('contentful');
+      
+      // Create client with environment variables
+      const client = createClient({
+        space: process.env.CONTENTFUL_SPACE_ID || '',
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN || '',
+        environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
       });
+      
+      // Get assets from Contentful
+      const assets = await client.getAssets({
+        limit: 20,
+        order: ['-sys.updatedAt'] as any,
+      });
+      
+      // Look for a video file asset for homepage hero
+      let heroAsset = null;
+      for (const asset of assets.items) {
+        if (asset.fields.file && 
+            (asset.fields.file.contentType === 'video/mp4' || 
+             asset.fields.file.contentType === 'video/quicktime')) {
+          console.log('Found a homepage video asset:', asset.fields.title);
+          // Use the first video asset we find
+          heroAsset = asset;
+          break;
+        }
+      }
+      
+      if (heroAsset && heroAsset.fields.file) {
+        const videoUrl = heroAsset.fields.file.url.startsWith('//') 
+          ? `https:${heroAsset.fields.file.url}` 
+          : heroAsset.fields.file.url;
+          
+        console.log('Found homepage hero video URL:', videoUrl);
+        
+        return res.status(200).json({
+          title: 'Ready for a fresh look?',
+          subtitle: 'Walk-ins welcome or schedule online today',
+          videoUrl: videoUrl,
+          backgroundImage: null
+        });
+      } else {
+        console.log('No video asset found for homepage hero');
+        // Fallback if no video is found
+        return res.status(200).json({
+          title: 'Ready for a fresh look?',
+          subtitle: 'Walk-ins welcome or schedule online today',
+          videoUrl: '', 
+          backgroundImage: null
+        });
+      }
     } catch (error) {
-      console.error("Error serving homepage hero content:", error);
+      console.error("Error fetching Contentful homepage hero content:", error);
       
       // Return default data even if there's an error
       return res.status(200).json({
         title: 'Ready for a fresh look?',
         subtitle: 'Walk-ins welcome or schedule online today',
-        videoUrl: '/videos/guy-chair.mp4', 
+        videoUrl: '', 
         backgroundImage: null
       });
     }
