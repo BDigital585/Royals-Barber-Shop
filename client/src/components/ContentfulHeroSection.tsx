@@ -60,7 +60,7 @@ export default function ContentfulHeroSection() {
           {/* Static background color shown if video fails */}
           <div className="absolute inset-0 bg-gray-900 bg-opacity-90"></div>
           
-          {/* Mobile-optimized homepage video with instant play */}
+          {/* Mobile-optimized homepage video with reliable playback */}
           <video 
             autoPlay 
             loop 
@@ -73,29 +73,30 @@ export default function ContentfulHeroSection() {
               transform: 'translate3d(0,0,0)',
               objectPosition: 'center center' 
             }}
-            preload="auto"
+            preload="none"
             poster=""
-            webkit-playsinline="true"
-            onLoadStart={(e) => {
-              const video = e.target as HTMLVideoElement;
-              video.currentTime = 0;
-              video.play().catch(() => {});
-            }}
-            onLoadedMetadata={(e) => {
-              const video = e.target as HTMLVideoElement;
-              video.play().catch(() => {});
-            }}
-            onLoadedData={(e) => {
-              const video = e.target as HTMLVideoElement;
-              video.play().catch(() => {});
-            }}
-            onCanPlay={(e) => {
-              const video = e.target as HTMLVideoElement;
-              video.play().catch(() => {});
-            }}
-            onCanPlayThrough={(e) => {
-              const video = e.target as HTMLVideoElement;
-              video.play().catch(() => {});
+            ref={(video) => {
+              if (video) {
+                // Force immediate play for mobile
+                const playVideo = () => {
+                  video.currentTime = 0;
+                  video.play().catch((error) => {
+                    console.log('Video autoplay prevented:', error);
+                    // Try again after a short delay
+                    setTimeout(() => {
+                      video.play().catch(() => {});
+                    }, 100);
+                  });
+                };
+                
+                video.addEventListener('loadeddata', playVideo);
+                video.addEventListener('canplay', playVideo);
+                
+                // Immediate attempt
+                if (video.readyState >= 2) {
+                  playVideo();
+                }
+              }
             }}
           >
             Your browser does not support the video tag.
