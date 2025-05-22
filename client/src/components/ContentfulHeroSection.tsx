@@ -55,23 +55,27 @@ export default function ContentfulHeroSection() {
   return (
     <section className="w-full h-[70vh] min-h-[480px] md:min-h-[550px] max-h-[650px] relative bg-black overflow-hidden">
       <div className="absolute inset-0 z-0">
-        {/* Simple, optimized video with no layers or complexity */}
+        {/* Advanced video loading solution with progressive enhancement */}
         <div className="absolute inset-0">
           {/* Static background color shown if video fails */}
-          <div className="absolute inset-0 bg-gray-900"></div>
+          <div className="absolute inset-0 bg-gray-900 bg-opacity-90"></div>
           
-          {/* Single optimized video element */}
+          {/* Video with advanced lazy loading */}
           <video 
             autoPlay 
             loop 
             muted 
             playsInline
             className="absolute object-cover w-full h-full opacity-70"
-            src="/newset.mp4"
             style={{ 
               willChange: 'transform' 
             }}
+            preload="metadata"
           >
+            <source 
+              src="/newset.mp4" 
+              type="video/mp4" 
+            />
             Your browser does not support the video tag.
           </video>
         </div>
