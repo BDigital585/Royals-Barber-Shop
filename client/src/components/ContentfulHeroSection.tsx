@@ -60,14 +60,14 @@ export default function ContentfulHeroSection() {
           {/* Static background color shown if video fails */}
           <div className="absolute inset-0 bg-gray-900 bg-opacity-90"></div>
           
-          {/* Video background with performance optimization */}
+          {/* Optimized video for homepage using direct path */}
           <video 
             autoPlay 
             loop 
             muted 
             playsInline
             className="absolute object-cover w-full h-full opacity-70"
-            src="/videos/newset.mp4"
+            src="/newset.mp4"
             style={{ 
               willChange: 'transform',
               transform: 'translate3d(0,0,0)',
