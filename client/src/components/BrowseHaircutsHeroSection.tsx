@@ -65,14 +65,14 @@ export default function BrowseHaircutsHeroSection() {
           </video>
           
           {/* Gradient overlay for text visibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent flex items-center">
-            <div className="container mx-auto px-6 py-12">
-              <div className="max-w-xl">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent flex items-end pb-8 md:pb-12 lg:pb-16">
+            <div className="container mx-auto px-4 md:px-6">
+              <div className="max-w-md md:max-w-lg ml-2 md:ml-4 mb-2 md:mb-4">
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 md:mb-3">
                   {title || 'Find Your Perfect Style'}
                 </h1>
-                <p className="text-white/90 text-base md:text-lg lg:text-xl max-w-lg">
-                  {subtitle || 'Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barber Shop.'}
+                <p className="text-white/90 text-sm md:text-base max-w-[250px] md:max-w-md">
+                  {subtitle || 'Browse our premium haircuts collection'}
                 </p>
               </div>
             </div>

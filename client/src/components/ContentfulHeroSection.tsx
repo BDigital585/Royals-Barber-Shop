@@ -55,20 +55,20 @@ export default function ContentfulHeroSection() {
   return (
     <section className="w-full h-[70vh] min-h-[480px] md:min-h-[550px] max-h-[650px] relative bg-black overflow-hidden">
       <div className="absolute inset-0 z-0">
-        {videoUrl && (
-          <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline 
-            className="absolute object-cover w-full h-full opacity-70"
-            onLoadedData={() => console.log("Video loaded successfully")}
-            onCanPlay={() => console.log("Video can play now")}
-          >
-            <source src={videoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        )}
+        {/* Always try to load the video, with better error logging */}
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="absolute object-cover w-full h-full opacity-70"
+          onLoadedData={() => console.log("Homepage video loaded successfully")}
+          onCanPlay={() => console.log("Homepage video can play now")}
+          onError={(e) => console.error("Homepage video error:", e)}
+        >
+          <source src={videoUrl || '/videos/newset.mp4'} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
         
         {/* Gradient overlay for text visibility */}
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-between py-8 md:py-12">
