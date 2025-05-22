@@ -318,7 +318,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get Contentful hero content
+  // Get Homepage hero content from Contentful
   app.get(`${apiPrefix}/contentful/hero`, async (req, res) => {
     try {
       // Import directly at the top level in the main file
@@ -338,11 +338,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
       });
       
-      // Fetch the latest published entry of content type "pageSettings"
-      // Sort by sys.updatedAt in descending order to get the most recently updated entry
+      // Fetch the homepage hero content from "pageSettings" where name is "Untitled"
       const pageSettings = await client.getEntries({
         content_type: 'pageSettings',
-        // TypeScript doesn't like the string format for order, but it works
+        'fields.name': 'Untitled', // Match the specific name
         order: ['-sys.updatedAt'] as any, // Sort by updated date descending
         limit: 1,
         include: 10 // Include linked entries (up to 10 levels deep to ensure we get everything)
@@ -389,7 +388,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // The structure might be different than expected, let's check various possibilities
       
       // Extract title - may be directly in fields or in a nested structure
-      const title = heroContent.fields?.title || 'Royals Barbershop';
+      const title = heroContent.fields?.title || 'Royals Barber Shop';
       console.log('Title:', title);
       
       // Extract subtitle if available
@@ -460,6 +459,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching Contentful hero content:", error);
       return res.status(500).json({ 
         message: "Failed to fetch Contentful content",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+  
+  // Get Browse Haircuts hero content from Contentful
+  app.get(`${apiPrefix}/contentful/browse-haircuts-hero`, async (req, res) => {
+    try {
+      const { createClient } = await import('contentful');
+      
+      // Create client with environment variables
+      const client = createClient({
+        space: process.env.CONTENTFUL_SPACE_ID || '',
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN || '',
+        environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
+      });
+      
+      // Fetch the browse haircuts hero content from content type "Browse Haircuts Hero" with name "Untitled"
+      const browseHaircutsHeroEntries = await client.getEntries({
+        content_type: 'browseHaircutsHero',
+        'fields.name': 'Untitled', // Match the specific name
+        order: ['-sys.updatedAt'] as any,
+        limit: 1,
+        include: 10
+      });
+      
+      console.log('Found Browse Haircuts Hero entries:', browseHaircutsHeroEntries.items.length);
+      
+      if (!browseHaircutsHeroEntries.items.length) {
+        // Return a reasonable default if no content is found
+        return res.status(200).json({
+          title: 'Find Your Perfect Style',
+          subtitle: 'Browse our gallery of premium haircuts',
+          videoUrl: '',
+          backgroundImage: null
+        });
+      }
+      
+      // Get the latest entry
+      const latestEntry = browseHaircutsHeroEntries.items[0];
+      const fields = latestEntry.fields as any;
+      
+      console.log('Browse Haircuts Hero entry fields:', Object.keys(fields));
+      
+      // Extract title and subtitle
+      const title = fields.title || 'Find Your Perfect Style';
+      const subtitle = fields.subtitle || 'Browse our gallery of premium haircuts';
+      
+      // Extract video URL
+      let videoUrl = '';
+      
+      if (fields.video && fields.video.fields && fields.video.fields.file) {
+        // Video is a reference to an asset
+        const videoAsset = fields.video;
+        videoUrl = videoAsset.fields.file.url.startsWith('//') 
+          ? `https:${videoAsset.fields.file.url}` 
+          : videoAsset.fields.file.url;
+      } else if (fields.file && fields.file.url) {
+        // Video is directly in the file field
+        videoUrl = fields.file.url.startsWith('//') 
+          ? `https:${fields.file.url}` 
+          : fields.file.url;
+      }
+      
+      // Extract background image if video is not available
+      let backgroundImageUrl = null;
+      
+      if (!videoUrl && fields.backgroundImage && fields.backgroundImage.fields && fields.backgroundImage.fields.file) {
+        const imageAsset = fields.backgroundImage;
+        backgroundImageUrl = `https:${imageAsset.fields.file.url}`;
+      }
+      
+      // Format the response
+      const heroData = {
+        title,
+        subtitle,
+        videoUrl,
+        backgroundImage: backgroundImageUrl
+      };
+      
+      return res.status(200).json(heroData);
+    } catch (error) {
+      console.error("Error fetching Browse Haircuts hero content:", error);
+      return res.status(500).json({ 
+        message: "Failed to fetch Browse Haircuts hero content",
         error: error instanceof Error ? error.message : String(error)
       });
     }

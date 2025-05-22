@@ -30,7 +30,7 @@ export interface BlogPost {
   publishedAt: string;
 }
 
-// Function to get the hero content by fetching from our server API
+// Function to get the homepage hero content by fetching from our server API
 export async function getHeroContent(): Promise<SiteHero | null> {
   try {
     // Fetch content from our server endpoint instead of directly from Contentful
@@ -41,11 +41,30 @@ export async function getHeroContent(): Promise<SiteHero | null> {
     }
     
     const data = await response.json();
-    console.log('Contentful data from API:', data);
+    console.log('Homepage hero content from API:', data);
     
     return data;
   } catch (error) {
     console.error('Error fetching hero content from API:', error);
+    return null;
+  }
+}
+
+// Function to get the Browse Haircuts hero content
+export async function getBrowseHaircutsHeroContent(): Promise<SiteHero | null> {
+  try {
+    const response = await fetch('/api/contentful/browse-haircuts-hero');
+    
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    console.log('Browse Haircuts hero content from API:', data);
+    
+    return data;
+  } catch (error) {
+    console.error('Error fetching Browse Haircuts hero content from API:', error);
     return null;
   }
 }
