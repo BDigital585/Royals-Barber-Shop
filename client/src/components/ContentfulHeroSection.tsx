@@ -55,17 +55,16 @@ export default function ContentfulHeroSection() {
   return (
     <section className="w-full h-[70vh] min-h-[480px] md:min-h-[550px] max-h-[650px] relative bg-black overflow-hidden">
       <div className="absolute inset-0 z-0">
-        {/* Direct video element with hardcoded path */}
+        {/* Optimized video element for faster loading */}
         <video 
           autoPlay 
           loop 
           muted 
           playsInline 
+          preload="auto"
           className="absolute object-cover w-full h-full opacity-70"
-          onLoadedData={() => console.log("Homepage video loaded successfully")}
-          onCanPlay={() => console.log("Homepage video can play now")}
-          onError={(e) => console.error("Homepage video error:", e)}
           src="/newset.mp4"
+          style={{ willChange: 'transform' }}
         >
           Your browser does not support the video tag.
         </video>
