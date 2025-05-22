@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { FaMapMarkerAlt, FaPhone, FaStar, FaStarHalfAlt, FaGoogle } from 'react-icons/fa';
-import { useEffect, useRef, useState } from 'react';
 
 // Define the expected shape of our hero content data
 interface HeroContent {
@@ -11,43 +10,10 @@ interface HeroContent {
 }
 
 export default function ContentfulHeroSection() {
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [isPreviewPlaying, setIsPreviewPlaying] = useState(true);
-  const mainVideoRef = useRef<HTMLVideoElement>(null);
-  const previewVideoRef = useRef<HTMLVideoElement>(null);
-  
   const { data, isLoading, error } = useQuery<HeroContent>({
     queryKey: ['/api/contentful/hero'],
     retry: false
   });
-  
-  // Progressive video loading strategy
-  useEffect(() => {
-    // Function to initialize main video
-    const initMainVideo = () => {
-      if (mainVideoRef.current) {
-        // When main video can play, make it visible
-        mainVideoRef.current.oncanplay = () => {
-          setIsVideoLoaded(true);
-          // Start playing main video
-          mainVideoRef.current?.play().catch(() => {});
-          
-          // After a short delay, fade out the preview video
-          setTimeout(() => {
-            setIsPreviewPlaying(false);
-          }, 300);
-        };
-        
-        // Load the main video (already has preload="auto")
-        mainVideoRef.current.load();
-      }
-    };
-    
-    // Give the preview video a head start before loading main video
-    const timer = setTimeout(initMainVideo, 200);
-    
-    return () => clearTimeout(timer);
-  }, []);
 
   if (isLoading) {
     return (
@@ -89,44 +55,22 @@ export default function ContentfulHeroSection() {
   return (
     <section className="w-full h-[70vh] min-h-[480px] md:min-h-[550px] max-h-[650px] relative bg-black overflow-hidden">
       <div className="absolute inset-0 z-0">
-        {/* Progressive video loading implementation */}
+        {/* Simple, optimized video with no layers or complexity */}
         <div className="absolute inset-0">
-          {/* Static background color shown while videos load */}
+          {/* Static background color shown if video fails */}
           <div className="absolute inset-0 bg-gray-900"></div>
           
-          {/* Preview video (small, loads instantly) */}
+          {/* Single optimized video element */}
           <video 
-            ref={previewVideoRef}
             autoPlay 
             loop 
             muted 
             playsInline
-            preload="auto"
-            poster="/poster-frame.jpg"
-            className={`absolute object-cover w-full h-full opacity-70 transition-opacity duration-500 ${!isPreviewPlaying ? 'opacity-0' : ''}`}
-            src="/hero-preview.mp4"
-            style={{ 
-              willChange: 'transform',
-              transform: 'translate3d(0,0,0)', // Hardware acceleration
-            }}
-          >
-            Your browser does not support the video tag.
-          </video>
-          
-          {/* Main high-quality video (loads in background) */}
-          <video 
-            ref={mainVideoRef}
-            loop 
-            muted 
-            playsInline
-            preload="auto"
-            className={`absolute object-cover w-full h-full transition-opacity duration-500 ${isVideoLoaded ? 'opacity-70' : 'opacity-0'}`}
+            className="absolute object-cover w-full h-full opacity-70"
             src="/newset.mp4"
             style={{ 
-              willChange: 'transform',
-              transform: 'translate3d(0,0,0)',
+              willChange: 'transform' 
             }}
-            data-hero-video="true"
           >
             Your browser does not support the video tag.
           </video>

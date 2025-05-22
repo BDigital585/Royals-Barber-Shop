@@ -59,8 +59,9 @@ export default function BrowseHaircutsHeroSection() {
             muted 
             playsInline 
             className="absolute object-cover w-full h-full opacity-80"
+            src={videoUrl}
+            style={{ willChange: 'transform' }}
           >
-            <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           
