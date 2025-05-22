@@ -60,22 +60,19 @@ export default function ContentfulHeroSection() {
           {/* Static background color shown if video fails */}
           <div className="absolute inset-0 bg-gray-900 bg-opacity-90"></div>
           
-          {/* Video with advanced lazy loading */}
+          {/* Direct video element for fastest loading */}
           <video 
             autoPlay 
             loop 
             muted 
             playsInline
             className="absolute object-cover w-full h-full opacity-70"
+            src="/videos/newset.mp4"
             style={{ 
-              willChange: 'transform' 
+              willChange: 'transform',
+              transform: 'translate3d(0,0,0)' 
             }}
-            preload="metadata"
           >
-            <source 
-              src="/newset.mp4" 
-              type="video/mp4" 
-            />
             Your browser does not support the video tag.
           </video>
         </div>

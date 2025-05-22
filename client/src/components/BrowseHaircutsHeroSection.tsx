@@ -60,7 +60,11 @@ export default function BrowseHaircutsHeroSection() {
             playsInline 
             className="absolute object-cover w-full h-full opacity-80"
             src={videoUrl}
-            style={{ willChange: 'transform' }}
+            style={{ 
+              willChange: 'transform',
+              transform: 'translate3d(0,0,0)'
+            }}
+            preload="auto"
           >
             Your browser does not support the video tag.
           </video>
