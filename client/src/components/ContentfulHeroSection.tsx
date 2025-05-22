@@ -60,7 +60,7 @@ export default function ContentfulHeroSection() {
           {/* Static background color shown if video fails */}
           <div className="absolute inset-0 bg-gray-900 bg-opacity-90"></div>
           
-          {/* Direct video element for fastest loading */}
+          {/* Video background with performance optimization */}
           <video 
             autoPlay 
             loop 
@@ -70,7 +70,8 @@ export default function ContentfulHeroSection() {
             src="/videos/newset.mp4"
             style={{ 
               willChange: 'transform',
-              transform: 'translate3d(0,0,0)' 
+              transform: 'translate3d(0,0,0)',
+              objectPosition: 'center center' 
             }}
           >
             Your browser does not support the video tag.

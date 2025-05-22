@@ -53,21 +53,10 @@ export default function BrowseHaircutsHeroSection() {
     return (
       <section className="w-full h-[50vh] min-h-[300px] md:min-h-[400px] relative bg-black overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline 
-            className="absolute object-cover w-full h-full opacity-80"
-            src={videoUrl}
-            style={{ 
-              willChange: 'transform',
-              transform: 'translate3d(0,0,0)'
-            }}
-            preload="auto"
-          >
-            Your browser does not support the video tag.
-          </video>
+          {/* Simple gradient background for instant loading */}
+          <div 
+            className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+          ></div>
           
           {/* Gradient overlay for text visibility */}
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent flex items-end pb-8 md:pb-12 lg:pb-16">
