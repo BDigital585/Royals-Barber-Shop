@@ -60,7 +60,7 @@ export default function ContentfulHeroSection() {
           {/* Static background color shown if video fails */}
           <div className="absolute inset-0 bg-gray-900 bg-opacity-90"></div>
           
-          {/* Optimized homepage video with instant play */}
+          {/* Mobile-optimized homepage video with instant play */}
           <video 
             autoPlay 
             loop 
@@ -73,12 +73,27 @@ export default function ContentfulHeroSection() {
               transform: 'translate3d(0,0,0)',
               objectPosition: 'center center' 
             }}
-            preload="metadata"
+            preload="auto"
+            poster=""
+            webkit-playsinline="true"
+            onLoadStart={(e) => {
+              const video = e.target as HTMLVideoElement;
+              video.currentTime = 0;
+              video.play().catch(() => {});
+            }}
+            onLoadedMetadata={(e) => {
+              const video = e.target as HTMLVideoElement;
+              video.play().catch(() => {});
+            }}
             onLoadedData={(e) => {
               const video = e.target as HTMLVideoElement;
               video.play().catch(() => {});
             }}
             onCanPlay={(e) => {
+              const video = e.target as HTMLVideoElement;
+              video.play().catch(() => {});
+            }}
+            onCanPlayThrough={(e) => {
               const video = e.target as HTMLVideoElement;
               video.play().catch(() => {});
             }}
