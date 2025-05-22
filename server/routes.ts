@@ -321,15 +321,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get Homepage hero content from Contentful
   app.get(`${apiPrefix}/contentful/hero`, async (req, res) => {
     try {
-      // Import directly at the top level in the main file
       const { createClient } = await import('contentful');
-      
-      // Print environment variables for debugging
-      console.log('Contentful environment variables check:', {
-        spaceId: process.env.CONTENTFUL_SPACE_ID ? 'exists' : 'missing',
-        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ? 'exists' : 'missing',
-        environment: process.env.CONTENTFUL_ENVIRONMENT ? 'exists' : 'missing'
-      });
       
       // Create client with environment variables
       const client = createClient({
@@ -338,128 +330,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
         environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
       });
       
-      // Fetch the homepage hero content from "pageSettings" where name is "Untitled"
-      const pageSettings = await client.getEntries({
-        content_type: 'pageSettings',
-        'fields.name': 'Untitled', // Match the specific name
-        order: ['-sys.updatedAt'] as any, // Sort by updated date descending
-        limit: 1,
-        include: 10 // Include linked entries (up to 10 levels deep to ensure we get everything)
+      // First, try to get all assets to find the site hero video
+      const assets = await client.getAssets({
+        limit: 20, // Get a reasonable number of assets
+        order: ['-sys.updatedAt'] as any,
       });
       
-      console.log('Found pageSettings entries:', pageSettings.items.length);
-      
-      if (!pageSettings.items.length) {
-        throw new Error('No pageSettings found');
-      }
-      
-      // Log the entry ID and title for debugging
-      const latestEntry = pageSettings.items[0];
-      console.log('Latest pageSettings entry:', {
-        id: latestEntry.sys?.id,
-        contentType: latestEntry.sys?.contentType?.sys?.id,
-        updatedAt: latestEntry.sys?.updatedAt,
-        fieldKeys: Object.keys(latestEntry.fields || {})
-      });
-      
-      // Get the hero content directly from the pageSettings entry
-      const pageSettingsFields = latestEntry.fields as any;
-      
-      // Check if we have a direct hero content or need to follow a reference
-      let heroContent: any;
-      
-      if (pageSettingsFields.hero) {
-        console.log('Found hero reference in pageSettings');
-        
-        // This is a reference to another entry - log the complete hero reference object
-        console.log('Hero reference object:', JSON.stringify(pageSettingsFields.hero, null, 2));
-        
-        heroContent = pageSettingsFields.hero;
-      } else {
-        console.log('Using pageSettings directly as hero content');
-        // The pageSettings entry itself contains the hero content
-        heroContent = latestEntry;
-      }
-      
-      // Log the hero content fields structure
-      console.log('Hero content fields structure:', heroContent.fields ? Object.keys(heroContent.fields) : 'No fields found');
-      
-      // For the sitehero content type, extract the needed fields
-      // The structure might be different than expected, let's check various possibilities
-      
-      // Extract title - may be directly in fields or in a nested structure
-      const title = heroContent.fields?.title || 'Royals Barber Shop';
-      console.log('Title:', title);
-      
-      // Extract subtitle if available
-      const subtitle = heroContent.fields?.subtitle || '';
-      console.log('Subtitle:', subtitle);
-      
-      // Try different possible paths for the video URL
-      let videoUrl = '';
-      
-      // Looking at the logs, we can see the actual structure is different
-      // The video URL is directly in heroContent.fields.file.url
-      if (heroContent.fields?.file && heroContent.fields.file.url) {
-        console.log('Found video file in direct file field');
-        const fileData = heroContent.fields.file;
-        
-        // For Contentful assets, we always want to use the file URL
-        // QuickTime video files (.MOV) are valid and should work in browsers
-        // Make sure we have a proper URL with https:
-        videoUrl = fileData.url.startsWith('//') 
-          ? `https:${fileData.url}` 
-          : fileData.url;
-        
-        console.log('Extracted video URL:', videoUrl);
-        console.log('Video content type:', fileData.contentType);
-        console.log('Video filename:', fileData.fileName);
-      } else if (heroContent.fields?.videoUrl) {
-        // Direct videoUrl field
-        videoUrl = heroContent.fields.videoUrl;
-      }
-      console.log('Video URL:', videoUrl);
-      
-      // Extract image data - check multiple possible paths
-      let backgroundImageUrl = null;
-      
-      // Check if backgroundImage is a direct field
-      if (heroContent.fields?.backgroundImage) {
-        const imageAsset = heroContent.fields.backgroundImage;
-        console.log('Image asset found:', imageAsset);
-        
-        // If it's a direct asset reference with fields
-        if (imageAsset.fields && imageAsset.fields.file) {
-          backgroundImageUrl = `https:${imageAsset.fields.file.url}`;
-        }
-      } 
-      // If the image is stored in 'file' field instead
-      else if (heroContent.fields?.file) {
-        const fileData = heroContent.fields.file;
-        console.log('File field found:', fileData);
-        
-        // It might be a direct file object or a reference to an asset
-        if (fileData.fields && fileData.fields.file) {
-          backgroundImageUrl = `https:${fileData.fields.file.url}`;
+      // Look for a video file asset (likely to be the hero video)
+      let heroAsset = null;
+      for (const asset of assets.items) {
+        if (asset.fields.file && 
+            (asset.fields.file.contentType === 'video/mp4' || 
+             asset.fields.file.contentType === 'video/quicktime')) {
+          console.log('Found a video asset:', asset.fields.title);
+          heroAsset = asset;
+          break;
         }
       }
       
-      console.log('Background image URL:', backgroundImageUrl);
+      // If we found a hero asset, extract the details
+      if (heroAsset) {
+        const videoUrl = heroAsset.fields.file.url.startsWith('//') 
+          ? `https:${heroAsset.fields.file.url}` 
+          : heroAsset.fields.file.url;
+          
+        console.log('Found hero video URL:', videoUrl);
+        
+        // Return the hero data
+        return res.status(200).json({
+          title: 'Ready for a fresh look?',
+          subtitle: 'Walk-ins welcome or schedule online today',
+          videoUrl: videoUrl,
+          backgroundImage: null
+        });
+      }
       
-      // Format the final response data
-      const heroData = {
-        title: title,
-        subtitle: subtitle,
-        videoUrl: videoUrl,
-        backgroundImage: backgroundImageUrl
-      };
-      
-      return res.status(200).json(heroData);
+      // If no video asset found, return default data
+      return res.status(200).json({
+        title: 'Ready for a fresh look?',
+        subtitle: 'Walk-ins welcome or schedule online today',
+        videoUrl: '', 
+        backgroundImage: null
+      });
     } catch (error) {
       console.error("Error fetching Contentful hero content:", error);
-      return res.status(500).json({ 
-        message: "Failed to fetch Contentful content",
-        error: error instanceof Error ? error.message : String(error)
+      
+      // Return default data even if there's an error
+      return res.status(200).json({
+        title: 'Ready for a fresh look?',
+        subtitle: 'Walk-ins welcome or schedule online today',
+        videoUrl: '', 
+        backgroundImage: null
       });
     }
   });
@@ -476,75 +397,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
         environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
       });
       
-      // Fetch the browse haircuts hero content from content type "Browse Haircuts Hero" with name "Untitled"
-      const browseHaircutsHeroEntries = await client.getEntries({
-        content_type: 'browseHaircutsHero',
-        'fields.name': 'Untitled', // Match the specific name
+      // First, try to get all assets to find a suitable video
+      const assets = await client.getAssets({
+        limit: 20, // Get a reasonable number of assets
         order: ['-sys.updatedAt'] as any,
-        limit: 1,
-        include: 10
       });
       
-      console.log('Found Browse Haircuts Hero entries:', browseHaircutsHeroEntries.items.length);
+      // Look for a video file asset that might be used for the browse haircuts page
+      let heroAsset = null;
+      for (const asset of assets.items) {
+        if (asset.fields.file && 
+            (asset.fields.file.contentType === 'video/mp4' || 
+             asset.fields.file.contentType === 'video/quicktime')) {
+          console.log('Found a video asset for Browse Haircuts:', asset.fields.title);
+          heroAsset = asset;
+          break;
+        }
+      }
       
-      if (!browseHaircutsHeroEntries.items.length) {
-        // Return a reasonable default if no content is found
+      // If we found a suitable asset, extract the details
+      if (heroAsset) {
+        const videoUrl = heroAsset.fields.file.url.startsWith('//') 
+          ? `https:${heroAsset.fields.file.url}` 
+          : heroAsset.fields.file.url;
+          
+        console.log('Found Browse Haircuts video URL:', videoUrl);
+        
+        // Return the hero data
         return res.status(200).json({
           title: 'Find Your Perfect Style',
-          subtitle: 'Browse our gallery of premium haircuts',
-          videoUrl: '',
+          subtitle: 'Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barber Shop.',
+          videoUrl: videoUrl,
           backgroundImage: null
         });
       }
       
-      // Get the latest entry
-      const latestEntry = browseHaircutsHeroEntries.items[0];
-      const fields = latestEntry.fields as any;
-      
-      console.log('Browse Haircuts Hero entry fields:', Object.keys(fields));
-      
-      // Extract title and subtitle
-      const title = fields.title || 'Find Your Perfect Style';
-      const subtitle = fields.subtitle || 'Browse our gallery of premium haircuts';
-      
-      // Extract video URL
-      let videoUrl = '';
-      
-      if (fields.video && fields.video.fields && fields.video.fields.file) {
-        // Video is a reference to an asset
-        const videoAsset = fields.video;
-        videoUrl = videoAsset.fields.file.url.startsWith('//') 
-          ? `https:${videoAsset.fields.file.url}` 
-          : videoAsset.fields.file.url;
-      } else if (fields.file && fields.file.url) {
-        // Video is directly in the file field
-        videoUrl = fields.file.url.startsWith('//') 
-          ? `https:${fields.file.url}` 
-          : fields.file.url;
-      }
-      
-      // Extract background image if video is not available
-      let backgroundImageUrl = null;
-      
-      if (!videoUrl && fields.backgroundImage && fields.backgroundImage.fields && fields.backgroundImage.fields.file) {
-        const imageAsset = fields.backgroundImage;
-        backgroundImageUrl = `https:${imageAsset.fields.file.url}`;
-      }
-      
-      // Format the response
-      const heroData = {
-        title,
-        subtitle,
-        videoUrl,
-        backgroundImage: backgroundImageUrl
-      };
-      
-      return res.status(200).json(heroData);
+      // If no video asset found, return default data
+      return res.status(200).json({
+        title: 'Find Your Perfect Style',
+        subtitle: 'Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barber Shop.',
+        videoUrl: '', 
+        backgroundImage: null
+      });
     } catch (error) {
       console.error("Error fetching Browse Haircuts hero content:", error);
-      return res.status(500).json({ 
-        message: "Failed to fetch Browse Haircuts hero content",
-        error: error instanceof Error ? error.message : String(error)
+      
+      // Return default data even if there's an error
+      return res.status(200).json({
+        title: 'Find Your Perfect Style',
+        subtitle: 'Browse our gallery of premium haircuts to find the perfect look for your next visit to Royals Barber Shop.',
+        videoUrl: '', 
+        backgroundImage: null
       });
     }
   });

@@ -1,8 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { FaMapMarkerAlt, FaPhone, FaStar, FaStarHalfAlt, FaGoogle } from 'react-icons/fa';
 
+// Define the expected shape of our hero content data
+interface HeroContent {
+  title: string;
+  subtitle: string;
+  videoUrl: string;
+  backgroundImage: string | null;
+}
+
 export default function ContentfulHeroSection() {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<HeroContent>({
     queryKey: ['/api/contentful/hero'],
     retry: false
   });
@@ -38,8 +46,11 @@ export default function ContentfulHeroSection() {
     );
   }
 
-  // Extract data from the API response
-  const { title, subtitle, videoUrl, backgroundImage } = data;
+  // Extract data from the API response with default values
+  const title = data.title || 'Ready for a fresh look?';
+  const subtitle = data.subtitle || 'Walk-ins welcome or schedule your appointment online today.';
+  const videoUrl = data.videoUrl || '';
+  const backgroundImage = data.backgroundImage || null;
 
   return (
     <section className="w-full h-[70vh] min-h-[480px] md:min-h-[550px] max-h-[650px] relative bg-black overflow-hidden">

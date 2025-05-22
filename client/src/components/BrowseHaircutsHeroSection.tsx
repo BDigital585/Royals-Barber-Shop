@@ -1,8 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { getBrowseHaircutsHeroContent, type SiteHero } from '../lib/contentful';
 
+// Define the expected shape of our hero content data
+interface HeroContent {
+  title: string;
+  subtitle: string;
+  videoUrl: string;
+  backgroundImage: string | null;
+}
+
 export default function BrowseHaircutsHeroSection() {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<HeroContent>({
     queryKey: ['/api/contentful/browse-haircuts-hero'],
     queryFn: getBrowseHaircutsHeroContent
   });
