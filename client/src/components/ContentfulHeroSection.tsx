@@ -55,19 +55,53 @@ export default function ContentfulHeroSection() {
   return (
     <section className="w-full h-[70vh] min-h-[480px] md:min-h-[550px] max-h-[650px] relative bg-black overflow-hidden">
       <div className="absolute inset-0 z-0">
-        {/* Optimized video element for faster loading */}
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          preload="auto"
-          className="absolute object-cover w-full h-full opacity-70"
-          src="/newset.mp4"
-          style={{ willChange: 'transform' }}
-        >
-          Your browser does not support the video tag.
-        </video>
+        {/* Enhanced video loading with poster and performance optimizations */}
+        <div className="absolute inset-0">
+          {/* Static background image shown while video loads */}
+          <div className="absolute inset-0 bg-gray-900"></div>
+          
+          <video 
+            key="hero-video"
+            autoPlay 
+            loop 
+            muted 
+            playsInLine
+            preload="auto"
+            poster="/poster-frame.jpg"
+            className="absolute object-cover w-full h-full opacity-70"
+            src="/newset.mp4"
+            style={{ 
+              willChange: 'transform',
+              transform: 'translate3d(0,0,0)', // Hardware acceleration
+            }}
+            onCanPlay={(e) => {
+              // Additional optimization for immediate playback
+              const video = e.currentTarget;
+              if (video.paused) {
+                video.play().catch(() => {});
+              }
+            }}
+          >
+            Your browser does not support the video tag.
+          </video>
+          
+          {/* Preload script - load video before anything else */}
+          <script dangerouslySetInnerHTML={{ __html: `
+            (function() {
+              // Priority hint for video
+              const link = document.createElement('link');
+              link.rel = 'preload';
+              link.href = '/newset.mp4';
+              link.as = 'video';
+              link.type = 'video/mp4';
+              document.head.appendChild(link);
+              
+              // Force early video loading
+              const preloadVideo = new Image();
+              preloadVideo.src = '/poster-frame.jpg';
+            })();
+          `}} />
+        </div>
         
         {/* Gradient overlay for text visibility */}
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-between py-8 md:py-12">
