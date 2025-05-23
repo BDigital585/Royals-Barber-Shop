@@ -197,6 +197,17 @@
     z-index: 30; /* High enough to be clickable */
     position: relative; /* Ensure proper stacking context */
   }
+
+  /* Hide video controls on mobile */
+  video::-webkit-media-controls-start-playback-button,
+  video::-webkit-media-controls-play-button,
+  video::-webkit-media-controls-pause-button {
+    display: none !important;
+  }
+
+  video {
+    pointer-events: none; /* prevents taps from waking the controls */
+  }
   
   /* Fix for mobile specifically */
   @media (max-width: 768px) {

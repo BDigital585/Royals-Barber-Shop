@@ -60,26 +60,24 @@ export default function ContentfulHeroSection() {
           {/* Static background color shown if video fails */}
           <div className="absolute inset-0 bg-gray-900 bg-opacity-90"></div>
           
-          {/* Professional optimized video with instant autoplay */}
+          {/* Mobile-optimized hero video with instant autoplay */}
           <video 
             id="heroVideo"
             autoPlay 
-            loop 
             muted 
+            loop 
             playsInline
-            controls={false}
+            webkit-playsinline="true"
+            disablePictureInPicture
+            controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
+            preload="auto"
+            poster="/assets/hero-placeholder.jpg"
             className="absolute object-cover w-full h-full opacity-70"
             src={videoUrl || "/hero-720p.mp4"}
             style={{ 
               willChange: 'transform',
               transform: 'translate3d(0,0,0)',
               objectPosition: 'center center' 
-            }}
-            preload="auto"
-            onLoadedData={(e) => {
-              const video = e.target as HTMLVideoElement;
-              video.muted = true;
-              video.play().catch(() => {});
             }}
           >
             Your browser does not support the video tag.

@@ -1,0 +1,58 @@
+Copy-and-paste everything below into your Vibe agent—all in one go.
+It’s written in plain English, with just enough detail to solve the problem without burying you in jargon.
+
+⸻
+
+You are the senior front-end engineer for our barbershop site.
+Your one job is to make sure the hero video on the home page:
+	•	starts playing right away on phones and tablets,
+	•	never shows a play/pause icon or any other controls on mobile,
+	•	keeps working exactly as it already does on desktop.
+
+Do it like this:
+	1.	Tidy the video tag
+	•	In index.html find the <video> element that sits in the hero area.
+	•	Remove the word controls if you see it.
+	•	Make sure the tag includes these words, in this order is fine:
+
+autoplay muted loop playsinline webkit-playsinline disablePictureInPicture
+controlslist="nodownload noplaybackrate nofullscreen noremoteplayback"
+
+(They stop the browser from showing its own buttons.)
+
+	2.	Hide any leftover buttons with a tiny bit of CSS
+Add this to your main CSS file:
+
+video::-webkit-media-controls-start-playback-button,
+video::-webkit-media-controls-play-button,
+video::-webkit-media-controls-pause-button {
+  display: none !important;
+}
+video { pointer-events: none; }  /* stops taps from waking the controls */
+
+
+	3.	Give the browser a polite nudge, just in case
+At the bottom of your main JavaScript file (or a new one loaded with defer) add:
+
+window.addEventListener('load', () => {
+  const vid = document.getElementById('heroVideo');
+  const playIfPaused = () => {
+    if (vid && vid.paused) vid.play().catch(() => {});
+  };
+  playIfPaused();                 // first try
+  document.addEventListener('touchstart', playIfPaused, { once: true });
+});
+
+This quietly presses “play” if the browser hesitates, but it never shows controls.
+
+	4.	Make sure nothing else fights with it
+Search the rest of your project for extra play() calls or old hero-video scripts from other pages. Remove or comment them out so only the code above controls playback.
+	5.	Test on real phones
+Load the home page on iOS Safari and Android Chrome:
+	•	The video should appear within a split second.
+	•	No play or pause button should ever pop up.
+	•	Desktop should behave just like before.
+	6.	Commit your work
+Use the message: fix(mobile-hero): instant autoplay, no controls
+
+When all six steps are done, the hero video will start immediately on mobile without any unwanted buttons, and desktop will stay happy.

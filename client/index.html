@@ -63,6 +63,17 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <!-- Mobile video autoplay nudge -->
+    <script defer>
+      window.addEventListener('load', () => {
+        const vid = document.getElementById('heroVideo');
+        const playIfPaused = () => {
+          if (vid && vid.paused) vid.play().catch(() => {});
+        };
+        playIfPaused();                     // first try
+        document.addEventListener('touchstart', playIfPaused, { once: true });
+      });
+    </script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
   </body>
