@@ -60,12 +60,13 @@ export default function ContentfulHeroSection() {
           {/* Static background color shown if video fails */}
           <div className="absolute inset-0 bg-gray-900 bg-opacity-90"></div>
           
-          {/* Mobile-optimized homepage video with reliable playback */}
+          {/* Auto-playing homepage video for all devices */}
           <video 
             autoPlay 
             loop 
             muted 
             playsInline
+            controls={false}
             className="absolute object-cover w-full h-full opacity-70"
             src={videoUrl || "/superhero.mp4"}
             style={{ 
@@ -73,30 +74,11 @@ export default function ContentfulHeroSection() {
               transform: 'translate3d(0,0,0)',
               objectPosition: 'center center' 
             }}
-            preload="none"
-            poster=""
-            ref={(video) => {
-              if (video) {
-                // Force immediate play for mobile
-                const playVideo = () => {
-                  video.currentTime = 0;
-                  video.play().catch((error) => {
-                    console.log('Video autoplay prevented:', error);
-                    // Try again after a short delay
-                    setTimeout(() => {
-                      video.play().catch(() => {});
-                    }, 100);
-                  });
-                };
-                
-                video.addEventListener('loadeddata', playVideo);
-                video.addEventListener('canplay', playVideo);
-                
-                // Immediate attempt
-                if (video.readyState >= 2) {
-                  playVideo();
-                }
-              }
+            preload="auto"
+            onLoadedData={(e) => {
+              const video = e.target as HTMLVideoElement;
+              video.muted = true;
+              video.play().catch(() => {});
             }}
           >
             Your browser does not support the video tag.
