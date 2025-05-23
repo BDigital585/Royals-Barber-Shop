@@ -1,0 +1,32 @@
+System (role = “senior front-end performance engineer”)
+You are fixing the home-page hero video of a Replit-hosted barbershop site.
+
+Objective – make the hero video begin playing instantly (≤ 200 ms) on first paint across mobile and desktop while keeping Core Web Vitals green.
+
+Constraints
+	1.	The video must autoplay, loop, be muted, and play inline (no full-screen jump) on iOS & Android.
+	2.	No noticeable delay when another page that once had a hero video (now an image) is present.
+	3.	Total extra transferred bytes ≤ 1 MB.
+
+Tasks
+	1.	Compress & re-encode hero.mp4 →
+ffmpeg -i hero.mp4 -vf "scale=1280:-2,fps=24" -c:v libx264 -crf 28 -profile:v high -pix_fmt yuv420p -c:a aac -b:a 64k hero-720p.mp4
+ffmpeg -i hero.mp4 -vf "scale=1280:-2,fps=24" -c:v libvpx-vp9 -crf 30 -b:v 0 -pix_fmt yuv420p -deadline realtime hero-720p.webm
+Keep the smaller of the two as mobile default, retain both for broad support.
+	2.	Pre-load intelligently – add to <head>:
+<link rel="preload" as="video" href="/assets/hero-720p.webm" type="video/webm">
+<link rel="preload" as="video" href="/assets/hero-720p.mp4"  type="video/mp4">
+	3.	Replace the current <video> element in index.html with:
+<video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="/assets/hero-placeholder.jpg">
+  <source src="/assets/hero-720p.webm" type="video/webm">
+  <source src="/assets/hero-720p.mp4"  type="video/mp4">
+</video>
+	4.	Defer all non-critical scripts & remove duplicate hero logic.
+– Verify there is one document.getElementById('heroVideo').play() call.
+– Move any unrelated scripts to defer or type="module".
+	5.	Intersection Observer fallback (optional): if the video is not above the fold, add
+const hero = document.getElementById('heroVideo');
+const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { hero.play(); io.disconnect(); } }, {threshold: 0.25});
+io.observe(hero);
+	6.	Test with Chrome DevTools → Performance and Lighthouse Mobile. Target: LCP ≤ 2.5 s, CLS ≈ 0, Total blocking time ≤ 200 ms. Document metrics in perf-notes.md.
+	7.	Commit with message “fix: instant hero autoplay + size 68 % smaller”.
