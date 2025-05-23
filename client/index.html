@@ -62,15 +62,28 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Mobile video autoplay nudge -->
-    <script defer>
-      window.addEventListener('load', () => {
+    <!-- Instant mobile video autoplay - zero delay -->
+    <script>
+      // Execute immediately when DOM is ready
+      document.addEventListener('DOMContentLoaded', () => {
         const vid = document.getElementById('heroVideo');
-        const playIfPaused = () => {
-          if (vid && vid.paused) vid.play().catch(() => {});
-        };
-        playIfPaused();                     // first try
-        document.addEventListener('touchstart', playIfPaused, { once: true });
+        if (vid) {
+          // Force immediate play
+          const forcePlay = () => {
+            vid.currentTime = 0;
+            vid.muted = true;
+            vid.play().catch(() => {});
+          };
+          
+          // Multiple attempts for different mobile scenarios
+          forcePlay(); // Immediate
+          setTimeout(forcePlay, 50); // Quick retry
+          setTimeout(forcePlay, 200); // Fallback
+          
+          // Touch activation for stubborn devices
+          document.addEventListener('touchstart', forcePlay, { once: true });
+          document.addEventListener('click', forcePlay, { once: true });
+        }
       });
     </script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
