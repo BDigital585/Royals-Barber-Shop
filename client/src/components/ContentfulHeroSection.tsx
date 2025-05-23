@@ -69,7 +69,7 @@ export default function ContentfulHeroSection() {
             playsInline
             controls={false}
             className="absolute object-cover w-full h-full opacity-70"
-            src="/hero-720p.mp4"
+            src={videoUrl || "/hero-720p.mp4"}
             style={{ 
               willChange: 'transform',
               transform: 'translate3d(0,0,0)',
