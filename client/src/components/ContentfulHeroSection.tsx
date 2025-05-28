@@ -34,8 +34,8 @@ export default function ContentfulHeroSection() {
             onCanPlay={() => console.log('Video can play')}
             onError={(e) => console.error('Video error:', e)}
           >
+            <source src="/superhero-mobile.mp4" type="video/mp4" />
             <source src="/superhero-compressed.mp4" type="video/mp4" />
-            <source src="/superhero.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
