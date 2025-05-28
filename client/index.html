@@ -63,45 +63,63 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Instant mobile video autoplay - no delays, no reloading -->
+    <!-- Ultra-aggressive mobile-first video autoplay -->
     <script>
-      // Mobile-optimized video autoplay without any delays
-      function playVideoInstantly() {
+      // Immediate mobile video activation - zero tolerance for delays
+      let videoPlayed = false;
+      
+      function forceVideoPlay() {
+        if (videoPlayed) return;
+        
         const vid = document.getElementById('heroVideo');
-        if (vid && vid.paused) {
+        if (vid) {
           vid.muted = true;
           vid.currentTime = 0;
-          // Don't use load() - it causes delays
-          vid.play().catch(() => {});
+          
+          // Promise-based immediate play
+          const playPromise = vid.play();
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              videoPlayed = true;
+            }).catch(() => {
+              // Keep trying on mobile
+              setTimeout(forceVideoPlay, 50);
+            });
+          }
         }
       }
       
-      // Multiple immediate attempts
-      setTimeout(playVideoInstantly, 10);   // Super fast
-      setTimeout(playVideoInstantly, 100);  // Quick backup
-      setTimeout(playVideoInstantly, 300);  // Final attempt
+      // Immediate execution - no waiting
+      forceVideoPlay();
       
-      // Event-based triggers for mobile
-      document.addEventListener('DOMContentLoaded', playVideoInstantly);
-      document.addEventListener('touchstart', playVideoInstantly, { once: true });
-      document.addEventListener('click', playVideoInstantly, { once: true });
+      // Multiple rapid-fire attempts for mobile
+      setTimeout(forceVideoPlay, 1);
+      setTimeout(forceVideoPlay, 10);
+      setTimeout(forceVideoPlay, 50);
+      setTimeout(forceVideoPlay, 100);
       
-      // Intersection observer for when video becomes visible
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              playVideoInstantly();
-              observer.disconnect();
-            }
-          });
-        });
-        
-        setTimeout(() => {
-          const vid = document.getElementById('heroVideo');
-          if (vid) observer.observe(vid);
-        }, 50);
-      }
+      // User interaction triggers
+      ['touchstart', 'touchend', 'mousedown', 'click'].forEach(event => {
+        document.addEventListener(event, forceVideoPlay, { once: true, passive: true });
+      });
+      
+      // Visibility and load triggers
+      document.addEventListener('DOMContentLoaded', forceVideoPlay);
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) forceVideoPlay();
+      });
+      
+      // Continuous checking for mobile stubbornness
+      const mobileCheck = setInterval(() => {
+        if (videoPlayed) {
+          clearInterval(mobileCheck);
+        } else {
+          forceVideoPlay();
+        }
+      }, 200);
+      
+      // Stop checking after 5 seconds
+      setTimeout(() => clearInterval(mobileCheck), 5000);
     </script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
