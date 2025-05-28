@@ -61,72 +61,37 @@
     </script>
   </head>
   <body>
-    <!-- Immediate hero video for instant mobile playback -->
-    <video 
-      id="instant-hero-video"
-      autoplay 
-      muted 
-      loop 
-      playsinline
-      webkit-playsinline="true"
-      style="position: fixed; top: 0; left: 0; width: 100vw; height: 70vh; object-fit: cover; z-index: -1; opacity: 0.7;"
-      src="/superhero.mp4"
-    ></video>
-    
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Instant mobile hero video autoplay script -->
+    <!-- Mobile hero video autoplay for homepage only -->
     <script>
-      // Force instant video playback for mobile
-      let instantVideoPlayed = false;
-      
-      function playInstantVideo() {
-        if (instantVideoPlayed) return;
-        
-        const instantVid = document.getElementById('instant-hero-video');
-        if (instantVid) {
-          instantVid.muted = true;
-          instantVid.currentTime = 0;
+      function forceHeroVideoPlay() {
+        // Only target the homepage hero video
+        const heroVid = document.getElementById('heroVideo');
+        if (heroVid && window.location.pathname === '/') {
+          heroVid.muted = true;
+          heroVid.currentTime = 0;
           
-          const playPromise = instantVid.play();
+          const playPromise = heroVid.play();
           if (playPromise !== undefined) {
-            playPromise.then(() => {
-              instantVideoPlayed = true;
-              // Hide the React video once this plays
-              setTimeout(() => {
-                const reactVid = document.getElementById('heroVideo');
-                if (reactVid) {
-                  reactVid.style.display = 'none';
-                }
-              }, 100);
-            }).catch(() => {
-              setTimeout(playInstantVideo, 25);
+            playPromise.catch(() => {
+              // Retry for mobile
+              setTimeout(forceHeroVideoPlay, 50);
             });
           }
         }
       }
       
-      // Immediate attempts
-      playInstantVideo();
-      setTimeout(playInstantVideo, 1);
-      setTimeout(playInstantVideo, 10);
-      setTimeout(playInstantVideo, 50);
+      // Multiple immediate attempts for homepage hero
+      setTimeout(forceHeroVideoPlay, 10);
+      setTimeout(forceHeroVideoPlay, 100);
+      setTimeout(forceHeroVideoPlay, 300);
       
-      // Touch triggers for mobile
-      ['touchstart', 'touchend', 'click'].forEach(event => {
-        document.addEventListener(event, playInstantVideo, { once: true, passive: true });
+      // Event triggers
+      document.addEventListener('DOMContentLoaded', forceHeroVideoPlay);
+      ['touchstart', 'click'].forEach(event => {
+        document.addEventListener(event, forceHeroVideoPlay, { once: true, passive: true });
       });
-      
-      // Keep trying until it works
-      const instantCheck = setInterval(() => {
-        if (instantVideoPlayed) {
-          clearInterval(instantCheck);
-        } else {
-          playInstantVideo();
-        }
-      }, 100);
-      
-      setTimeout(() => clearInterval(instantCheck), 3000);
     </script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
