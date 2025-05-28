@@ -61,65 +61,72 @@
     </script>
   </head>
   <body>
+    <!-- Immediate hero video for instant mobile playback -->
+    <video 
+      id="instant-hero-video"
+      autoplay 
+      muted 
+      loop 
+      playsinline
+      webkit-playsinline="true"
+      style="position: fixed; top: 0; left: 0; width: 100vw; height: 70vh; object-fit: cover; z-index: -1; opacity: 0.7;"
+      src="/superhero.mp4"
+    ></video>
+    
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Ultra-aggressive mobile-first video autoplay -->
+    <!-- Instant mobile hero video autoplay script -->
     <script>
-      // Immediate mobile video activation - zero tolerance for delays
-      let videoPlayed = false;
+      // Force instant video playback for mobile
+      let instantVideoPlayed = false;
       
-      function forceVideoPlay() {
-        if (videoPlayed) return;
+      function playInstantVideo() {
+        if (instantVideoPlayed) return;
         
-        const vid = document.getElementById('heroVideo');
-        if (vid) {
-          vid.muted = true;
-          vid.currentTime = 0;
+        const instantVid = document.getElementById('instant-hero-video');
+        if (instantVid) {
+          instantVid.muted = true;
+          instantVid.currentTime = 0;
           
-          // Promise-based immediate play
-          const playPromise = vid.play();
+          const playPromise = instantVid.play();
           if (playPromise !== undefined) {
             playPromise.then(() => {
-              videoPlayed = true;
+              instantVideoPlayed = true;
+              // Hide the React video once this plays
+              setTimeout(() => {
+                const reactVid = document.getElementById('heroVideo');
+                if (reactVid) {
+                  reactVid.style.display = 'none';
+                }
+              }, 100);
             }).catch(() => {
-              // Keep trying on mobile
-              setTimeout(forceVideoPlay, 50);
+              setTimeout(playInstantVideo, 25);
             });
           }
         }
       }
       
-      // Immediate execution - no waiting
-      forceVideoPlay();
+      // Immediate attempts
+      playInstantVideo();
+      setTimeout(playInstantVideo, 1);
+      setTimeout(playInstantVideo, 10);
+      setTimeout(playInstantVideo, 50);
       
-      // Multiple rapid-fire attempts for mobile
-      setTimeout(forceVideoPlay, 1);
-      setTimeout(forceVideoPlay, 10);
-      setTimeout(forceVideoPlay, 50);
-      setTimeout(forceVideoPlay, 100);
-      
-      // User interaction triggers
-      ['touchstart', 'touchend', 'mousedown', 'click'].forEach(event => {
-        document.addEventListener(event, forceVideoPlay, { once: true, passive: true });
+      // Touch triggers for mobile
+      ['touchstart', 'touchend', 'click'].forEach(event => {
+        document.addEventListener(event, playInstantVideo, { once: true, passive: true });
       });
       
-      // Visibility and load triggers
-      document.addEventListener('DOMContentLoaded', forceVideoPlay);
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) forceVideoPlay();
-      });
-      
-      // Continuous checking for mobile stubbornness
-      const mobileCheck = setInterval(() => {
-        if (videoPlayed) {
-          clearInterval(mobileCheck);
+      // Keep trying until it works
+      const instantCheck = setInterval(() => {
+        if (instantVideoPlayed) {
+          clearInterval(instantCheck);
         } else {
-          forceVideoPlay();
+          playInstantVideo();
         }
-      }, 200);
+      }, 100);
       
-      // Stop checking after 5 seconds
-      setTimeout(() => clearInterval(mobileCheck), 5000);
+      setTimeout(() => clearInterval(instantCheck), 3000);
     </script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
