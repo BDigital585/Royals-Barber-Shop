@@ -63,42 +63,45 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Ultra-aggressive mobile video autoplay for homepage hero -->
+    <!-- Instant mobile video autoplay - no delays, no reloading -->
     <script>
-      // Immediate execution for homepage video
-      function startVideoImmediately() {
+      // Mobile-optimized video autoplay without any delays
+      function playVideoInstantly() {
         const vid = document.getElementById('heroVideo');
-        if (vid) {
-          // Force instant playback
-          vid.currentTime = 0;
+        if (vid && vid.paused) {
           vid.muted = true;
-          vid.load(); // Reload the video
+          vid.currentTime = 0;
+          // Don't use load() - it causes delays
           vid.play().catch(() => {});
-          
-          // Keep trying until it plays
-          const keepTrying = setInterval(() => {
-            if (vid.paused) {
-              vid.play().catch(() => {});
-            } else {
-              clearInterval(keepTrying);
-            }
-          }, 100);
-          
-          // Clear after 3 seconds
-          setTimeout(() => clearInterval(keepTrying), 3000);
         }
       }
       
-      // Try multiple times at different intervals
-      document.addEventListener('DOMContentLoaded', startVideoImmediately);
-      setTimeout(startVideoImmediately, 50);
-      setTimeout(startVideoImmediately, 200);
-      setTimeout(startVideoImmediately, 500);
+      // Multiple immediate attempts
+      setTimeout(playVideoInstantly, 10);   // Super fast
+      setTimeout(playVideoInstantly, 100);  // Quick backup
+      setTimeout(playVideoInstantly, 300);  // Final attempt
       
-      // Touch/click activation
-      document.addEventListener('touchstart', startVideoImmediately, { once: true });
-      document.addEventListener('click', startVideoImmediately, { once: true });
-      document.addEventListener('scroll', startVideoImmediately, { once: true });
+      // Event-based triggers for mobile
+      document.addEventListener('DOMContentLoaded', playVideoInstantly);
+      document.addEventListener('touchstart', playVideoInstantly, { once: true });
+      document.addEventListener('click', playVideoInstantly, { once: true });
+      
+      // Intersection observer for when video becomes visible
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              playVideoInstantly();
+              observer.disconnect();
+            }
+          });
+        });
+        
+        setTimeout(() => {
+          const vid = document.getElementById('heroVideo');
+          if (vid) observer.observe(vid);
+        }, 50);
+      }
     </script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
