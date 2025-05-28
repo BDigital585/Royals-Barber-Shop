@@ -10,17 +10,14 @@ interface HeroContent {
 }
 
 export default function ContentfulHeroSection() {
-  const { data, error } = useQuery<HeroContent>({
+  const { data } = useQuery<HeroContent>({
     queryKey: ['/api/contentful/hero'],
     retry: false
   });
 
-  // Always show the hero video immediately - no loading state delay
-  const heroContent = data || {
-    title: 'Ready for a fresh look?',
-    subtitle: 'Walk-ins welcome or schedule your appointment online today.',
-    videoUrl: '/hero-720p.mp4'
-  };
+  // Use static content immediately - no API delays
+  const title = data?.title || 'Ready for a fresh look?';
+  const subtitle = data?.subtitle || 'Walk-ins welcome or schedule your appointment online today.';
 
   // Always render the hero section immediately - no delays
   return (
@@ -43,7 +40,7 @@ export default function ContentfulHeroSection() {
             controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
             preload="auto"
             className="absolute object-cover w-full h-full opacity-70"
-            src={heroContent.videoUrl}
+            src="/superhero.mp4"
             style={{ 
               willChange: 'transform',
               transform: 'translate3d(0,0,0)',
@@ -59,10 +56,10 @@ export default function ContentfulHeroSection() {
           <div className="container mx-auto px-3 md:px-6 flex flex-col items-start">
             <div className="max-w-[400px] text-white text-left pl-2 sm:pl-4 md:pl-6 mb-2 md:mb-4 mt-4">
               <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight leading-tight mb-2 md:mb-3">
-                Ready for a<br />fresh look?
+                {title.split(' ').slice(0, 3).join(' ')}<br />{title.split(' ').slice(3).join(' ')}
               </h1>
               <p className="text-xs sm:text-sm md:text-base uppercase tracking-wider mb-3 sm:mb-4 max-w-[240px] sm:max-w-[300px]">
-                walk-ins welcome or<br />schedule online today
+                {subtitle}
               </p>
               <a 
                 href="https://royalsbarbershop.setmore.com/" 
