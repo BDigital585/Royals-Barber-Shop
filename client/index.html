@@ -63,35 +63,75 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Mobile hero video autoplay for homepage only -->
+    <!-- Aggressive mobile video autoplay for homepage -->
     <script>
-      function forceHeroVideoPlay() {
-        // Only target the homepage hero video
+      let videoPlayAttempts = 0;
+      const maxAttempts = 20;
+      
+      function aggressiveVideoPlay() {
         const heroVid = document.getElementById('heroVideo');
-        if (heroVid && window.location.pathname === '/') {
+        
+        if (heroVid && window.location.pathname === '/' && videoPlayAttempts < maxAttempts) {
+          videoPlayAttempts++;
+          
+          // Force all mobile-friendly attributes
           heroVid.muted = true;
+          heroVid.defaultMuted = true;
+          heroVid.playsInline = true;
+          heroVid.autoplay = true;
           heroVid.currentTime = 0;
+          
+          // Set mobile-specific properties
+          heroVid.setAttribute('webkit-playsinline', 'true');
+          heroVid.setAttribute('playsinline', 'true');
           
           const playPromise = heroVid.play();
           if (playPromise !== undefined) {
-            playPromise.catch(() => {
-              // Retry for mobile
-              setTimeout(forceHeroVideoPlay, 50);
+            playPromise.then(() => {
+              console.log('Hero video playing successfully');
+            }).catch((error) => {
+              console.log('Video play attempt failed, retrying...', error);
+              setTimeout(aggressiveVideoPlay, 25);
             });
           }
         }
       }
       
-      // Multiple immediate attempts for homepage hero
-      setTimeout(forceHeroVideoPlay, 10);
-      setTimeout(forceHeroVideoPlay, 100);
-      setTimeout(forceHeroVideoPlay, 300);
+      // Immediate attempts with increasing intervals
+      aggressiveVideoPlay();
+      setTimeout(aggressiveVideoPlay, 1);
+      setTimeout(aggressiveVideoPlay, 10);
+      setTimeout(aggressiveVideoPlay, 50);
+      setTimeout(aggressiveVideoPlay, 100);
+      setTimeout(aggressiveVideoPlay, 200);
+      setTimeout(aggressiveVideoPlay, 500);
       
-      // Event triggers
-      document.addEventListener('DOMContentLoaded', forceHeroVideoPlay);
-      ['touchstart', 'click'].forEach(event => {
-        document.addEventListener(event, forceHeroVideoPlay, { once: true, passive: true });
+      // Event-based triggers for mobile
+      document.addEventListener('DOMContentLoaded', aggressiveVideoPlay);
+      window.addEventListener('load', aggressiveVideoPlay);
+      
+      // Mobile touch events
+      ['touchstart', 'touchend', 'click', 'tap'].forEach(event => {
+        document.addEventListener(event, aggressiveVideoPlay, { once: true, passive: true });
       });
+      
+      // Keep trying until video element is found and playing
+      const videoChecker = setInterval(() => {
+        if (videoPlayAttempts >= maxAttempts) {
+          clearInterval(videoChecker);
+          return;
+        }
+        
+        const heroVid = document.getElementById('heroVideo');
+        if (heroVid && !heroVid.paused && heroVid.currentTime > 0) {
+          clearInterval(videoChecker);
+        } else {
+          aggressiveVideoPlay();
+        }
+      }, 100);
+      
+      // Stop checking after 5 seconds
+      setTimeout(() => clearInterval(videoChecker), 5000);
     </script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
