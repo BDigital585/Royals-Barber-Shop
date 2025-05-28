@@ -14,7 +14,7 @@ export default function ContentfulHeroSection() {
           {/* Static background color shown if video fails */}
           <div className="absolute inset-0 bg-gray-900 bg-opacity-90"></div>
           
-          {/* Mobile-first optimized hero video */}
+          {/* Mobile-optimized hero video - guaranteed display */}
           <video 
             id="heroVideo"
             autoPlay 
@@ -25,12 +25,16 @@ export default function ContentfulHeroSection() {
             preload="auto"
             disablePictureInPicture
             controlsList="nodownload nofullscreen noremoteplayback"
-            className="absolute object-cover w-full h-full opacity-70"
+            className="absolute inset-0 w-full h-full object-cover"
             src="/superhero-compressed.mp4"
             style={{ 
               objectPosition: 'center center',
-              width: '100%',
-              height: '100%'
+              opacity: 0.7,
+              zIndex: 1
+            }}
+            onLoadedData={(e) => {
+              const video = e.target as HTMLVideoElement;
+              video.play().catch(() => console.log('Autoplay blocked, waiting for user interaction'));
             }}
           >
             Your browser does not support the video tag.
@@ -38,7 +42,7 @@ export default function ContentfulHeroSection() {
         </div>
         
         {/* Gradient overlay for text visibility */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-between py-8 md:py-12">
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent flex flex-col items-start justify-between py-8 md:py-12" style={{ zIndex: 2 }}>
           <div className="container mx-auto px-3 md:px-6 flex flex-col items-start">
             <div className="max-w-[400px] text-white text-left pl-2 sm:pl-4 md:pl-6 mb-2 md:mb-4 mt-4">
               <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tight leading-tight mb-2 md:mb-3">
