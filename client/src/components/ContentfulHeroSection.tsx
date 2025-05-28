@@ -1,25 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
 import { FaMapMarkerAlt, FaPhone, FaStar, FaStarHalfAlt, FaGoogle } from 'react-icons/fa';
 
-// Define the expected shape of our hero content data
-interface HeroContent {
-  title: string;
-  subtitle: string;
-  videoUrl: string;
-  backgroundImage: string | null;
-}
-
 export default function ContentfulHeroSection() {
-  const { data } = useQuery<HeroContent>({
-    queryKey: ['/api/contentful/hero'],
-    retry: false
-  });
+  // Static content for instant loading - no API delays for mobile performance
+  const title = 'Ready for a fresh look?';
+  const subtitle = 'Walk-ins welcome or schedule your appointment online today.';
 
-  // Use static content immediately - no API delays
-  const title = data?.title || 'Ready for a fresh look?';
-  const subtitle = data?.subtitle || 'Walk-ins welcome or schedule your appointment online today.';
-
-  // Always render the hero section immediately - no delays
+  // Render immediately for instant mobile video playback
   return (
     <section className="w-full h-[70vh] min-h-[480px] md:min-h-[550px] max-h-[650px] relative bg-black overflow-hidden">
       <div className="absolute inset-0 z-0">
