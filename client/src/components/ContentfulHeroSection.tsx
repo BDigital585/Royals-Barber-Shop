@@ -14,7 +14,7 @@ export default function ContentfulHeroSection() {
           {/* Static background color shown if video fails */}
           <div className="absolute inset-0 bg-gray-900 bg-opacity-90"></div>
           
-          {/* Hero video - working version */}
+          {/* Instant autoplay hero video */}
           <video 
             id="heroVideo"
             autoPlay 
@@ -29,12 +29,15 @@ export default function ContentfulHeroSection() {
               opacity: 0.7,
               zIndex: 1
             }}
-            onLoadStart={() => console.log('Video loading started')}
-            onLoadedData={() => console.log('Video loaded successfully')}
-            onCanPlay={() => console.log('Video can play')}
-            onError={(e) => console.error('Video error:', e)}
+            onLoadedData={(e) => {
+              const video = e.target as HTMLVideoElement;
+              video.play().catch(() => {});
+            }}
+            onCanPlay={(e) => {
+              const video = e.target as HTMLVideoElement;
+              video.play().catch(() => {});
+            }}
           >
-            <source src="/superhero-mobile.mp4" type="video/mp4" />
             <source src="/superhero-compressed.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
