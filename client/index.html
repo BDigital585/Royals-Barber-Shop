@@ -63,29 +63,42 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Instant mobile video autoplay - zero delay -->
+    <!-- Ultra-aggressive mobile video autoplay for homepage hero -->
     <script>
-      // Execute immediately when DOM is ready
-      document.addEventListener('DOMContentLoaded', () => {
+      // Immediate execution for homepage video
+      function startVideoImmediately() {
         const vid = document.getElementById('heroVideo');
         if (vid) {
-          // Force immediate play
-          const forcePlay = () => {
-            vid.currentTime = 0;
-            vid.muted = true;
-            vid.play().catch(() => {});
-          };
+          // Force instant playback
+          vid.currentTime = 0;
+          vid.muted = true;
+          vid.load(); // Reload the video
+          vid.play().catch(() => {});
           
-          // Multiple attempts for different mobile scenarios
-          forcePlay(); // Immediate
-          setTimeout(forcePlay, 50); // Quick retry
-          setTimeout(forcePlay, 200); // Fallback
+          // Keep trying until it plays
+          const keepTrying = setInterval(() => {
+            if (vid.paused) {
+              vid.play().catch(() => {});
+            } else {
+              clearInterval(keepTrying);
+            }
+          }, 100);
           
-          // Touch activation for stubborn devices
-          document.addEventListener('touchstart', forcePlay, { once: true });
-          document.addEventListener('click', forcePlay, { once: true });
+          // Clear after 3 seconds
+          setTimeout(() => clearInterval(keepTrying), 3000);
         }
-      });
+      }
+      
+      // Try multiple times at different intervals
+      document.addEventListener('DOMContentLoaded', startVideoImmediately);
+      setTimeout(startVideoImmediately, 50);
+      setTimeout(startVideoImmediately, 200);
+      setTimeout(startVideoImmediately, 500);
+      
+      // Touch/click activation
+      document.addEventListener('touchstart', startVideoImmediately, { once: true });
+      document.addEventListener('click', startVideoImmediately, { once: true });
+      document.addEventListener('scroll', startVideoImmediately, { once: true });
     </script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>

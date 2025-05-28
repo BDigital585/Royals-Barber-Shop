@@ -10,48 +10,19 @@ interface HeroContent {
 }
 
 export default function ContentfulHeroSection() {
-  const { data, isLoading, error } = useQuery<HeroContent>({
+  const { data, error } = useQuery<HeroContent>({
     queryKey: ['/api/contentful/hero'],
     retry: false
   });
 
-  if (isLoading) {
-    return (
-      <section className="w-full h-screen relative bg-black flex items-center justify-center">
-        <div className="animate-pulse flex flex-col items-center justify-center text-white">
-          <div className="w-12 h-12 border-2 border-white rounded-full border-t-transparent animate-spin mb-4"></div>
-          <p className="text-sm text-gray-300">Loading hero content...</p>
-        </div>
-      </section>
-    );
-  }
+  // Always show the hero video immediately - no loading state delay
+  const heroContent = data || {
+    title: 'Ready for a fresh look?',
+    subtitle: 'Walk-ins welcome or schedule your appointment online today.',
+    videoUrl: '/hero-720p.mp4'
+  };
 
-  if (error || !data) {
-    console.error("Error fetching hero content:", error);
-    return (
-      <section className="w-full h-[70vh] relative bg-gradient-to-br from-gray-900 to-black flex items-center">
-        <div className="container mx-auto px-4 text-white">
-          <h1 className="text-3xl md:text-5xl font-bold mb-4">Ready for a fresh look?</h1>
-          <p className="mb-6 max-w-lg">Walk-ins welcome or schedule your appointment online today.</p>
-          <a 
-            href="https://royalsbarbershop.setmore.com/" 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-md font-medium"
-          >
-            Book Now
-          </a>
-        </div>
-      </section>
-    );
-  }
-
-  // Extract data from the API response with default values
-  const title = data.title || 'Ready for a fresh look?';
-  const subtitle = data.subtitle || 'Walk-ins welcome or schedule your appointment online today.';
-  const videoUrl = data.videoUrl || '';
-  const backgroundImage = data.backgroundImage || null;
-
+  // Always render the hero section immediately - no delays
   return (
     <section className="w-full h-[70vh] min-h-[480px] md:min-h-[550px] max-h-[650px] relative bg-black overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -60,7 +31,7 @@ export default function ContentfulHeroSection() {
           {/* Static background color shown if video fails */}
           <div className="absolute inset-0 bg-gray-900 bg-opacity-90"></div>
           
-          {/* Instant mobile autoplay hero video - zero delay */}
+          {/* Optimized hero video with instant mobile autoplay */}
           <video 
             id="heroVideo"
             autoPlay 
@@ -70,22 +41,13 @@ export default function ContentfulHeroSection() {
             webkit-playsinline="true"
             disablePictureInPicture
             controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
-            preload="metadata"
+            preload="auto"
             className="absolute object-cover w-full h-full opacity-70"
-            src={videoUrl || "/hero-720p.mp4"}
+            src={heroContent.videoUrl}
             style={{ 
               willChange: 'transform',
               transform: 'translate3d(0,0,0)',
               objectPosition: 'center center' 
-            }}
-            onLoadStart={(e) => {
-              const video = e.target as HTMLVideoElement;
-              video.currentTime = 0;
-              video.play().catch(() => {});
-            }}
-            onCanPlay={(e) => {
-              const video = e.target as HTMLVideoElement;
-              video.play().catch(() => {});
             }}
           >
             Your browser does not support the video tag.
