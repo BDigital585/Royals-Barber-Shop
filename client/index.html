@@ -63,49 +63,29 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Hero video autoplay script - mobile optimized -->
+    <!-- Force hero video to play -->
     <script>
-      function ensureVideoPlays() {
-        const heroVid = document.getElementById('heroVideo');
-        
-        if (heroVid && window.location.pathname === '/') {
-          // Ensure all mobile-friendly attributes are set
-          heroVid.muted = true;
-          heroVid.defaultMuted = true;
-          heroVid.playsInline = true;
-          heroVid.autoplay = true;
-          heroVid.currentTime = 0;
-          
-          // Ensure video is visible
-          heroVid.style.display = 'block';
-          heroVid.style.opacity = '0.7';
-          
-          console.log('Attempting to play hero video...');
-          const playPromise = heroVid.play();
-          if (playPromise !== undefined) {
-            playPromise.then(() => {
-              console.log('✅ Hero video playing successfully!');
-            }).catch((error) => {
-              console.log('❌ Video autoplay blocked:', error.message);
-              console.log('Video will play after user interaction');
-            });
-          }
+      function forceVideoPlay() {
+        const video = document.getElementById('heroVideo');
+        if (video) {
+          video.muted = true;
+          video.play().then(() => {
+            console.log('Video is playing!');
+          }).catch(err => {
+            console.log('Video autoplay failed:', err);
+          });
         }
       }
       
-      // Try immediately and with delays
-      setTimeout(ensureVideoPlays, 100);
-      setTimeout(ensureVideoPlays, 500);
-      setTimeout(ensureVideoPlays, 1000);
+      // Try multiple times
+      setTimeout(forceVideoPlay, 100);
+      setTimeout(forceVideoPlay, 500);
+      setTimeout(forceVideoPlay, 1000);
+      setTimeout(forceVideoPlay, 2000);
       
-      // Event listeners
-      document.addEventListener('DOMContentLoaded', ensureVideoPlays);
-      window.addEventListener('load', ensureVideoPlays);
-      
-      // User interaction triggers
-      ['touchstart', 'click', 'scroll'].forEach(event => {
-        document.addEventListener(event, ensureVideoPlays, { once: true, passive: true });
-      });
+      document.addEventListener('DOMContentLoaded', forceVideoPlay);
+      document.addEventListener('click', forceVideoPlay, { once: true });
+      document.addEventListener('touchstart', forceVideoPlay, { once: true });
     </script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
