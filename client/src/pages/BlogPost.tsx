@@ -216,10 +216,11 @@ export default function BlogPost() {
       <div className="container mx-auto px-4 py-12">
         {post && (
           <MetaTags 
-            title={`${post.title} | Behind the Barber Chair - Royals Barbershop`}
-            description={post.excerpt || `Dive into ${post.title} - authentic barbershop wisdom from Royals Barbershop.`}
+            title={`${post.title} | Behind the Barber Chair - Royals Barber Shop`}
+            description={post.excerpt || `Dive into ${post.title} - authentic barbershop wisdom from Royals Barber Shop.`}
             imageUrl={post.featuredImage}
             type="article"
+            url={`${typeof window !== 'undefined' ? window.location.origin : ''}/blog/${post.slug}`}
           />
         )}
         <SchemaMarkup />

@@ -19,57 +19,68 @@ const MetaTags = ({
   url
 }: MetaTagsProps) => {
   useEffect(() => {
-    // Cache the original values to restore when component unmounts
-    const originalTitle = document.title;
-    const originalDescription = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+    // Get the current URL if not provided
+    const currentUrl = url || window.location.href;
     
-    // Update standard meta tags
+    // Use a default image if none provided
+    const defaultImage = '/shophero.JPG';
+    const metaImage = imageUrl || defaultImage;
+    
+    // Ensure image URL is absolute
+    const absoluteImageUrl = metaImage.startsWith('http') 
+      ? metaImage 
+      : `${window.location.origin}${metaImage}`;
+
+    // Update document title
     document.title = title;
     
-    const descriptionTag = document.querySelector('meta[name="description"]');
-    if (descriptionTag) {
-      descriptionTag.setAttribute('content', description);
-    }
+    // Helper function to update or create meta tag
+    const updateOrCreateMeta = (selector: string, content: string, attribute = 'content') => {
+      let tag = document.querySelector(selector);
+      if (tag) {
+        tag.setAttribute(attribute, content);
+      } else {
+        tag = document.createElement('meta');
+        if (selector.includes('property=')) {
+          const property = selector.match(/property="([^"]+)"/)?.[1];
+          if (property) tag.setAttribute('property', property);
+        } else if (selector.includes('name=')) {
+          const name = selector.match(/name="([^"]+)"/)?.[1];
+          if (name) tag.setAttribute('name', name);
+        }
+        tag.setAttribute(attribute, content);
+        document.head.appendChild(tag);
+      }
+    };
+
+    // Update standard meta tags
+    updateOrCreateMeta('meta[name="description"]', description);
     
     // Update Open Graph tags
-    const ogTitleTag = document.querySelector('meta[property="og:title"]');
-    const ogDescTag = document.querySelector('meta[property="og:description"]');
-    const ogImageTag = document.querySelector('meta[property="og:image"]');
-    const ogTypeTag = document.querySelector('meta[property="og:type"]');
-    const ogUrlTag = document.querySelector('meta[property="og:url"]');
+    updateOrCreateMeta('meta[property="og:type"]', type);
+    updateOrCreateMeta('meta[property="og:title"]', title);
+    updateOrCreateMeta('meta[property="og:description"]', description);
+    updateOrCreateMeta('meta[property="og:image"]', absoluteImageUrl);
+    updateOrCreateMeta('meta[property="og:image:width"]', '1200');
+    updateOrCreateMeta('meta[property="og:image:height"]', '630');
+    updateOrCreateMeta('meta[property="og:url"]', currentUrl);
+    updateOrCreateMeta('meta[property="og:site_name"]', 'Royals Barber Shop');
     
-    if (ogTitleTag) ogTitleTag.setAttribute('content', title);
-    if (ogDescTag) ogDescTag.setAttribute('content', description);
-    if (ogImageTag && imageUrl) ogImageTag.setAttribute('content', imageUrl);
-    if (ogTypeTag) ogTypeTag.setAttribute('content', type);
-    if (ogUrlTag && url) ogUrlTag.setAttribute('content', url);
+    // Update Twitter Card tags
+    updateOrCreateMeta('meta[name="twitter:card"]', 'summary_large_image');
+    updateOrCreateMeta('meta[name="twitter:title"]', title);
+    updateOrCreateMeta('meta[name="twitter:description"]', description);
+    updateOrCreateMeta('meta[name="twitter:image"]', absoluteImageUrl);
+    updateOrCreateMeta('meta[name="twitter:site"]', '@royalsbarbershop585');
     
-    // Update Twitter tags
-    const twitterTitleTag = document.querySelector('meta[name="twitter:title"]');
-    const twitterDescTag = document.querySelector('meta[name="twitter:description"]');
-    const twitterImageTag = document.querySelector('meta[name="twitter:image"]');
+    // Add article-specific tags if type is article
+    if (type === 'article') {
+      updateOrCreateMeta('meta[property="article:author"]', 'Royals Barber Shop');
+      updateOrCreateMeta('meta[property="article:section"]', 'Barbershop');
+    }
     
-    if (twitterTitleTag) twitterTitleTag.setAttribute('content', title);
-    if (twitterDescTag) twitterDescTag.setAttribute('content', description);
-    if (twitterImageTag && imageUrl) twitterImageTag.setAttribute('content', imageUrl);
-    
-    // Cleanup function to restore original meta tags when component unmounts
-    return () => {
-      document.title = originalTitle;
-      
-      if (descriptionTag) {
-        descriptionTag.setAttribute('content', originalDescription);
-      }
-      
-      if (ogTitleTag) ogTitleTag.setAttribute('content', originalTitle);
-      if (ogDescTag) ogDescTag.setAttribute('content', originalDescription);
-      
-      if (twitterTitleTag) twitterTitleTag.setAttribute('content', originalTitle);
-      if (twitterDescTag) twitterDescTag.setAttribute('content', originalDescription);
-    };
   }, [title, description, imageUrl, type, url]);
   
-  // This component doesn't render anything, it just updates the meta tags
   return null;
 };
 
