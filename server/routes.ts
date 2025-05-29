@@ -500,12 +500,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // For regular users or if blog post not found, let the React app handle it
-      return res.redirect(301, `/#/blog/${slug}`);
+      return res.redirect(301, `/blog/${slug}`);
       
     } catch (error) {
       console.error('Error serving blog post for crawler:', error);
       // Fallback to React app
-      return res.redirect(301, `/#/blog/${req.params.slug}`);
+      return res.redirect(301, `/blog/${req.params.slug}`);
+    }
+  });
+
+  // Handle haircut sharing URLs for social media crawlers with proper Open Graph metadata
+  app.get('/haircut/:category/:image', async (req, res) => {
+    try {
+      const { category, image } = req.params;
+      const userAgent = req.get('User-Agent') || '';
+      
+      // Check if this is a social media crawler
+      const isCrawler = /facebookexternalhit|twitterbot|linkedinbot|whatsapp|slackbot|telegrambot|skypebot|discordbot/i.test(userAgent);
+      
+      if (isCrawler) {
+        // Decode the URL components
+        const decodedCategory = decodeURIComponent(category);
+        const decodedImage = decodeURIComponent(image);
+        
+        // Generate a title from the image filename
+        const rawTitle = decodedImage.replace(/\.(jpg|jpeg|png|webp)$/i, '').replace(/-/g, ' ');
+        const formattedTitle = rawTitle
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+        
+        // Category mapping
+        const categoryNames: Record<string, string> = {
+          'fades': 'Fades',
+          'kids haircuts': 'Kids Haircuts',
+          'tapers': 'Tapers',
+          'facial hair': 'Facial Hair',
+          'other styles': 'Other Styles'
+        };
+        
+        const categoryName = categoryNames[decodedCategory.toLowerCase()] || decodedCategory;
+        const imageUrl = `${req.protocol}://${req.get('host')}/haircuts/${category}/${image}`;
+        const pageUrl = `${req.protocol}://${req.get('host')}/haircut/${category}/${image}`;
+        
+        const title = `${formattedTitle} – ${categoryName} style | Royals Barber Shop`;
+        const description = `Check out this ${formattedTitle} from our ${categoryName} collection at Royals Barber Shop in Batavia, NY. Book your appointment today!`;
+        
+        // Generate HTML with proper Open Graph meta tags
+        const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${title}</title>
+    <meta name="description" content="${description}" />
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="${pageUrl}" />
+    <meta property="og:title" content="${title}" />
+    <meta property="og:description" content="${description}" />
+    <meta property="og:image" content="${imageUrl}" />
+    <meta property="og:image:width" content="800" />
+    <meta property="og:image:height" content="800" />
+    <meta property="og:site_name" content="Royals Barber Shop" />
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${title}" />
+    <meta name="twitter:description" content="${description}" />
+    <meta name="twitter:image" content="${imageUrl}" />
+    <meta name="twitter:site" content="@royalsbarbershop585" />
+    
+    <meta http-equiv="refresh" content="0; url=${pageUrl}" />
+</head>
+<body>
+    <p>Redirecting to <a href="${pageUrl}">${title}</a>...</p>
+</body>
+</html>`;
+        
+        return res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+      }
+      
+      // For regular users, let the React app handle it
+      return res.redirect(301, `/haircut/${category}/${image}`);
+      
+    } catch (error) {
+      console.error('Error serving haircut page for crawler:', error);
+      // Fallback to React app
+      return res.redirect(301, `/haircut/${req.params.category}/${req.params.image}`);
     }
   });
 
