@@ -47,7 +47,7 @@ const HaircutShare = () => {
     const decodedImage = decodeURIComponent(image);
     
     // Attempt to load the image
-    const fullImageUrl = `/src/assets/haircuts/${decodedCategory}/${decodedImage}`;
+    const fullImageUrl = `/haircuts/${decodedCategory}/${decodedImage}`;
     setImageUrl(fullImageUrl);
     
     // Generate a title from the image filename
