@@ -413,6 +413,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Handle blog post URLs for social media crawlers with proper Open Graph metadata
+  app.get('/blog/:slug', async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const userAgent = req.get('User-Agent') || '';
+      
+      // Check if this is a social media crawler
+      const isCrawler = /facebookexternalhit|twitterbot|linkedinbot|whatsapp|slackbot|telegrambot|skypebot|discordbot/i.test(userAgent);
+      
+      if (isCrawler) {
+        // Fetch blog post data from Contentful
+        const { createClient } = await import('contentful');
+        
+        const client = createClient({
+          space: process.env.CONTENTFUL_SPACE_ID || '',
+          accessToken: process.env.CONTENTFUL_ACCESS_TOKEN || '',
+          environment: process.env.CONTENTFUL_ENVIRONMENT || 'master',
+        });
+        
+        const blogEntries = await client.getEntries({
+          content_type: 'royalsBlog',
+          'fields.slug': slug,
+          include: 2
+        });
+        
+        if (blogEntries.items.length > 0) {
+          const entry = blogEntries.items[0];
+          const fields = entry.fields as any;
+          
+          // Get the featured image URL if it exists
+          let featuredImageUrl = '/shophero.JPG'; // Default fallback
+          if (fields.featuredImage && fields.featuredImage.fields && fields.featuredImage.fields.file) {
+            featuredImageUrl = fields.featuredImage.fields.file.url.startsWith('//') 
+              ? `https:${fields.featuredImage.fields.file.url}` 
+              : fields.featuredImage.fields.file.url;
+          }
+          
+          const title = `${fields.title || 'Blog Post'} | Behind the Barber Chair - Royals Barber Shop`;
+          const description = fields.excerpt || `Dive into ${fields.title} - authentic barbershop wisdom from Royals Barber Shop.`;
+          const url = `${req.protocol}://${req.get('host')}/blog/${slug}`;
+          
+          // Generate HTML with proper Open Graph meta tags
+          const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${title}</title>
+    <meta name="description" content="${description}" />
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="${url}" />
+    <meta property="og:title" content="${title}" />
+    <meta property="og:description" content="${description}" />
+    <meta property="og:image" content="${featuredImageUrl}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Royals Barber Shop" />
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${title}" />
+    <meta name="twitter:description" content="${description}" />
+    <meta name="twitter:image" content="${featuredImageUrl}" />
+    <meta name="twitter:site" content="@royalsbarbershop585" />
+    
+    <!-- Article specific tags -->
+    <meta property="article:author" content="Royals Barber Shop" />
+    <meta property="article:section" content="Barbershop" />
+    
+    <meta http-equiv="refresh" content="0; url=${url}" />
+</head>
+<body>
+    <p>Redirecting to <a href="${url}">${title}</a>...</p>
+</body>
+</html>`;
+          
+          return res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+        }
+      }
+      
+      // For regular users or if blog post not found, let the React app handle it
+      return res.redirect(301, `/#/blog/${slug}`);
+      
+    } catch (error) {
+      console.error('Error serving blog post for crawler:', error);
+      // Fallback to React app
+      return res.redirect(301, `/#/blog/${req.params.slug}`);
+    }
+  });
+
   // Serve robots.txt directly from the public directory
   app.get('/robots.txt', (req, res) => {
     res.sendFile('robots.txt', { root: './public' });
