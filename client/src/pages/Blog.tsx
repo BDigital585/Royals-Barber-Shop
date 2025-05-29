@@ -38,14 +38,27 @@ export default function Blog() {
         />
         <SchemaMarkup />
         
-        <section className="blog-header mb-5 md:mb-6">
-          <div className="border-l-4 border-primary pl-3 md:pl-4 py-1">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading text-primary mb-2 leading-tight">
-              Behind the <span className="inline-block">Barber Chair</span>
-            </h1>
-            <p className="text-gray-600 text-sm sm:text-base mb-1 max-w-xl">
-              Unfiltered insights and barbershop wisdom—straight from Royals.
-            </p>
+        {/* Hero Section with Background Image */}
+        <section className="relative h-64 md:h-80 lg:h-96 mb-8 rounded-lg overflow-hidden">
+          <img 
+            src="/bloghero.jpg" 
+            alt="Royals Barber Shop Blog" 
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="eager"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
+          <div className="relative z-10 h-full flex items-center">
+            <div className="container mx-auto px-4">
+              <div className="max-w-2xl">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading text-white mb-4 leading-tight">
+                  Behind the <span className="inline-block">Barber Chair</span>
+                </h1>
+                <p className="text-gray-200 text-base sm:text-lg md:text-xl mb-6 max-w-xl">
+                  Unfiltered insights and barbershop wisdom—straight from Royals.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
       
