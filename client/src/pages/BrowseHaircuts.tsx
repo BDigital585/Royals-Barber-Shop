@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import MetaTags from '@/components/MetaTags';
 import SchemaMarkup from '@/components/SchemaMarkup';
 import ImageSchemaMarkup from '@/components/ImageSchemaMarkup';
@@ -25,6 +26,7 @@ const categoryNames: Record<string, string> = {
 };
 
 export default function BrowseHaircuts() {
+  const [, setLocation] = useLocation();
   const imagesByFolder = useHaircutImages();
   const [activeFilter, setActiveFilter] = useState('all');
   
@@ -139,7 +141,10 @@ export default function BrowseHaircuts() {
               
               return (
                 <div key={index} className="group relative aspect-square rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
-                  <a href={shareLink} className="block w-full h-full">
+                  <div 
+                    onClick={() => setLocation(shareLink)}
+                    className="block w-full h-full cursor-pointer"
+                  >
                     <img 
                       src={imageUrl} 
                       alt={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barber Shop, Batavia NY`}
@@ -162,7 +167,7 @@ export default function BrowseHaircuts() {
                         )}
                       </div>
                     </div>
-                  </a>
+                  </Link>
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <button 
                       onClick={(e) => {
