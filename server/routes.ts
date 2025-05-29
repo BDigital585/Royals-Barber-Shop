@@ -8,6 +8,7 @@ import { ZodError } from "zod";
 import { execSync } from "child_process";
 import path from "path";
 import fs from "fs";
+import express from "express";
 import OpenAI from "openai";
 
 // Function to initialize or reinitialize the OpenAI client
@@ -75,6 +76,9 @@ Each of our barbers sets their own schedule, so availability can vary. The best 
 Make sure to keep answers short, helpful, and confident. If any other question comes in that you don't know, reply: "Let me have someone follow up with you on that!"`;
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve static files from public directory (including haircuts images)
+  app.use(express.static(path.join(process.cwd(), 'public')));
+  
   // API routes prefix
   const apiPrefix = "/api";
 
