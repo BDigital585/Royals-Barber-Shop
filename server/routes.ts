@@ -505,6 +505,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // API endpoint to get haircut images from public folder
+  app.get(`${apiPrefix}/haircut-images`, (req, res) => {
+    try {
+      const haircutsPath = path.join(process.cwd(), 'public', 'haircuts');
+      
+      if (!fs.existsSync(haircutsPath)) {
+        return res.status(404).json({ error: 'Haircuts directory not found' });
+      }
+
+      const imageMap: Record<string, string[]> = {};
+      
+      // Read all subdirectories in the haircuts folder
+      const categories = fs.readdirSync(haircutsPath, { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => dirent.name);
+
+      categories.forEach(category => {
+        const categoryPath = path.join(haircutsPath, category);
+        const files = fs.readdirSync(categoryPath)
+          .filter(file => /\.(jpg|jpeg|png|webp)$/i.test(file))
+          .map(file => `/haircuts/${encodeURIComponent(category)}/${encodeURIComponent(file)}`);
+        
+        if (files.length > 0) {
+          imageMap[category] = files;
+        }
+      });
+
+      console.log(`Found ${Object.keys(imageMap).length} haircut categories with ${Object.values(imageMap).flat().length} total images`);
+      res.json(imageMap);
+    } catch (error) {
+      console.error('Error reading haircut images:', error);
+      res.status(500).json({ error: 'Failed to load haircut images' });
+    }
+  });
+
   // Serve robots.txt directly from the public directory
   app.get('/robots.txt', (req, res) => {
     res.sendFile('robots.txt', { root: './public' });
