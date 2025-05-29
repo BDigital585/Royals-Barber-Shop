@@ -14,17 +14,18 @@ import SimpleImageCarousel from '@/components/SimpleImageCarousel';
 import SchemaMarkup from '@/components/SchemaMarkup';
 import MetaTags from '@/components/MetaTags';
 import ChatBot from '@/components/ChatBot';
+import WebsiteShareButton from '@/components/WebsiteShareButton';
 
 const Home = () => {
   return (
     <>
       {/* SEO meta tags for home page */}
       <MetaTags
-        title="Royals Barbershop | Premium Men's Haircuts in Batavia, NY"
-        description="Royals Barbershop offers premium men's haircuts, fades, tapers, and facial hair styling in Batavia, NY. Book your appointment today!"
-        imageUrl="/src/assets/haircuts/fades/low-skin-fade.png"
+        title="Royals Barber Shop | Premium Men's Haircuts in Batavia, NY"
+        description="Royals Barber Shop offers premium men's haircuts, fades, tapers, and facial hair styling in Batavia, NY. Book your appointment today!"
+        imageUrl="/images/Royals Text Only Logo on Dark.png"
         type="website"
-        url="https://www.royalsbatavia.com"
+        url={window.location.origin}
       />
       
       {/* Base schema markup for the business */}
@@ -56,6 +57,18 @@ const Home = () => {
         <LatestBlogPreview />
         <CommunitySection />
         <ContactSection />
+        
+        {/* Website Share Section */}
+        <section className="py-8 bg-gray-50">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Share Royals Barber Shop</h2>
+              <p className="text-gray-600 mb-6">Help us spread the word about our premium barber services!</p>
+              <WebsiteShareButton className="justify-center" />
+            </div>
+          </div>
+        </section>
+        
         <SocialSection />
         <NewsletterSection />
       </main>
