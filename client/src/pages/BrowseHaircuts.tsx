@@ -124,7 +124,7 @@ export default function BrowseHaircuts() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {displayImages.map((imageUrl, index) => {
               // Extract folder and filename from the imageUrl
-              const matches = imageUrl.match(/\/src\/assets\/haircuts\/([^/]+)\/([^/]+)$/);
+              const matches = imageUrl.match(/\/haircuts\/([^/]+)\/([^/]+)$/);
               if (!matches) return null;
               
               const [, folder, filename] = matches;
