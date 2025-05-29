@@ -16,12 +16,15 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-scroll to the latest message
+  // Auto-scroll to the latest message within the chat container only
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (messagesContainerRef.current && messagesEndRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, [messages, isTyping]);
 
   // Focus on input when chat is opened
   useEffect(() => {
@@ -102,7 +105,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
       <div className="flex flex-col flex-1 overflow-hidden bg-white">
         {/* Welcome Section Chat - No header here, already in parent component */}
         {/* Messages container */}
-        <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+        <div ref={messagesContainerRef} className="flex-1 p-4 overflow-y-auto bg-gray-50">
           {messages.length === 0 ? (
             <div className="text-center my-4 bg-black/5 p-4 rounded-xl">
               <div className="bg-black text-secondary w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
@@ -208,7 +211,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isInWelcomeSection = false }) => {
           </div>
 
           {/* Messages container with updated styling */}
-          <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+          <div ref={messagesContainerRef} className="flex-1 p-4 overflow-y-auto bg-gray-50">
             {messages.length === 0 ? (
               <div className="text-center my-8 bg-black/5 p-6 rounded-xl">
                 <div className="bg-black text-secondary w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
