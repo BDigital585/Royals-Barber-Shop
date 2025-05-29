@@ -5,13 +5,118 @@ import { getBlogPostBySlug } from '../lib/contentful';
 import { cn } from '../lib/utils';
 import { Skeleton } from '../components/ui/skeleton';
 import { Button } from '../components/ui/button';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Share2, Facebook, Twitter, Linkedin, Link2, Copy } from 'lucide-react';
 import MetaTags from '../components/MetaTags';
 import SchemaMarkup from '../components/SchemaMarkup';
 import { useMobile } from '../hooks/use-mobile';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, INLINES, MARKS } from '@contentful/rich-text-types';
 import Layout from '../components/Layout';
+
+// Share Button Component
+function ShareButtons({ title, url, excerpt, className = "" }: { 
+  title: string; 
+  url: string; 
+  excerpt?: string; 
+  className?: string; 
+}) {
+  const [copied, setCopied] = useState(false);
+  
+  const shareData = {
+    title: title,
+    text: excerpt || `Check out this article from Royals Barber Shop: ${title}`,
+    url: url
+  };
+
+  const handleShare = async () => {
+    if (navigator.share && navigator.canShare?.(shareData)) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      // Fallback to copying URL
+      handleCopyLink();
+    }
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.log('Error copying to clipboard:', err);
+    }
+  };
+
+  const encodedTitle = encodeURIComponent(title);
+  const encodedUrl = encodeURIComponent(url);
+  const encodedText = encodeURIComponent(excerpt || `Check out this article from Royals Barber Shop: ${title}`);
+
+  return (
+    <div className={cn("flex items-center gap-3", className)}>
+      <span className="text-sm font-medium text-gray-600">Share:</span>
+      
+      {/* Native share button (mobile) */}
+      {typeof navigator !== 'undefined' && navigator.share && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleShare}
+          className="flex items-center gap-2 hover:bg-gray-50"
+        >
+          <Share2 className="w-4 h-4" />
+          <span className="hidden sm:inline">Share</span>
+        </Button>
+      )}
+      
+      {/* Social media sharing buttons */}
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="p-2 hover:bg-blue-50 hover:border-blue-200"
+          onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, '_blank')}
+        >
+          <Facebook className="w-4 h-4 text-blue-600" />
+        </Button>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          className="p-2 hover:bg-sky-50 hover:border-sky-200"
+          onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`, '_blank')}
+        >
+          <Twitter className="w-4 h-4 text-sky-500" />
+        </Button>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          className="p-2 hover:bg-blue-50 hover:border-blue-200"
+          onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`, '_blank')}
+        >
+          <Linkedin className="w-4 h-4 text-blue-700" />
+        </Button>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          className="p-2 hover:bg-gray-50"
+          onClick={handleCopyLink}
+        >
+          {copied ? (
+            <span className="text-green-600 text-xs font-medium">Copied!</span>
+          ) : (
+            <Link2 className="w-4 h-4 text-gray-600" />
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 export default function BlogPost() {
   const isMobile = useMobile();
@@ -157,10 +262,20 @@ export default function BlogPost() {
           <article className="max-w-3xl mx-auto">
             <h1 className="text-3xl md:text-4xl font-bold mb-3">{post.title}</h1>
             
-            <p className="text-gray-500 mb-8">
-              {formattedDate}
-              {post.authorName && <span> • By <span className="font-medium">{post.authorName}</span></span>}
-            </p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+              <p className="text-gray-500">
+                {formattedDate}
+                {post.authorName && <span> • By <span className="font-medium">{post.authorName}</span></span>}
+              </p>
+              
+              {/* Share buttons at top */}
+              <ShareButtons 
+                title={post.title}
+                url={`${window.location.origin}/blog/${post.slug}`}
+                excerpt={post.excerpt}
+                className="flex-wrap"
+              />
+            </div>
             
             {post.featuredImage && (
               <div className="mb-8 rounded-lg overflow-hidden">
@@ -182,12 +297,22 @@ export default function BlogPost() {
               {renderBlogContent(post.content)}
             </div>
             
-            <div className="mt-12 pt-6 border-t border-gray-200">
-              <Link href="/blog">
-                <Button variant="outline" className="hover:translate-x-1 transition-all">
-                  <ChevronLeft className="mr-2 h-4 w-4" /> Back to Blogs
-                </Button>
-              </Link>
+            {/* Share buttons at bottom */}
+            <div className="mt-12 py-6 border-t border-gray-200">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+                <ShareButtons 
+                  title={post.title}
+                  url={`${window.location.origin}/blog/${post.slug}`}
+                  excerpt={post.excerpt}
+                  className="flex-wrap"
+                />
+                
+                <Link href="/blog">
+                  <Button variant="outline" className="hover:translate-x-1 transition-all">
+                    <ChevronLeft className="mr-2 h-4 w-4" /> Back to Blogs
+                  </Button>
+                </Link>
+              </div>
             </div>
           </article>
         )}
