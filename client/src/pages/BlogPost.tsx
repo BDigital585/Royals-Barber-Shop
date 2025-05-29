@@ -77,40 +77,40 @@ function ShareButtons({ title, url, excerpt, className = "" }: {
         <Button
           variant="outline"
           size="sm"
-          className="p-2 hover:bg-blue-50 hover:border-blue-200"
+          className="p-2 bg-blue-600 text-white hover:bg-blue-700 border-blue-600 hover:border-blue-700"
           onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, '_blank')}
         >
-          <Facebook className="w-4 h-4 text-blue-600" />
+          <Facebook className="w-4 h-4" />
         </Button>
         
         <Button
           variant="outline"
           size="sm"
-          className="p-2 hover:bg-sky-50 hover:border-sky-200"
+          className="p-2 bg-sky-500 text-white hover:bg-sky-600 border-sky-500 hover:border-sky-600"
           onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`, '_blank')}
         >
-          <Twitter className="w-4 h-4 text-sky-500" />
+          <Twitter className="w-4 h-4" />
         </Button>
         
         <Button
           variant="outline"
           size="sm"
-          className="p-2 hover:bg-blue-50 hover:border-blue-200"
+          className="p-2 bg-blue-700 text-white hover:bg-blue-800 border-blue-700 hover:border-blue-800"
           onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`, '_blank')}
         >
-          <Linkedin className="w-4 h-4 text-blue-700" />
+          <Linkedin className="w-4 h-4" />
         </Button>
         
         <Button
           variant="outline"
           size="sm"
-          className="p-2 hover:bg-gray-50"
+          className="p-2 bg-blue-600 text-white hover:bg-blue-700 border-blue-600 hover:border-blue-700"
           onClick={handleCopyLink}
         >
           {copied ? (
-            <span className="text-green-600 text-xs font-medium">Copied!</span>
+            <span className="text-white text-xs font-medium">Copied!</span>
           ) : (
-            <Link2 className="w-4 h-4 text-gray-600" />
+            <Link2 className="w-4 h-4" />
           )}
         </Button>
       </div>
@@ -308,7 +308,7 @@ export default function BlogPost() {
                 />
                 
                 <Link href="/blog">
-                  <Button variant="outline" className="hover:translate-x-1 transition-all">
+                  <Button className="bg-blue-600 text-white hover:bg-blue-700 hover:translate-x-1 transition-all">
                     <ChevronLeft className="mr-2 h-4 w-4" /> Back to Blogs
                   </Button>
                 </Link>
