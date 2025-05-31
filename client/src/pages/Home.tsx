@@ -15,8 +15,36 @@ import SchemaMarkup from '@/components/SchemaMarkup';
 import MetaTags from '@/components/MetaTags';
 import ChatBot from '@/components/ChatBot';
 import WebsiteShareButton from '@/components/WebsiteShareButton';
+import { usePreloadImages } from '@/hooks/usePreloadImages';
+import { useEffect } from 'react';
 
 const Home = () => {
+  // Preload critical resources for better performance
+  const criticalImages = [
+    '/images/Royals Text Only Logo on Dark.png',
+    '/shop/IMG_0674.JPG', // First carousel image
+    '/shop/IMG_0675.JPG', // Second carousel image
+    '/haircuts/fades/basic-fade.jpg', // Popular haircut images
+    '/haircuts/fades/low-fade.jpg',
+    '/haircuts/men/buzz-cut.jpg'
+  ];
+
+  usePreloadImages(criticalImages, { priority: 'high' });
+
+  // Preload hero video with high priority
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'video';
+    link.href = '/superhero-mobile-hq.mp4';
+    link.setAttribute('fetchpriority', 'high');
+    document.head.appendChild(link);
+
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
+
   return (
     <>
       {/* SEO meta tags for home page */}
