@@ -162,7 +162,8 @@ const SimpleImageCarousel = ({ className = '' }: SimpleCarouselProps) => {
               <img
                 src={shopImages[currentIndex]}
                 alt={`Barber shop image ${currentIndex + 1}`}
-                loading="eager"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-64 sm:h-72 md:h-96 object-cover"
                 style={{ objectPosition: getObjectPosition(currentIndex) }}
               />

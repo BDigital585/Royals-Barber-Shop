@@ -108,6 +108,8 @@ const GallerySection = () => {
                 src={item.imageUrl} 
                 alt={item.title} 
                 className="w-full h-64 object-cover"
+                loading="lazy"
+                decoding="async"
               />
               <div className="p-4 bg-white">
                 <h3 className="text-lg font-heading text-primary">{item.title}</h3>

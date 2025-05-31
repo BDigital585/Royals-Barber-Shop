@@ -187,6 +187,8 @@ export default function BlogPost() {
               src={imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl}
               alt={description || title || "Blog image"} 
               className="mx-auto rounded-md shadow-md max-w-full"
+              loading="lazy"
+              decoding="async"
             />
             {title && <figcaption className="text-center text-sm text-gray-500 mt-2">{title}</figcaption>}
           </figure>
@@ -284,6 +286,8 @@ export default function BlogPost() {
                   src={post.featuredImage} 
                   alt={post.title} 
                   className="w-full h-auto" 
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             )}

@@ -2,15 +2,26 @@ import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import NotFound from "@/pages/not-found";
-import Home from "@/pages/Home";
-import Contact from "@/pages/Contact";
-import BrowseHaircuts from "@/pages/BrowseHaircuts";
-import HaircutShare from "@/pages/HaircutShare";
-import Blog from "@/pages/Blog";
-import BlogPost from "@/pages/BlogPost";
-import SeoAudit from "@/pages/SeoAudit";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
+
+// Lazy load components for better performance
+const NotFound = lazy(() => import("@/pages/not-found"));
+const Home = lazy(() => import("@/pages/Home"));
+const Contact = lazy(() => import("@/pages/Contact"));
+const BrowseHaircuts = lazy(() => import("@/pages/BrowseHaircuts"));
+const HaircutShare = lazy(() => import("@/pages/HaircutShare"));
+const Blog = lazy(() => import("@/pages/Blog"));
+const BlogPost = lazy(() => import("@/pages/BlogPost"));
+const SeoAudit = lazy(() => import("@/pages/SeoAudit"));
+
+// Loading component for lazy-loaded routes
+function PageLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    </div>
+  );
+}
 
 // ScrollToTop component to handle scroll behavior on route changes
 function ScrollToTop() {

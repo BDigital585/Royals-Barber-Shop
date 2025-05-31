@@ -127,6 +127,8 @@ const HaircutPreviewSection = () => {
                         src={imageUrl} 
                         alt={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barbershop, Batavia NY`}
                         className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent">
                         <div className="absolute bottom-0 left-0 right-0 p-4">

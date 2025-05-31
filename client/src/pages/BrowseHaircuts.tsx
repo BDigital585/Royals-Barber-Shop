@@ -149,6 +149,8 @@ export default function BrowseHaircuts() {
                       src={imageUrl} 
                       alt={`${formattedTitle} – ${getCategoryName(folder)} style | Royals Barber Shop, Batavia NY`}
                       className="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105"
+                      loading="lazy"
+                      decoding="async"
                     />
                     {/* Add ImageObject schema markup for this image */}
                     <ImageSchemaMarkup 
