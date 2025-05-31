@@ -107,7 +107,7 @@ const HaircutPreviewSection = () => {
               <div className="flex overflow-x-auto gap-4 pb-4 snap-x">
                 {randomImages.map((imageUrl, index) => {
                   // Extract folder and filename from the imageUrl
-                  const matches = imageUrl.match(/\/src\/assets\/haircuts\/([^/]+)\/([^/]+)$/);
+                  const matches = imageUrl.match(/\/haircuts\/([^/]+)\/([^/]+)$/);
                   if (!matches) return null;
                   
                   const [, folder, filename] = matches;
