@@ -51,16 +51,18 @@ function Router() {
   return (
     <>
       <ScrollToTop />
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/contact" component={Contact} />
-        <Route path="/browse-haircuts" component={BrowseHaircuts} />
-        <Route path="/haircut/:category/:image" component={HaircutShare} />
-        <Route path="/blog" component={Blog} />
-        <Route path="/blog/:slug" component={BlogPost} />
-        <Route path="/admin/seo-audit" component={SeoAudit} />
-        <Route component={NotFound} />
-      </Switch>
+      <Suspense fallback={<PageLoader />}>
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/contact" component={Contact} />
+          <Route path="/browse-haircuts" component={BrowseHaircuts} />
+          <Route path="/haircut/:category/:image" component={HaircutShare} />
+          <Route path="/blog" component={Blog} />
+          <Route path="/blog/:slug" component={BlogPost} />
+          <Route path="/admin/seo-audit" component={SeoAudit} />
+          <Route component={NotFound} />
+        </Switch>
+      </Suspense>
     </>
   );
 }
