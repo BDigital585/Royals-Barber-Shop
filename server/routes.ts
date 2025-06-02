@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { db } from "@db";
 import * as schema from "@shared/schema";
@@ -418,7 +418,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Handle blog post URLs for social media crawlers with proper Open Graph metadata
-  app.get('/blog/:slug', async (req, res) => {
+  app.get('/blog/:slug', async (req, res, next) => {
     try {
       const { slug } = req.params;
       const userAgent = req.get('User-Agent') || '';
@@ -499,18 +499,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // For regular users or if blog post not found, let the React app handle it
-      return res.status(404).end();
+      // For regular users or if blog post not found, fall through to let Vite handle it
+      return next();
       
     } catch (error) {
       console.error('Error serving blog post for crawler:', error);
-      // Fallback to React app
-      return res.status(404).end();
+      // Fallback to let Vite handle it
+      return next();
     }
   });
 
   // Handle haircut sharing URLs for social media crawlers with proper Open Graph metadata
-  app.get('/haircut/:category/:image', async (req, res) => {
+  app.get('/haircut/:category/:image', async (req, res, next) => {
     try {
       const { category, image } = req.params;
       const userAgent = req.get('User-Agent') || '';
@@ -583,12 +583,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // For regular users, let the React app handle it
-      return res.redirect(301, `/haircut/${category}/${image}`);
+      return next();
       
     } catch (error) {
       console.error('Error serving haircut page for crawler:', error);
       // Fallback to React app
-      return res.redirect(301, `/haircut/${req.params.category}/${req.params.image}`);
+      return next();
     }
   });
 
