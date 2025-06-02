@@ -417,6 +417,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Handle root URL for social media crawlers with proper Open Graph metadata
+  app.get('/', async (req, res, next) => {
+    try {
+      const userAgent = req.get('User-Agent') || '';
+      
+      // Check if this is a social media crawler
+      const isCrawler = /facebookexternalhit|twitterbot|linkedinbot|whatsapp|slackbot|telegrambot|skypebot|discordbot/i.test(userAgent);
+      
+      if (isCrawler) {
+        const title = 'Royals Barber Shop | Premium Men\'s Haircuts in Batavia, NY';
+        const description = 'Royals Barber Shop offers premium men\'s haircuts, fades, tapers, and facial hair styling in Batavia, NY. Book your appointment today!';
+        const imageUrl = `${req.protocol}://${req.get('host')}/images/Royals Text Only Logo on Dark.png`;
+        const url = `${req.protocol}://${req.get('host')}`;
+        
+        // Generate HTML with proper Open Graph meta tags
+        const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${title}</title>
+    <meta name="description" content="${description}" />
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="${url}" />
+    <meta property="og:title" content="${title}" />
+    <meta property="og:description" content="${description}" />
+    <meta property="og:image" content="${imageUrl}" />
+    <meta property="og:site_name" content="Royals Barber Shop" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="${url}" />
+    <meta name="twitter:title" content="${title}" />
+    <meta name="twitter:description" content="${description}" />
+    <meta name="twitter:image" content="${imageUrl}" />
+    <meta name="twitter:site" content="@royalsbarbershop585" />
+    
+    <meta http-equiv="refresh" content="0; url=${url}" />
+</head>
+<body>
+    <p>Redirecting to <a href="${url}">${title}</a>...</p>
+</body>
+</html>`;
+        
+        return res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+      }
+      
+      // For regular users, let the React app handle it
+      return next();
+      
+    } catch (error) {
+      console.error('Error serving homepage for crawler:', error);
+      return next();
+    }
+  });
+
   // Handle blog post URLs for social media crawlers with proper Open Graph metadata
   app.get('/blog/:slug', async (req, res, next) => {
     try {
