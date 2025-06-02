@@ -500,12 +500,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // For regular users or if blog post not found, let the React app handle it
-      return res.redirect(301, `/blog/${slug}`);
+      return res.status(404).end();
       
     } catch (error) {
       console.error('Error serving blog post for crawler:', error);
       // Fallback to React app
-      return res.redirect(301, `/blog/${req.params.slug}`);
+      return res.status(404).end();
     }
   });
 
