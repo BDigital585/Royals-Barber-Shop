@@ -97,3 +97,32 @@ export const servicesInsertSchema = createInsertSchema(services, {
 export const servicesSelectSchema = createSelectSchema(services);
 export type Service = typeof services.$inferSelect;
 export type InsertService = z.infer<typeof servicesInsertSchema>;
+
+// Screen advertising orders
+export const screenAdvertisingOrders = pgTable("screen_advertising_orders", {
+  id: serial("id").primaryKey(),
+  customerName: text("customer_name").notNull(),
+  customerEmail: text("customer_email").notNull(),
+  businessName: text("business_name").notNull(),
+  packageType: text("package_type").notNull(), // "bring-your-own", "image-package", "video-package"
+  amount: text("amount").notNull(), // "50", "70", or "100"
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  stripeSessionId: text("stripe_session_id"),
+  uploadedFileUrl: text("uploaded_file_url"), // For "bring-your-own" package only
+  uploadedFileName: text("uploaded_file_name"), // Original filename
+  status: text("status").notNull().default("pending"), // "pending", "paid", "completed", "cancelled"
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const screenAdvertisingOrdersInsertSchema = createInsertSchema(screenAdvertisingOrders, {
+  customerName: (schema) => schema.min(2, "Name must be at least 2 characters"),
+  customerEmail: (schema) => schema.email("Must provide a valid email"),
+  businessName: (schema) => schema.min(2, "Business name must be at least 2 characters"),
+  packageType: (schema) => schema.regex(/^(bring-your-own|image-package|video-package)$/, "Invalid package type"),
+  amount: (schema) => schema.regex(/^(50|70|100)$/, "Invalid amount"),
+});
+
+export const screenAdvertisingOrdersSelectSchema = createSelectSchema(screenAdvertisingOrders);
+export type ScreenAdvertisingOrder = typeof screenAdvertisingOrders.$inferSelect;
+export type InsertScreenAdvertisingOrder = z.infer<typeof screenAdvertisingOrdersInsertSchema>;
