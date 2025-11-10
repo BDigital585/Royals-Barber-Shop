@@ -9,15 +9,15 @@ const ScreenAdvertisingCard = () => {
           <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-gradient-to-br from-amber-500 via-amber-600 to-yellow-700 shadow-2xl">
             <div className="absolute inset-0 bg-black/20"></div>
             
-            {/* Limited Spots Badge with Pulse Animation */}
+            {/* Great Deal Badge with Pulse Animation */}
             <div className="absolute top-3 right-3 md:top-4 md:right-4 z-10">
               <div className="relative">
                 {/* Pulsing background effect */}
-                <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-75"></div>
+                <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-75"></div>
                 {/* Badge */}
-                <div className="relative bg-red-600 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-full font-bold text-xs md:text-sm shadow-lg flex items-center gap-1.5">
+                <div className="relative bg-green-600 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-full font-bold text-xs md:text-sm shadow-lg flex items-center gap-1.5">
                   <Zap className="w-3 h-3 md:w-4 md:h-4 fill-white" />
-                  <span>Limited Spots</span>
+                  <span>Great Deal</span>
                 </div>
               </div>
             </div>
@@ -68,7 +68,7 @@ const ScreenAdvertisingCard = () => {
                   </div>
                   <div>
                     <div className="font-bold text-lg mb-1">$100/year</div>
-                    <div className="text-sm opacity-90">15-Second Video Created</div>
+                    <div className="text-sm opacity-90">10-15 Second Video Created</div>
                   </div>
                 </div>
               </div>
