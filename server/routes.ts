@@ -1095,7 +1095,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         customerEmail: customerEmail || 'pending@checkout.com',
         businessName: businessName || 'To be provided',
         packageType: packageType as any,
-        amount: amountNum,
+        amount: amountNum * 100, // Convert dollars to cents
         uploadedFileStorageKey: fileStorageKey,
         uploadedFileName: fileName,
         status: 'pending' as any,
