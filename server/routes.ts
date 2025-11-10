@@ -10,6 +10,8 @@ import path from "path";
 import fs from "fs";
 import express from "express";
 import OpenAI from "openai";
+import multer from "multer";
+import Stripe from "stripe";
 
 // Function to initialize or reinitialize the OpenAI client
 // This allows us to update the API key without restarting the server
@@ -1004,9 +1006,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Screen Advertising Routes
-  const multer = require('multer');
-  const Stripe = require('stripe');
-  
   if (!process.env.STRIPE_SECRET_KEY) {
     console.warn('⚠️ Stripe secret key is missing. Payment functionality will be unavailable.');
   }
@@ -1044,24 +1043,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post(`${apiPrefix}/screen-advertising/create-checkout-session`, upload.single('image'), async (req, res) => {
+    const cleanupFile = () => {
+      if (req.file && fs.existsSync(req.file.path)) {
+        try {
+          fs.unlinkSync(req.file.path);
+        } catch (err) {
+          console.error('Failed to cleanup uploaded file:', err);
+        }
+      }
+    };
+
     try {
       if (!stripe) {
+        cleanupFile();
         return res.status(500).json({ message: 'Payment processing is not configured' });
       }
 
-      const { packageType, amount, customerName, customerEmail, businessName } = req.body;
+      const { packageType, customerName, customerEmail, businessName } = req.body;
 
-      if (!packageType || !amount) {
-        return res.status(400).json({ message: 'Missing required fields' });
+      if (!packageType) {
+        cleanupFile();
+        return res.status(400).json({ message: 'Missing package type' });
       }
 
-      const amountNum = parseInt(amount);
-      if (![50, 70, 100].includes(amountNum)) {
-        return res.status(400).json({ message: 'Invalid package amount' });
+      const packagePricing: Record<string, number> = {
+        'bring-your-own': 50,
+        'image-package': 70,
+        'video-package': 100,
+      };
+
+      const amountNum = packagePricing[packageType];
+      if (!amountNum) {
+        cleanupFile();
+        return res.status(400).json({ message: 'Invalid package type' });
       }
 
       if (packageType === 'bring-your-own' && !req.file) {
-        return res.status(400).json({ message: 'Image file is required for this package' });
+        return res.status(400).json({ message: 'Image file is required for bring-your-own package' });
+      }
+
+      if (packageType !== 'bring-your-own' && req.file) {
+        cleanupFile();
+        return res.status(400).json({ message: 'File upload not allowed for this package type' });
       }
 
       const fileStorageKey = req.file ? path.relative(process.cwd(), req.file.path) : null;
@@ -1138,10 +1161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(200).json({ url: session.url });
     } catch (error) {
       console.error('Error creating checkout session:', error);
-      
-      if (req.file && fs.existsSync(req.file.path)) {
-        fs.unlinkSync(req.file.path);
-      }
+      cleanupFile();
       
       return res.status(500).json({ 
         message: 'Failed to create checkout session',

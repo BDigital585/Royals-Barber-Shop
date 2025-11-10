@@ -145,7 +145,6 @@ const ScreenAdvertising = () => {
     try {
       const formData = new FormData();
       formData.append('packageType', selectedPackage);
-      formData.append('amount', pkg.price.toString());
       
       if (uploadedFile) {
         formData.append('image', uploadedFile);
