@@ -1,0 +1,116 @@
+Perfect! Updated the prototype. Now here's the final Replit Agent prompt:
+
+---
+
+## Final Replit Agent Prompt:
+
+```
+Build a service card page for Royals Barber Shop (royalsbatavia.com) that sells digital screen advertising space to local businesses.
+
+REQUIREMENTS:
+
+1. THREE MUTUALLY EXCLUSIVE SERVICE OPTIONS (customer picks ONE):
+   - Option 1: $50/year - "Bring Your Own Image" - Customer uploads their promotional image (IMAGES ONLY, NO VIDEO)
+   - Option 2: $70/year - "Image Package" - You create a professional promotional image for them + they get to keep it for their own social media use
+   - Option 3: $100/year - "Video Package" - You create a 15-second promotional video for them + they get to keep it for their own social media use
+
+IMPORTANT: These are NOT add-ons. Customer must choose ONE option only.
+
+2. USER FLOW:
+   - Landing page shows an attractive service card with "Starting at $50/year"
+   - "View Packages" button takes users to package selection page
+   - Display all 3 options as cards side-by-side
+   - User clicks to select ONE package (radio button behavior)
+   - Selected package is visually highlighted
+   
+   **CRITICAL FOR $50 PACKAGE:**
+   - When $50 package is selected, immediately show file upload area below the packages
+   - Upload area should be a drag-and-drop zone with click-to-browse
+   - Accept IMAGES ONLY: JPG, PNG, GIF (NO VIDEO)
+   - Show file name and checkmark after successful upload
+   - Disable checkout button until image is uploaded for $50 package
+   - Show message "Please upload your image to continue" if no file uploaded
+   
+   - Checkout summary shows selected package and total
+   - "Proceed to Checkout" button processes payment
+
+3. FILE UPLOAD HANDLING (FOR $50 PACKAGE ONLY):
+   - Use proper file upload with drag-and-drop interface
+   - Validate file types (images only: JPG, PNG, GIF)
+   - Validate file size (max 5MB recommended)
+   - Show upload progress if needed
+   - Display uploaded file name with option to change
+   - Store uploaded file temporarily and attach to Stripe checkout metadata
+   - After successful payment, save the file to your server/cloud storage
+   - Associate uploaded file with the customer's order
+
+4. STRIPE INTEGRATION:
+   - Integrate Stripe Checkout for payment processing
+   - Create 3 separate products in Stripe:
+     * "Screen Advertising - Your Image" ($50)
+     * "Screen Advertising - Image Creation" ($70)
+     * "Screen Advertising - Video Creation" ($100)
+   - For $50 package: include uploaded file reference in payment metadata
+   - After successful payment, redirect to confirmation page
+   - Send confirmation email to BOTH customer AND shop owner with package details
+
+5. EMAIL NOTIFICATIONS:
+   - When order is placed, send TWO emails:
+     1. Customer confirmation email with order details and next steps
+     2. Shop owner notification email with:
+        - Customer name and email
+        - Package selected ($50/$70/$100)
+        - For $50: Include download link to uploaded image
+        - For $70/$100: Note that content creation is needed
+   - Shop owner will manually track orders via email (no admin dashboard needed)
+
+6. FILE STORAGE (FOR $50 PACKAGE):
+   - Use cloud storage (AWS S3, Cloudinary, or similar) to store uploaded images
+   - Generate unique filename to prevent conflicts
+   - Store file with order ID reference
+   - Include secure download link in shop owner's notification email
+
+7. DESIGN:
+   - Dark theme with amber/gold accents (barber shop aesthetic)
+   - Landing card should be eye-catching and professional
+   - Package selection page shows 3 cards in a grid (responsive: stack on mobile)
+   - Upload area should be prominent with dashed border, hover effects
+   - Selected card should visually "pop" (scale, glow, checkmark)
+   - Show visual feedback when file is uploaded (green checkmark)
+   - Smooth transitions when switching selections
+   - Mobile responsive design
+   - Make sure to mention in $70 and $100 packages: "yours to keep for social media"
+
+8. TECHNICAL:
+   - Build with React and Next.js
+   - Use Tailwind CSS for styling
+   - Implement file upload with FormData API
+   - Integrate Stripe Checkout (not Stripe Elements)
+   - Set up file storage backend (Next.js API routes + S3 or similar)
+   - Include environment variables for Stripe keys and storage credentials
+   - Add loading states and error handling
+   - Validate file size (max 5MB for images)
+   - Make it embeddable into existing website
+
+9. PACKAGE SELECTION BEHAVIOR:
+   - Default selection: $50 package (most affordable)
+   - Clicking any card deselects the previous and selects the new one
+   - When switching away from $50 package, hide upload area
+   - When switching to $50 package, show upload area and require image file
+   - Visual feedback: selected card scales up slightly, shows checkmark
+
+10. CONFIRMATION & NOTIFICATIONS:
+   - Order confirmation page showing purchased package
+   - For $50: Show uploaded image preview
+   - Customer email: Order details + next steps
+   - Shop owner email: Full order details with customer info + download link for $50 uploads
+   - Keep email templates simple and professional
+
+The design should make it crystal clear that:
+- $50 option requires IMAGE ONLY upload
+- $70 and $100 options come with content creation + customer gets to keep the content
+- Upload experience should be smooth and intuitive
+- Shop owner gets all order info via email (no dashboard needed)
+```
+
+That's your complete prompt! Replit Agent should build everything you need now. Let me know if you want any final tweaks!
