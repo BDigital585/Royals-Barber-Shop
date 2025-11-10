@@ -12,6 +12,7 @@ import express from "express";
 import OpenAI from "openai";
 import multer from "multer";
 import Stripe from "stripe";
+import { getUncachableResendClient } from "./resend-client";
 
 // Function to initialize or reinitialize the OpenAI client
 // This allows us to update the API key without restarting the server
@@ -1200,6 +1201,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const session = event.data.object;
         
         const orderId = session.metadata?.orderId;
+        const packageType = session.metadata?.packageType;
         if (!orderId) {
           console.error('No order ID in session metadata');
           return res.status(400).json({ message: 'Missing order ID' });
@@ -1208,19 +1210,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const customFields = session.custom_fields || [];
         const customerName = customFields.find((f: any) => f.key === 'customer_name')?.text?.value || 'Unknown';
         const businessName = customFields.find((f: any) => f.key === 'business_name')?.text?.value || 'Unknown';
+        const customerEmail = session.customer_email || session.customer_details?.email || 'unknown@email.com';
 
         await db.update(schema.screenAdvertisingOrders)
           .set({
             status: 'paid' as any,
             stripePaymentIntentId: session.payment_intent as string,
             customerName: customerName,
-            customerEmail: session.customer_email || session.customer_details?.email || 'unknown@email.com',
+            customerEmail: customerEmail,
             businessName: businessName,
             updatedAt: new Date(),
           })
           .where(eq(schema.screenAdvertisingOrders.id, parseInt(orderId)));
 
         console.log(`✅ Order ${orderId} marked as paid`);
+
+        // Send emails for image-package ($70) and video-package ($100) only
+        if (packageType === 'image-package' || packageType === 'video-package') {
+          // Check if required environment variables are set
+          const customerFormUrl = process.env.CUSTOMER_FORM_URL;
+          const businessOwnerEmail = process.env.BUSINESS_OWNER_EMAIL;
+          
+          if (!customerFormUrl || !businessOwnerEmail) {
+            console.warn(`⚠️ Email notification skipped for order ${orderId}: Missing CUSTOMER_FORM_URL (${customerFormUrl ? 'set' : 'missing'}) or BUSINESS_OWNER_EMAIL (${businessOwnerEmail ? 'set' : 'missing'})`);
+          } else {
+            try {
+              const { client: resend, fromEmail } = await getUncachableResendClient();
+              
+              const packageName = packageType === 'image-package' 
+                ? 'Professional Image Creation Package ($70/year)' 
+                : 'Professional Video Creation Package ($100/year)';
+
+            // Email to customer with confirmation and form link
+            await resend.emails.send({
+              from: fromEmail,
+              to: customerEmail,
+              subject: '🎉 Screen Advertising Purchase Confirmed - Royals Barber Shop',
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2 style="color: #d97706;">Thank You for Your Purchase!</h2>
+                  
+                  <p>Hi ${customerName},</p>
+                  
+                  <p>We've successfully received your payment for the <strong>${packageName}</strong> at Royals Barber Shop!</p>
+                  
+                  <h3 style="color: #d97706;">Next Steps:</h3>
+                  
+                  <p>To create your custom ${packageType === 'image-package' ? 'image' : 'video'}, please fill out this form with your business details, logo, and any specific requests:</p>
+                  
+                  <div style="text-align: center; margin: 30px 0;">
+                    <a href="${customerFormUrl}" 
+                       style="background-color: #d97706; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+                      Complete Your Business Information Form
+                    </a>
+                  </div>
+                  
+                  <p><strong>What we need from you:</strong></p>
+                  <ul>
+                    <li>Business information and contact details</li>
+                    <li>Your logo (high resolution)</li>
+                    <li>Any specific colors, text, or messaging you'd like</li>
+                    <li>Any visual preferences or examples</li>
+                  </ul>
+                  
+                  <p>Once we receive your information, our team will create your ${packageType === 'image-package' ? 'image' : 'video'} and have it displayed on our in-shop screens!</p>
+                  
+                  <p><strong>Order Details:</strong></p>
+                  <ul>
+                    <li>Package: ${packageName}</li>
+                    <li>Business: ${businessName}</li>
+                    <li>Order ID: ${orderId}</li>
+                  </ul>
+                  
+                  <p>If you have any questions, feel free to reply to this email or call us at 585-536-6576.</p>
+                  
+                  <p>Thank you for advertising with Royals Barber Shop!</p>
+                  
+                  <p style="color: #666; margin-top: 30px;">
+                    Best regards,<br>
+                    <strong>Royals Barber Shop</strong><br>
+                    317 Ellicott Street, Batavia, NY<br>
+                    585-536-6576
+                  </p>
+                </div>
+              `,
+            });
+
+            // Email to business owner notification
+            await resend.emails.send({
+              from: fromEmail,
+              to: businessOwnerEmail,
+              subject: `🔔 New Screen Advertising Order - ${packageName}`,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2 style="color: #d97706;">New Screen Advertising Purchase!</h2>
+                  
+                  <p>A new ${packageName} has been purchased.</p>
+                  
+                  <p><strong>Order Details:</strong></p>
+                  <ul>
+                    <li>Order ID: ${orderId}</li>
+                    <li>Package: ${packageName}</li>
+                    <li>Customer: ${customerName}</li>
+                    <li>Business: ${businessName}</li>
+                    <li>Email: ${customerEmail}</li>
+                    <li>Payment Status: Paid</li>
+                  </ul>
+                  
+                  <p><strong>Next Steps:</strong></p>
+                  <ol>
+                    <li>Wait for customer to complete the information form</li>
+                    <li>Create the ${packageType === 'image-package' ? 'professional image' : '10-15 second video'}</li>
+                    <li>Upload to in-shop digital screens</li>
+                    <li>Follow up with customer once live</li>
+                  </ol>
+                  
+                  <p>Customer form link: <a href="${customerFormUrl}">${customerFormUrl}</a></p>
+                  
+                  <p style="color: #666; margin-top: 30px;">
+                    <em>This is an automated notification from the Royals Barber Shop screen advertising system.</em>
+                  </p>
+                </div>
+              `,
+            });
+
+              console.log(`📧 Confirmation emails sent for order ${orderId}`);
+            } catch (emailError) {
+              console.error('Failed to send emails:', emailError);
+              // Don't fail the webhook if email fails
+            }
+          }
+        }
       }
 
       return res.status(200).json({ received: true });
