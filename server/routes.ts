@@ -1003,6 +1003,246 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Screen Advertising Routes
+  const multer = require('multer');
+  const Stripe = require('stripe');
+  
+  if (!process.env.STRIPE_SECRET_KEY) {
+    console.warn('⚠️ Stripe secret key is missing. Payment functionality will be unavailable.');
+  }
+  
+  const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2023-10-16',
+  }) : null;
+  
+  const upload = multer({
+    storage: multer.diskStorage({
+      destination: (req: any, file: any, cb: any) => {
+        const uploadDir = path.join(process.cwd(), 'uploads', 'screen-advertising');
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+      },
+      filename: (req: any, file: any, cb: any) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const sanitizedFilename = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
+        cb(null, uniqueSuffix + '-' + sanitizedFilename);
+      }
+    }),
+    limits: {
+      fileSize: 5 * 1024 * 1024, // 5MB
+    },
+    fileFilter: (req: any, file: any, cb: any) => {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Invalid file type. Only JPG, PNG, and GIF are allowed.'));
+      }
+    }
+  });
+
+  app.post(`${apiPrefix}/screen-advertising/create-checkout-session`, upload.single('image'), async (req, res) => {
+    try {
+      if (!stripe) {
+        return res.status(500).json({ message: 'Payment processing is not configured' });
+      }
+
+      const { packageType, amount, customerName, customerEmail, businessName } = req.body;
+
+      if (!packageType || !amount) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+
+      const amountNum = parseInt(amount);
+      if (![50, 70, 100].includes(amountNum)) {
+        return res.status(400).json({ message: 'Invalid package amount' });
+      }
+
+      if (packageType === 'bring-your-own' && !req.file) {
+        return res.status(400).json({ message: 'Image file is required for this package' });
+      }
+
+      const fileStorageKey = req.file ? path.relative(process.cwd(), req.file.path) : null;
+      const fileName = req.file ? req.file.originalname : null;
+
+      const [order] = await db.insert(schema.screenAdvertisingOrders).values({
+        customerName: customerName || 'To be provided',
+        customerEmail: customerEmail || 'pending@checkout.com',
+        businessName: businessName || 'To be provided',
+        packageType: packageType as any,
+        amount: amountNum,
+        uploadedFileStorageKey: fileStorageKey,
+        uploadedFileName: fileName,
+        status: 'pending' as any,
+      }).returning();
+
+      const packageNames: Record<string, string> = {
+        'bring-your-own': 'Bring Your Own Image',
+        'image-package': 'Professional Image Package',
+        'video-package': 'Professional Video Package',
+      };
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: `Screen Advertising - ${packageNames[packageType]}`,
+                description: `Annual screen advertising display at Royals Barber Shop`,
+              },
+              unit_amount: amountNum * 100,
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: `${req.protocol}://${req.get('host')}/order-confirmation?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.protocol}://${req.get('host')}/screen-advertising`,
+        customer_email: customerEmail,
+        metadata: {
+          orderId: order.id.toString(),
+          packageType: packageType,
+        },
+        billing_address_collection: 'required',
+        phone_number_collection: {
+          enabled: true,
+        },
+        custom_fields: [
+          {
+            key: 'customer_name',
+            label: {
+              type: 'custom',
+              custom: 'Full Name',
+            },
+            type: 'text',
+          },
+          {
+            key: 'business_name',
+            label: {
+              type: 'custom',
+              custom: 'Business Name',
+            },
+            type: 'text',
+          },
+        ],
+      });
+
+      await db.update(schema.screenAdvertisingOrders)
+        .set({ stripeSessionId: session.id })
+        .where(eq(schema.screenAdvertisingOrders.id, order.id));
+
+      return res.status(200).json({ url: session.url });
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      
+      if (req.file && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      
+      return res.status(500).json({ 
+        message: 'Failed to create checkout session',
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
+  app.post(`${apiPrefix}/stripe/webhook`, express.raw({ type: 'application/json' }), async (req, res) => {
+    try {
+      if (!stripe) {
+        return res.status(500).json({ message: 'Stripe is not configured' });
+      }
+
+      const sig = req.headers['stripe-signature'] as string;
+      const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+      if (!webhookSecret) {
+        console.warn('⚠️ Stripe webhook secret is missing. Skipping signature verification.');
+      }
+
+      let event;
+
+      if (webhookSecret && sig) {
+        try {
+          event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+        } catch (err) {
+          console.error('Webhook signature verification failed:', err);
+          return res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : String(err)}`);
+        }
+      } else {
+        event = JSON.parse(req.body.toString());
+      }
+
+      if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+        
+        const orderId = session.metadata?.orderId;
+        if (!orderId) {
+          console.error('No order ID in session metadata');
+          return res.status(400).json({ message: 'Missing order ID' });
+        }
+
+        const customFields = session.custom_fields || [];
+        const customerName = customFields.find((f: any) => f.key === 'customer_name')?.text?.value || 'Unknown';
+        const businessName = customFields.find((f: any) => f.key === 'business_name')?.text?.value || 'Unknown';
+
+        await db.update(schema.screenAdvertisingOrders)
+          .set({
+            status: 'paid' as any,
+            stripePaymentIntentId: session.payment_intent as string,
+            customerName: customerName,
+            customerEmail: session.customer_email || session.customer_details?.email || 'unknown@email.com',
+            businessName: businessName,
+            updatedAt: new Date(),
+          })
+          .where(eq(schema.screenAdvertisingOrders.id, parseInt(orderId)));
+
+        console.log(`✅ Order ${orderId} marked as paid`);
+      }
+
+      return res.status(200).json({ received: true });
+    } catch (error) {
+      console.error('Webhook error:', error);
+      return res.status(500).json({ 
+        message: 'Webhook processing failed',
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
+  app.get(`${apiPrefix}/screen-advertising/order`, async (req, res) => {
+    try {
+      const { session_id } = req.query;
+
+      if (!session_id || typeof session_id !== 'string') {
+        return res.status(400).json({ message: 'Missing session ID' });
+      }
+
+      const order = await db.query.screenAdvertisingOrders.findFirst({
+        where: eq(schema.screenAdvertisingOrders.stripeSessionId, session_id),
+      });
+
+      if (!order) {
+        return res.status(404).json({ message: 'Order not found' });
+      }
+
+      if (order.status === 'pending') {
+        return res.status(400).json({ message: 'Order payment is still pending' });
+      }
+
+      return res.status(200).json(order);
+    } catch (error) {
+      console.error('Error fetching order:', error);
+      return res.status(500).json({ 
+        message: 'Failed to fetch order',
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

@@ -13,6 +13,8 @@ const HaircutShare = lazy(() => import("@/pages/HaircutShare"));
 const Blog = lazy(() => import("@/pages/Blog"));
 const BlogPost = lazy(() => import("@/pages/BlogPost"));
 const SeoAudit = lazy(() => import("@/pages/SeoAudit"));
+const ScreenAdvertising = lazy(() => import("@/pages/ScreenAdvertising"));
+const OrderConfirmation = lazy(() => import("@/pages/OrderConfirmation"));
 
 // Loading component for lazy-loaded routes
 function PageLoader() {
@@ -59,6 +61,8 @@ function Router() {
           <Route path="/haircut/:category/:image" component={HaircutShare} />
           <Route path="/blog" component={Blog} />
           <Route path="/blog/:slug" component={BlogPost} />
+          <Route path="/screen-advertising" component={ScreenAdvertising} />
+          <Route path="/order-confirmation" component={OrderConfirmation} />
           <Route path="/admin/seo-audit" component={SeoAudit} />
           <Route component={NotFound} />
         </Switch>
