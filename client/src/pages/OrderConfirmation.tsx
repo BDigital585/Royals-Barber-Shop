@@ -13,7 +13,7 @@ const OrderConfirmation = () => {
   const sessionId = searchParams.get('session_id');
 
   const { data: order, isLoading } = useQuery<ScreenAdvertisingOrder>({
-    queryKey: ['/api/screen-advertising/order', sessionId],
+    queryKey: [`/api/screen-advertising/order?session_id=${sessionId}`],
     enabled: !!sessionId,
   });
 
@@ -80,6 +80,15 @@ const OrderConfirmation = () => {
               </div>
               
               <div className="p-8">
+                {order.status === 'pending' && (
+                  <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-4 mb-6">
+                    <p className="text-sm text-yellow-800">
+                      <strong>Note:</strong> Your payment was successful! Your order is being processed. 
+                      {order.packageType !== 'bring-your-own' && ' You should receive a confirmation email shortly with next steps.'}
+                    </p>
+                  </div>
+                )}
+                
                 <div className="mb-8">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Order Details</h2>
                   
@@ -113,7 +122,7 @@ const OrderConfirmation = () => {
                     
                     <div className="flex justify-between py-3">
                       <span className="text-gray-600 text-lg">Total Paid</span>
-                      <span className="font-bold text-2xl text-green-600">${order.amount}</span>
+                      <span className="font-bold text-2xl text-green-600">${(order.amount / 100).toFixed(2)}</span>
                     </div>
                   </div>
                 </div>

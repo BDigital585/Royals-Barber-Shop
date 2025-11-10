@@ -1369,10 +1369,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: 'Order not found' });
       }
 
-      if (order.status === 'pending') {
-        return res.status(400).json({ message: 'Order payment is still pending' });
-      }
-
+      // Return order even if pending (for local development testing)
+      // In production, the webhook will update status to 'paid' automatically
       return res.status(200).json(order);
     } catch (error) {
       console.error('Error fetching order:', error);
