@@ -52,10 +52,10 @@ export default function Blog() {
             <div className="container mx-auto px-4">
               <div className="max-w-2xl">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading text-white mb-4 leading-tight">
-                  Behind the <span className="inline-block">Barber Chair</span>
+                  The Royals Report
                 </h1>
                 <p className="text-gray-200 text-base sm:text-lg md:text-xl mb-6 max-w-xl">
-                  Unfiltered insights and barbershop wisdom—straight from Royals.
+                  Real stories, local spotlights, barbershop culture, and community insights from Batavia.
                 </p>
               </div>
             </div>
