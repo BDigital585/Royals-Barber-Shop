@@ -133,3 +133,29 @@ export const screenAdvertisingOrdersInsertSchema = createInsertSchema(screenAdve
 export const screenAdvertisingOrdersSelectSchema = createSelectSchema(screenAdvertisingOrders);
 export type ScreenAdvertisingOrder = typeof screenAdvertisingOrders.$inferSelect;
 export type InsertScreenAdvertisingOrder = z.infer<typeof screenAdvertisingOrdersInsertSchema>;
+
+// Memory game scores for leaderboard
+export const discountTierEnum = pgEnum("discount_tier", ["premium", "standard"]);
+
+export const memoryGameScores = pgTable("memory_game_scores", {
+  id: serial("id").primaryKey(),
+  playerName: text("player_name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  moves: integer("moves").notNull(),
+  discountTier: discountTierEnum("discount_tier").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const memoryGameScoresInsertSchema = createInsertSchema(memoryGameScores, {
+  playerName: (schema) => schema.min(2, "Name must be at least 2 characters"),
+  email: (schema) => schema.email("Must provide a valid email"),
+  moves: (schema) => schema.min(1, "Moves must be at least 1"),
+}).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const memoryGameScoresSelectSchema = createSelectSchema(memoryGameScores);
+export type MemoryGameScore = typeof memoryGameScores.$inferSelect;
+export type InsertMemoryGameScore = z.infer<typeof memoryGameScoresInsertSchema>;

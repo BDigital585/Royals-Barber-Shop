@@ -1,0 +1,275 @@
+import React, { useState, useEffect } from 'react';
+import { Scissors, Droplet, Grid3x3, Sparkles, Trophy, Mail } from 'lucide-react';
+
+const BarberMemoryGame = () => {
+  const [cards, setCards] = useState([]);
+  const [flipped, setFlipped] = useState([]);
+  const [matched, setMatched] = useState([]);
+  const [moves, setMoves] = useState(0);
+  const [gameComplete, setGameComplete] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [submitted, setSubmitted] = useState(false);
+
+  const barberIcons = [
+    { id: 1, icon: Scissors, name: 'Scissors', color: '#e74c3c' },
+    { id: 2, icon: Droplet, name: 'Bottle', color: '#3498db' },
+    { id: 3, icon: Grid3x3, name: 'Clipper', color: '#2ecc71' },
+    { id: 4, icon: Sparkles, name: 'Polish', color: '#f39c12' },
+    { id: 5, icon: Trophy, name: 'Trophy', color: '#9b59b6' },
+    { id: 6, icon: Mail, name: 'Razor', color: '#1abc9c' },
+  ];
+
+  useEffect(() => {
+    initializeGame();
+  }, []);
+
+  const initializeGame = () => {
+    const duplicatedCards = [...barberIcons, ...barberIcons]
+      .map((card, index) => ({ ...card, uniqueId: index }))
+      .sort(() => Math.random() - 0.5);
+    setCards(duplicatedCards);
+    setFlipped([]);
+    setMatched([]);
+    setMoves(0);
+    setGameComplete(false);
+    setShowForm(false);
+    setSubmitted(false);
+  };
+
+  const handleCardClick = (index) => {
+    if (flipped.length === 2 || flipped.includes(index) || matched.includes(cards[index].id)) {
+      return;
+    }
+
+    const newFlipped = [...flipped, index];
+    setFlipped(newFlipped);
+
+    if (newFlipped.length === 2) {
+      setMoves(moves + 1);
+      const [firstIndex, secondIndex] = newFlipped;
+      
+      if (cards[firstIndex].id === cards[secondIndex].id) {
+        setMatched([...matched, cards[firstIndex].id]);
+        setFlipped([]);
+        
+        if (matched.length + 1 === barberIcons.length) {
+          setTimeout(() => setGameComplete(true), 500);
+        }
+      } else {
+        setTimeout(() => setFlipped([]), 1000);
+      }
+    }
+  };
+
+  const getDealType = () => {
+    return moves + 1 <= 10 ? 'premium' : 'standard';
+  };
+
+  const handleFormChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    // Validate all fields are filled
+    if (!formData.name || !formData.email || !formData.phone) {
+      alert('Please fill in all fields');
+      return;
+    }
+    
+    // Here you would send data to your backend
+    const submissionData = {
+      ...formData,
+      score: moves + 1,
+      dealType: getDealType(),
+      timestamp: new Date().toISOString()
+    };
+    
+    console.log('Submission Data:', submissionData);
+    // TODO: Send to your backend API
+    
+    setSubmitted(true);
+  };
+
+  const isCardFlipped = (index) => {
+    return flipped.includes(index) || matched.includes(cards[index].id);
+  };
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-600 via-white to-blue-600 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+          <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Trophy className="w-12 h-12 text-white" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">Deal Claimed!</h2>
+          <p className="text-gray-600 mb-6">
+            Check your email and SMS for your {getDealType() === 'premium' ? '20% Off + Free Drink' : '10% Off'} deal!
+          </p>
+          <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-6">
+            <p className="font-semibold text-blue-900">Your Score: {moves + 1} moves</p>
+            <p className="text-sm text-blue-700 mt-2">Compete for this month's FREE HAIRCUT!</p>
+          </div>
+          <p className="text-gray-500 text-sm mb-6">Come back next week to play again!</p>
+          <button
+            onClick={initializeGame}
+            className="bg-gradient-to-r from-red-600 to-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-all"
+          >
+            Play Again (Demo)
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (showForm) {
+    const dealType = getDealType();
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-600 via-white to-blue-600 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
+          <div className="text-center mb-6">
+            <div className="w-20 h-20 bg-gradient-to-r from-red-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Trophy className="w-12 h-12 text-white" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+              {dealType === 'premium' ? '🎉 Premium Deal!' : '✂️ Nice Job!'}
+            </h2>
+            <p className="text-xl font-semibold text-gray-700 mb-2">
+              {dealType === 'premium' ? '20% Off + Free Drink' : '10% Off First Cut'}
+            </p>
+            <p className="text-gray-600">Completed in {moves + 1} moves</p>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Name *</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleFormChange}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                placeholder="John Doe"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Email *</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleFormChange}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                placeholder="john@example.com"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Phone *</label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleFormChange}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                placeholder="(555) 123-4567"
+              />
+            </div>
+
+            <button
+              onClick={handleSubmit}
+              className="w-full bg-gradient-to-r from-red-600 to-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:shadow-xl transition-all"
+            >
+              Claim My Deal
+            </button>
+          </div>
+
+          <p className="text-center text-sm text-gray-500 mt-4">
+            Your score will be added to the monthly leaderboard!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (gameComplete) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-600 via-white to-blue-600 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+          <div className="text-6xl mb-4">🎊</div>
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">Game Complete!</h2>
+          <p className="text-2xl text-gray-700 mb-2">Moves: {moves + 1}</p>
+          <p className="text-lg text-gray-600 mb-8">
+            You qualified for the {getDealType() === 'premium' ? 'PREMIUM' : 'STANDARD'} deal!
+          </p>
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-gradient-to-r from-red-600 to-blue-600 text-white px-8 py-4 rounded-lg font-bold text-xl hover:shadow-xl transition-all"
+          >
+            Claim Your Deal
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-red-600 via-white to-blue-600 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-2xl w-full">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">✂️ Memory Match ✂️</h1>
+          <p className="text-gray-600 mb-4">Match the barber tools to win your deal!</p>
+          <div className="flex justify-center gap-8 text-center">
+            <div>
+              <p className="text-3xl font-bold text-blue-600">{moves + 1}</p>
+              <p className="text-sm text-gray-600">Moves</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-green-600">{matched.length}/6</p>
+              <p className="text-sm text-gray-600">Matched</p>
+            </div>
+          </div>
+          <div className="mt-4 p-3 bg-yellow-50 border-2 border-yellow-200 rounded-lg">
+            <p className="text-sm font-semibold text-yellow-800">
+              ≤10 moves = 20% Off + Free Drink | 11+ moves = 10% Off
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          {cards.map((card, index) => {
+            const Icon = card.icon;
+            const isFlipped = isCardFlipped(index);
+            
+            return (
+              <div
+                key={card.uniqueId}
+                onClick={() => handleCardClick(index)}
+                className={`aspect-square cursor-pointer transition-all duration-300 transform ${
+                  isFlipped ? 'rotate-0' : 'rotate-y-180'
+                }`}
+              >
+                <div className={`w-full h-full rounded-xl shadow-lg flex items-center justify-center transition-all ${
+                  isFlipped
+                    ? 'bg-white border-4 border-gray-200'
+                    : 'bg-gradient-to-br from-red-500 to-blue-500'
+                }`}>
+                  {isFlipped ? (
+                    <Icon className="w-12 h-12" style={{ color: card.color }} />
+                  ) : (
+                    <div className="text-4xl">✂️</div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+
+      </div>
+    </div>
+  );
+};
+
+export default BarberMemoryGame;

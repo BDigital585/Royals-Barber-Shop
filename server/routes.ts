@@ -10,9 +10,6 @@ import path from "path";
 import fs from "fs";
 import express from "express";
 import OpenAI from "openai";
-import multer from "multer";
-import Stripe from "stripe";
-import { getUncachableResendClient } from "./resend-client";
 
 // Function to initialize or reinitialize the OpenAI client
 // This allows us to update the API key without restarting the server
@@ -1006,378 +1003,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Screen Advertising Routes
-  if (!process.env.STRIPE_SECRET_KEY) {
-    console.warn('⚠️ Stripe secret key is missing. Payment functionality will be unavailable.');
-  }
-  
-  const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2023-10-16',
-  }) : null;
-  
-  const upload = multer({
-    storage: multer.diskStorage({
-      destination: (req: any, file: any, cb: any) => {
-        const uploadDir = path.join(process.cwd(), 'uploads', 'screen-advertising');
-        if (!fs.existsSync(uploadDir)) {
-          fs.mkdirSync(uploadDir, { recursive: true });
-        }
-        cb(null, uploadDir);
-      },
-      filename: (req: any, file: any, cb: any) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const sanitizedFilename = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
-        cb(null, uniqueSuffix + '-' + sanitizedFilename);
-      }
-    }),
-    limits: {
-      fileSize: 5 * 1024 * 1024, // 5MB
-    },
-    fileFilter: (req: any, file: any, cb: any) => {
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-      if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-      } else {
-        cb(new Error('Invalid file type. Only JPG, PNG, and GIF are allowed.'));
-      }
+  // Memory Game Routes
+  app.get(`${apiPrefix}/memory-game/scores`, async (req, res) => {
+    try {
+      const scores = await db.query.memoryGameScores.findMany({
+        orderBy: (memoryGameScores, { asc }) => [asc(memoryGameScores.moves), asc(memoryGameScores.createdAt)],
+        limit: 50,
+      });
+      return res.status(200).json(scores);
+    } catch (error) {
+      console.error('Error fetching game scores:', error);
+      return res.status(500).json({ message: 'Failed to fetch scores' });
     }
   });
 
-  app.post(`${apiPrefix}/screen-advertising/create-checkout-session`, upload.single('image'), async (req, res) => {
-    const cleanupFile = () => {
-      if (req.file && fs.existsSync(req.file.path)) {
-        try {
-          fs.unlinkSync(req.file.path);
-        } catch (err) {
-          console.error('Failed to cleanup uploaded file:', err);
-        }
-      }
-    };
-
+  app.post(`${apiPrefix}/memory-game/scores`, async (req, res) => {
     try {
-      if (!stripe) {
-        cleanupFile();
-        return res.status(500).json({ message: 'Payment processing is not configured' });
+      const { playerName, email, phone, moves, discountTier } = req.body;
+
+      if (!playerName || !email || !moves || !discountTier) {
+        return res.status(400).json({ message: 'Missing required fields' });
       }
 
-      const { packageType, customerName, customerEmail, businessName } = req.body;
-
-      if (!packageType) {
-        cleanupFile();
-        return res.status(400).json({ message: 'Missing package type' });
-      }
-
-      const packagePricing: Record<string, number> = {
-        'bring-your-own': 50,
-        'image-package': 70,
-        'video-package': 100,
-      };
-
-      const amountNum = packagePricing[packageType];
-      if (!amountNum) {
-        cleanupFile();
-        return res.status(400).json({ message: 'Invalid package type' });
-      }
-
-      if (packageType === 'bring-your-own' && !req.file) {
-        return res.status(400).json({ message: 'Image file is required for bring-your-own package' });
-      }
-
-      if (packageType !== 'bring-your-own' && req.file) {
-        cleanupFile();
-        return res.status(400).json({ message: 'File upload not allowed for this package type' });
-      }
-
-      const fileStorageKey = req.file ? path.relative(process.cwd(), req.file.path) : null;
-      const fileName = req.file ? req.file.originalname : null;
-
-      const [order] = await db.insert(schema.screenAdvertisingOrders).values({
-        customerName: customerName || 'To be provided',
-        customerEmail: customerEmail || 'pending@checkout.com',
-        businessName: businessName || 'To be provided',
-        packageType: packageType as any,
-        amount: amountNum * 100, // Convert dollars to cents
-        uploadedFileStorageKey: fileStorageKey,
-        uploadedFileName: fileName,
-        status: 'pending' as any,
+      const [newScore] = await db.insert(schema.memoryGameScores).values({
+        playerName,
+        email,
+        phone: phone || null,
+        moves,
+        discountTier: discountTier as any,
       }).returning();
 
-      const packageNames: Record<string, string> = {
-        'bring-your-own': 'Bring Your Own Image',
-        'image-package': 'Professional Image Package',
-        'video-package': 'Professional Video Package',
-      };
-
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: `Screen Advertising - ${packageNames[packageType]}`,
-                description: `Annual screen advertising display at Royals Barber Shop`,
-              },
-              unit_amount: amountNum * 100,
-            },
-            quantity: 1,
-          },
-        ],
-        mode: 'payment',
-        success_url: `${req.protocol}://${req.get('host')}/order-confirmation?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.protocol}://${req.get('host')}/screen-advertising`,
-        customer_email: customerEmail,
-        metadata: {
-          orderId: order.id.toString(),
-          packageType: packageType,
-        },
-        billing_address_collection: 'required',
-        phone_number_collection: {
-          enabled: true,
-        },
-        custom_fields: [
-          {
-            key: 'customer_name',
-            label: {
-              type: 'custom',
-              custom: 'Full Name',
-            },
-            type: 'text',
-          },
-          {
-            key: 'business_name',
-            label: {
-              type: 'custom',
-              custom: 'Business Name',
-            },
-            type: 'text',
-          },
-        ],
-      });
-
-      await db.update(schema.screenAdvertisingOrders)
-        .set({ stripeSessionId: session.id })
-        .where(eq(schema.screenAdvertisingOrders.id, order.id));
-
-      return res.status(200).json({ url: session.url });
+      return res.status(201).json(newScore);
     } catch (error) {
-      console.error('Error creating checkout session:', error);
-      cleanupFile();
-      
-      return res.status(500).json({ 
-        message: 'Failed to create checkout session',
-        error: error instanceof Error ? error.message : String(error)
-      });
-    }
-  });
-
-  app.post(`${apiPrefix}/stripe/webhook`, express.raw({ type: 'application/json' }), async (req, res) => {
-    try {
-      if (!stripe) {
-        return res.status(500).json({ message: 'Stripe is not configured' });
-      }
-
-      const sig = req.headers['stripe-signature'] as string;
-      const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-      if (!webhookSecret) {
-        console.warn('⚠️ Stripe webhook secret is missing. Skipping signature verification.');
-      }
-
-      let event;
-
-      if (webhookSecret && sig) {
-        try {
-          event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-        } catch (err) {
-          console.error('Webhook signature verification failed:', err);
-          return res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : String(err)}`);
-        }
-      } else {
-        event = JSON.parse(req.body.toString());
-      }
-
-      if (event.type === 'checkout.session.completed') {
-        const session = event.data.object;
-        
-        const orderId = session.metadata?.orderId;
-        const packageType = session.metadata?.packageType;
-        if (!orderId) {
-          console.error('No order ID in session metadata');
-          return res.status(400).json({ message: 'Missing order ID' });
-        }
-
-        const customFields = session.custom_fields || [];
-        const customerName = customFields.find((f: any) => f.key === 'customer_name')?.text?.value || 'Unknown';
-        const businessName = customFields.find((f: any) => f.key === 'business_name')?.text?.value || 'Unknown';
-        const customerEmail = session.customer_email || session.customer_details?.email || 'unknown@email.com';
-
-        await db.update(schema.screenAdvertisingOrders)
-          .set({
-            status: 'paid' as any,
-            stripePaymentIntentId: session.payment_intent as string,
-            customerName: customerName,
-            customerEmail: customerEmail,
-            businessName: businessName,
-            updatedAt: new Date(),
-          })
-          .where(eq(schema.screenAdvertisingOrders.id, parseInt(orderId)));
-
-        console.log(`✅ Order ${orderId} marked as paid`);
-
-        // Send emails for image-package ($70) and video-package ($100) only
-        if (packageType === 'image-package' || packageType === 'video-package') {
-          // Check if required environment variables are set
-          const customerFormUrl = process.env.CUSTOMER_FORM_URL;
-          const businessOwnerEmail = process.env.BUSINESS_OWNER_EMAIL;
-          
-          if (!customerFormUrl || !businessOwnerEmail) {
-            console.warn(`⚠️ Email notification skipped for order ${orderId}: Missing CUSTOMER_FORM_URL (${customerFormUrl ? 'set' : 'missing'}) or BUSINESS_OWNER_EMAIL (${businessOwnerEmail ? 'set' : 'missing'})`);
-          } else {
-            try {
-              const { client: resend, fromEmail } = await getUncachableResendClient();
-              
-              const packageName = packageType === 'image-package' 
-                ? 'Professional Image Creation Package ($70/year)' 
-                : 'Professional Video Creation Package ($100/year)';
-
-            // Email to customer with confirmation and form link
-            await resend.emails.send({
-              from: fromEmail,
-              to: customerEmail,
-              subject: '🎉 Screen Advertising Purchase Confirmed - Royals Barber Shop',
-              html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                  <h2 style="color: #d97706;">Thank You for Your Purchase!</h2>
-                  
-                  <p>Hi ${customerName},</p>
-                  
-                  <p>We've successfully received your payment for the <strong>${packageName}</strong> at Royals Barber Shop!</p>
-                  
-                  <h3 style="color: #d97706;">Next Steps:</h3>
-                  
-                  <p>To create your custom ${packageType === 'image-package' ? 'image' : 'video'}, please fill out this form with your business details, logo, and any specific requests:</p>
-                  
-                  <div style="text-align: center; margin: 30px 0;">
-                    <a href="${customerFormUrl}" 
-                       style="background-color: #d97706; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
-                      Complete Your Business Information Form
-                    </a>
-                  </div>
-                  
-                  <p><strong>What we need from you:</strong></p>
-                  <ul>
-                    <li>Business information and contact details</li>
-                    <li>Your logo (high resolution)</li>
-                    <li>Any specific colors, text, or messaging you'd like</li>
-                    <li>Any visual preferences or examples</li>
-                  </ul>
-                  
-                  <p>Once we receive your information, our team will create your ${packageType === 'image-package' ? 'image' : 'video'} and have it displayed on our in-shop screens!</p>
-                  
-                  <p><strong>Order Details:</strong></p>
-                  <ul>
-                    <li>Package: ${packageName}</li>
-                    <li>Business: ${businessName}</li>
-                    <li>Order ID: ${orderId}</li>
-                  </ul>
-                  
-                  <p>If you have any questions, feel free to reply to this email or call us at 585-536-6576.</p>
-                  
-                  <p>Thank you for advertising with Royals Barber Shop!</p>
-                  
-                  <p style="color: #666; margin-top: 30px;">
-                    Best regards,<br>
-                    <strong>Royals Barber Shop</strong><br>
-                    317 Ellicott Street, Batavia, NY<br>
-                    585-536-6576
-                  </p>
-                </div>
-              `,
-            });
-
-            // Email to business owner notification
-            await resend.emails.send({
-              from: fromEmail,
-              to: businessOwnerEmail,
-              subject: `🔔 New Screen Advertising Order - ${packageName}`,
-              html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                  <h2 style="color: #d97706;">New Screen Advertising Purchase!</h2>
-                  
-                  <p>A new ${packageName} has been purchased.</p>
-                  
-                  <p><strong>Order Details:</strong></p>
-                  <ul>
-                    <li>Order ID: ${orderId}</li>
-                    <li>Package: ${packageName}</li>
-                    <li>Customer: ${customerName}</li>
-                    <li>Business: ${businessName}</li>
-                    <li>Email: ${customerEmail}</li>
-                    <li>Payment Status: Paid</li>
-                  </ul>
-                  
-                  <p><strong>Next Steps:</strong></p>
-                  <ol>
-                    <li>Wait for customer to complete the information form</li>
-                    <li>Create the ${packageType === 'image-package' ? 'professional image' : '10-15 second video'}</li>
-                    <li>Upload to in-shop digital screens</li>
-                    <li>Follow up with customer once live</li>
-                  </ol>
-                  
-                  <p>Customer form link: <a href="${customerFormUrl}">${customerFormUrl}</a></p>
-                  
-                  <p style="color: #666; margin-top: 30px;">
-                    <em>This is an automated notification from the Royals Barber Shop screen advertising system.</em>
-                  </p>
-                </div>
-              `,
-            });
-
-              console.log(`📧 Confirmation emails sent for order ${orderId}`);
-            } catch (emailError) {
-              console.error('Failed to send emails:', emailError);
-              // Don't fail the webhook if email fails
-            }
-          }
-        }
-      }
-
-      return res.status(200).json({ received: true });
-    } catch (error) {
-      console.error('Webhook error:', error);
-      return res.status(500).json({ 
-        message: 'Webhook processing failed',
-        error: error instanceof Error ? error.message : String(error)
-      });
-    }
-  });
-
-  app.get(`${apiPrefix}/screen-advertising/order`, async (req, res) => {
-    try {
-      const { session_id } = req.query;
-
-      if (!session_id || typeof session_id !== 'string') {
-        return res.status(400).json({ message: 'Missing session ID' });
-      }
-
-      const order = await db.query.screenAdvertisingOrders.findFirst({
-        where: eq(schema.screenAdvertisingOrders.stripeSessionId, session_id),
-      });
-
-      if (!order) {
-        return res.status(404).json({ message: 'Order not found' });
-      }
-
-      // Return order even if pending (for local development testing)
-      // In production, the webhook will update status to 'paid' automatically
-      return res.status(200).json(order);
-    } catch (error) {
-      console.error('Error fetching order:', error);
-      return res.status(500).json({ 
-        message: 'Failed to fetch order',
-        error: error instanceof Error ? error.message : String(error)
-      });
+      console.error('Error saving game score:', error);
+      return res.status(500).json({ message: 'Failed to save score' });
     }
   });
 

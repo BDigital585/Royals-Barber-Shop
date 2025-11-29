@@ -15,7 +15,7 @@ import SchemaMarkup from '@/components/SchemaMarkup';
 import MetaTags from '@/components/MetaTags';
 import ChatBot from '@/components/ChatBot';
 import WebsiteShareButton from '@/components/WebsiteShareButton';
-import ScreenAdvertisingCard from '@/components/ScreenAdvertisingCard';
+import Leaderboard from '@/components/Leaderboard';
 import { usePreloadImages } from '@/hooks/usePreloadImages';
 import { useEffect } from 'react';
 
@@ -63,7 +63,7 @@ const Home = () => {
       <Header />
       <main>
         <ContentfulHeroSection />
-        <ScreenAdvertisingCard />
+        <Leaderboard />
         <section className="py-4 bg-gradient-to-b from-black/5 to-white">
           <div className="container mx-auto px-4">
             <div className="max-w-lg mx-auto">
