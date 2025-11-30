@@ -72,7 +72,7 @@ export default function MemoryGame() {
         setMatched([...matched, cards[firstIndex].id]);
         setFlipped([]);
 
-        if (matched.length + 1 === barberIcons.length) {
+        if (matched.length + 1 === barberImages.length) {
           setTimeout(() => setGameComplete(true), 500);
         }
       } else {
@@ -402,7 +402,6 @@ export default function MemoryGame() {
 
           <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-6" style={{ perspective: '1200px' }}>
             {cards.map((card, index) => {
-              const Icon = card.icon;
               const isFlipped = isCardFlipped(index);
 
               return (
@@ -475,14 +474,6 @@ export default function MemoryGame() {
             })}
           </div>
 
-            <div className="text-center">
-              <button
-                onClick={initializeGame}
-                className="text-white/70 hover:text-white underline text-sm transition-colors"
-              >
-                Reset Game
-              </button>
-            </div>
           </div>
         </div>
       </main>
