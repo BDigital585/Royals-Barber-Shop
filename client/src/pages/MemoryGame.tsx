@@ -94,10 +94,10 @@ export default function MemoryGame() {
   };
 
   const handleSubmit = async () => {
-    if (!formData.name || !formData.email) {
+    if (!formData.email) {
       toast({
         title: 'Missing Information',
-        description: 'Please fill in your name and email',
+        description: 'Please fill in your email',
         variant: 'destructive',
       });
       return;
@@ -267,7 +267,7 @@ export default function MemoryGame() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Name *</label>
+                <label className="block text-gray-700 font-medium mb-2">Name</label>
                 <input
                   type="text"
                   name="name"
@@ -276,6 +276,7 @@ export default function MemoryGame() {
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-amber-500 focus:outline-none"
                   placeholder="Your name"
                 />
+                <p className="text-xs text-gray-500 mt-1">Your name will be displayed on our leaderboard</p>
               </div>
 
               <div>
@@ -395,7 +396,7 @@ export default function MemoryGame() {
                 {/* Inner shimmer effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover/discount:opacity-100 animate-shimmer pointer-events-none"></div>
                 <p className="text-sm font-bold text-white drop-shadow-md relative z-10">
-                  ≤10 moves = $5 Off | 11+ moves = $2 Off
+                  10 Moves or Fewer = $5 Off | 11+ Moves = $2 Off
                 </p>
               </div>
             </div>
