@@ -1003,19 +1003,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Memory Game Routes - Using Google Sheets for leaderboard
+  // Memory Game Routes - Using Google Sheets as primary data source
   const googleSheets = await import('./google-sheets-client');
 
   // Get weekly leaderboard (resets every Monday)
   app.get(`${apiPrefix}/memory-game/scores`, async (req, res) => {
     try {
-      // Get weekly scores from Google Sheets
+      // Get weekly scores from Google Sheets (primary source)
       const weeklyScores = await googleSheets.getWeeklyLeaderboard();
       
-      // Transform to match expected format
-      const formattedScores = weeklyScores.map(score => ({
-        id: score.rank,
-        rank: score.rank,
+      // Sort by moves (lower is better) and assign sequential ranks
+      const sortedScores = [...weeklyScores].sort((a, b) => a.score - b.score);
+      
+      // Transform to match expected format with normalized sequential ranks
+      const formattedScores = sortedScores.map((score, index) => ({
+        id: index + 1,
+        rank: index + 1,
         playerName: score.name,
         email: score.email,
         phone: score.phone,
@@ -1027,17 +1030,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(200).json(formattedScores);
     } catch (error) {
       console.error('Error fetching game scores from Google Sheets:', error);
-      // Fallback to database if Google Sheets fails
-      try {
-        const scores = await db.query.memoryGameScores.findMany({
-          orderBy: (memoryGameScores, { asc }) => [asc(memoryGameScores.moves), asc(memoryGameScores.createdAt)],
-          limit: 50,
-        });
-        return res.status(200).json(scores.map((s, i) => ({ ...s, rank: i + 1 })));
-      } catch (dbError) {
-        console.error('Database fallback also failed:', dbError);
-        return res.status(500).json({ message: 'Failed to fetch scores' });
-      }
+      // Return empty array if Google Sheets fails - no database fallback needed
+      return res.status(200).json([]);
     }
   });
 
@@ -1049,22 +1043,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Missing required fields' });
       }
 
-      // Save to database (backup)
-      const [newScore] = await db.insert(schema.memoryGameScores).values({
-        playerName,
-        email,
-        phone: phone || null,
-        moves,
-        discountTier: discountTier as any,
-      }).returning();
-
-      // Save to Google Sheets leaderboard
+      // Save to Google Sheets leaderboard (primary data source)
       try {
         await googleSheets.addScoreToLeaderboard(playerName, email, phone || null, moves);
         console.log('Score added to Google Sheets leaderboard');
       } catch (sheetsError) {
         console.error('Failed to add to Google Sheets leaderboard:', sheetsError);
-        // Continue even if Sheets fails - we have database backup
+        return res.status(500).json({ message: 'Failed to save score to leaderboard' });
       }
 
       // Add to contacts if not duplicate
@@ -1077,10 +1062,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       } catch (contactsError) {
         console.error('Failed to add to contacts:', contactsError);
-        // Continue even if contacts fails
+        // Continue even if contacts fails - leaderboard was saved
       }
 
-      return res.status(201).json({ ...newScore, rank: 1 });
+      // Return success response with the saved data
+      const response = {
+        success: true,
+        playerName,
+        email,
+        phone: phone || null,
+        moves,
+        discountTier,
+        createdAt: new Date().toISOString(),
+      };
+
+      return res.status(201).json(response);
     } catch (error) {
       console.error('Error saving game score:', error);
       return res.status(500).json({ message: 'Failed to save score' });

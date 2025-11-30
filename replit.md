@@ -58,7 +58,7 @@ Preferred communication style: Simple, everyday language.
 - `/api/chat` - OpenAI chatbot integration
 - `/api/shop-images` - Server-side file system scanning for gallery images
 - `/api/newsletter/subscribe` - Newsletter subscription handling
-- `/api/memory-game/scores` - Memory game leaderboard (GET/POST)
+- `/api/memory-game/scores` - Memory game leaderboard (GET/POST) with Google Sheets integration
 
 **Middleware Stack**
 - JSON body parsing
@@ -74,16 +74,23 @@ Preferred communication style: Simple, everyday language.
 - `blogPosts` - Blog content (supplementary to Contentful)
 - `services` - Service offerings and pricing
 - `subscribers` - Newsletter email subscription list
-- `memoryGameScores` - Memory game leaderboard with player names, moves, and discount tiers
+
+**Google Sheets Integration (Memory Game)**
+- "memory match leaderboard" - Cumulative game scores with weekly display filtering
+- "barber shop Contacts" - Customer contacts with email deduplication
+- Weekly reset logic: Scores display from current week (Monday-Sunday) while full history persists
+- Connected via Replit's Google Sheets connector (server/google-sheets-client.ts)
 
 **Database Choice Rationale**
 - PostgreSQL via Neon serverless for scalability and Replit integration
 - Drizzle ORM for type-safe database queries and migrations
 - Connection pooling for efficient resource usage
+- Google Sheets for memory game data (accessible to business owner)
 
 **Content Storage Strategy**
 - Contentful CMS for blog posts, hero content, and marketing copy (allows non-technical content updates)
 - PostgreSQL for transactional data (orders, subscriptions)
+- Google Sheets for memory game leaderboard and customer contacts (easy business owner access)
 - File system for haircut gallery images organized by category folders
 - Static assets in `/public` directory for images, videos, logos
 
@@ -101,6 +108,12 @@ Preferred communication style: Simple, everyday language.
 - System prompt configured for barbershop-specific knowledge
 - Environment variable: `OPENAI_API_KEY`
 - Dynamic client initialization to allow runtime API key updates
+
+**Google Sheets Integration**
+- Connected via Replit's Google Sheets connector for OAuth authentication
+- Leaderboard spreadsheet: "memory match leaderboard" (auto-created if missing)
+- Contacts spreadsheet: "barber shop Contacts" (must exist, no auto-creation)
+- Weekly leaderboard filtering (Monday reset) with cumulative data persistence
 
 **Third-Party Services**
 - Setmore booking system (external link integration)
