@@ -1031,11 +1031,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get weekly leaderboard (resets every Monday)
   app.get(`${apiPrefix}/memory-game/scores`, async (req, res) => {
     try {
-      // Get weekly scores from Google Sheets (primary source)
-      const weeklyScores = await googleSheets.getWeeklyLeaderboard();
+      // Get monthly scores from Google Sheets (cumulative, not reset weekly)
+      const monthlyScores = await googleSheets.getWeeklyLeaderboard();
+      
+      // Get week info for display
+      const weekInfo = googleSheets.getWeekOfMonthInfo();
       
       // Sort by moves (lower is better) and assign sequential ranks
-      const sortedScores = [...weeklyScores].sort((a, b) => a.score - b.score);
+      const sortedScores = [...monthlyScores].sort((a, b) => a.score - b.score);
       
       // Transform to match expected format with normalized sequential ranks
       const formattedScores = sortedScores.map((score, index) => ({
@@ -1049,11 +1052,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         createdAt: score.date,
       }));
 
-      return res.status(200).json(formattedScores);
+      return res.status(200).json({
+        scores: formattedScores,
+        weekInfo: {
+          currentWeek: weekInfo.currentWeek,
+          totalWeeks: weekInfo.totalWeeks,
+          monthName: weekInfo.monthName,
+        }
+      });
     } catch (error) {
       console.error('Error fetching game scores from Google Sheets:', error);
       // Return empty array if Google Sheets fails - no database fallback needed
-      return res.status(200).json([]);
+      return res.status(200).json({ scores: [], weekInfo: null });
     }
   });
 

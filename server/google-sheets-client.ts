@@ -329,7 +329,75 @@ export async function addContactIfNotDuplicate(
   }
 }
 
-// Get weekly leaderboard scores (scores from current week, Monday to Sunday)
+// Helper function to get current week of month info (based on Monday weeks)
+export function getWeekOfMonthInfo(): { currentWeek: number; totalWeeks: number; monthName: string } {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  
+  // Get month name
+  const monthName = now.toLocaleDateString('en-US', { month: 'long' });
+  
+  // Get the first day of the month
+  const firstOfMonth = new Date(year, month, 1);
+  firstOfMonth.setHours(0, 0, 0, 0);
+  
+  // Get the last day of the month
+  const lastOfMonth = new Date(year, month + 1, 0);
+  lastOfMonth.setHours(23, 59, 59, 999);
+  
+  // Find the first Monday of the month (or the Monday before if month starts mid-week)
+  const firstDayOfWeek = firstOfMonth.getDay(); // 0 = Sunday, 1 = Monday, etc.
+  
+  // Calculate start of first week (the Monday that contains or precedes the 1st)
+  // If month starts on Monday (1), that's the first week
+  // Otherwise, find the Monday of the week containing the 1st
+  const firstMondayOffset = firstDayOfWeek === 0 ? -6 : 1 - firstDayOfWeek;
+  const firstMonday = new Date(firstOfMonth);
+  firstMonday.setDate(firstOfMonth.getDate() + firstMondayOffset);
+  
+  // Count total weeks in the month
+  // A week "belongs" to this month if any part of it falls in the month
+  let totalWeeks = 0;
+  const tempDate = new Date(firstOfMonth);
+  
+  // Start from the first of the month and count unique weeks
+  while (tempDate <= lastOfMonth) {
+    totalWeeks++;
+    // Move to next Monday
+    const dayOfWeek = tempDate.getDay();
+    const daysUntilNextMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek);
+    tempDate.setDate(tempDate.getDate() + daysUntilNextMonday);
+  }
+  
+  // Calculate which week we're currently in (1-indexed)
+  // Find the Monday of current week
+  const currentDayOfWeek = now.getDay();
+  const mondayOffset = currentDayOfWeek === 0 ? -6 : 1 - currentDayOfWeek;
+  const currentMonday = new Date(now);
+  currentMonday.setDate(now.getDate() + mondayOffset);
+  currentMonday.setHours(0, 0, 0, 0);
+  
+  // Count weeks from start of month to current week
+  let currentWeek = 1;
+  const checkDate = new Date(firstOfMonth);
+  
+  while (checkDate < currentMonday) {
+    const checkDayOfWeek = checkDate.getDay();
+    const daysUntilNextMonday = checkDayOfWeek === 0 ? 1 : (8 - checkDayOfWeek);
+    checkDate.setDate(checkDate.getDate() + daysUntilNextMonday);
+    if (checkDate <= currentMonday && checkDate.getMonth() === month) {
+      currentWeek++;
+    }
+  }
+  
+  // Ensure currentWeek doesn't exceed totalWeeks
+  currentWeek = Math.min(currentWeek, totalWeeks);
+  
+  return { currentWeek, totalWeeks, monthName };
+}
+
+// Get monthly leaderboard scores (cumulative for the whole month)
 export async function getWeeklyLeaderboard(): Promise<Array<{
   rank: number;
   name: string;
@@ -349,19 +417,16 @@ export async function getWeeklyLeaderboard(): Promise<Array<{
 
     const rows = response.data.values || [];
     
-    // Get the start of the current week (Monday)
+    // Get the start of the current month
     const now = new Date();
-    const dayOfWeek = now.getDay();
-    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-    const monday = new Date(now);
-    monday.setDate(now.getDate() + mondayOffset);
-    monday.setHours(0, 0, 0, 0);
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    monthStart.setHours(0, 0, 0, 0);
 
-    // Filter to only this week's scores
-    const weeklyScores = rows
+    // Filter to only this month's scores (cumulative, not reset weekly)
+    const monthlyScores = rows
       .filter(row => {
         const scoreDate = new Date(row[5]);
-        return scoreDate >= monday;
+        return scoreDate >= monthStart;
       })
       .map(row => ({
         rank: parseInt(row[0]),
@@ -373,13 +438,13 @@ export async function getWeeklyLeaderboard(): Promise<Array<{
       }))
       .sort((a, b) => a.score - b.score);
 
-    // Recalculate ranks for weekly view
-    return weeklyScores.map((score, index) => ({
+    // Recalculate ranks for monthly view
+    return monthlyScores.map((score, index) => ({
       ...score,
       rank: index + 1,
     }));
   } catch (error) {
-    console.error('Error getting weekly leaderboard:', error);
+    console.error('Error getting monthly leaderboard:', error);
     return [];
   }
 }

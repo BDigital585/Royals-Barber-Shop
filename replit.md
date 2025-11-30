@@ -113,8 +113,9 @@ Preferred communication style: Simple, everyday language.
 - Connected via Replit's Google Sheets connector for OAuth authentication
 - Leaderboard spreadsheet: "memory match leaderboard" (auto-created if missing)
 - Contacts spreadsheet: "barber shop Contacts" (must exist, no auto-creation)
-- Weekly leaderboard filtering (Monday reset) with cumulative data persistence
-- One play per week per email/phone number
+- Monthly cumulative scores displayed (all scores from current month)
+- One play per week per email/phone number (play limit still enforced weekly)
+- Week indicator shows "Month - Week X of Y" based on Monday-aligned weeks
 
 **Resend Email Integration**
 - Connected via Replit's Resend connector (royalbarber585@gmail.com)

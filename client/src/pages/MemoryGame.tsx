@@ -392,19 +392,19 @@ export default function MemoryGame() {
                   className="aspect-square cursor-pointer"
                 >
                   <div
-                    className={`w-full h-full rounded-xl shadow-lg flex items-center justify-center transition-all duration-300 ${
+                    className={`w-full h-full rounded-2xl shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden ${
                       isFlipped
                         ? 'bg-white border-2 border-gray-200'
-                        : 'bg-gradient-to-br from-gray-800 to-gray-900 hover:scale-105'
+                        : 'bg-gradient-to-br from-gray-800 to-gray-900 hover:scale-105 p-1.5 sm:p-2'
                     }`}
                   >
                     {isFlipped ? (
-                      <Icon className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: card.color }} />
+                      <Icon className="w-10 h-10 sm:w-12 sm:h-12" style={{ color: card.color }} />
                     ) : (
                       <img
                         src="/royals-game-logo.jpg"
                         alt="Royals"
-                        className="w-10 h-10 sm:w-12 sm:h-12 object-contain rounded"
+                        className="w-full h-full object-cover rounded-xl"
                       />
                     )}
                   </div>
