@@ -102,7 +102,7 @@ export default function Leaderboard() {
                       </p>
                     </div>
                   </div>
-                  <Link href="/game">
+                  <Link href="/memory-game">
                     <button className="bg-white/95 hover:bg-white text-amber-600 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2">
                       <Gamepad2 className="w-4 h-4" />
                       Play Now
