@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { Trophy, Mail } from 'lucide-react';
+import { Trophy, Mail, Share2 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MetaTags from '@/components/MetaTags';
@@ -188,6 +188,29 @@ export default function MemoryGame() {
               >
                 View Leaderboard
               </button>
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: 'I Played Royals Barber Shop Memory Match!',
+                      text: `I just completed the Memory Match game in ${moves} moves and earned ${getDealText()} at Royals Barber Shop! Can you beat my score?`,
+                      url: window.location.origin + '/memory-game'
+                    }).catch(err => console.log('Share cancelled'));
+                  } else {
+                    const text = `I just completed the Memory Match game in ${moves} moves and earned ${getDealText()} at Royals Barber Shop! Can you beat my score? Play at ${window.location.origin}/memory-game`;
+                    navigator.clipboard.writeText(text).then(() => {
+                      toast({
+                        title: 'Copied!',
+                        description: 'Share link copied to clipboard'
+                      });
+                    });
+                  }
+                }}
+                className="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
+              >
+                <Share2 className="w-4 h-4" />
+                Share
+              </button>
             </div>
             <p className="text-xs text-gray-400 mt-4">You can only play once per week</p>
           </div>
@@ -232,6 +255,29 @@ export default function MemoryGame() {
                 className="flex-1 bg-amber-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-600 transition-all"
               >
                 View Leaderboard
+              </button>
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: 'I Played Royals Barber Shop Memory Match!',
+                      text: `I just completed the Memory Match game in ${moves} moves and earned ${getDealText()} at Royals Barber Shop! Can you beat my score?`,
+                      url: window.location.origin + '/memory-game'
+                    }).catch(err => console.log('Share cancelled'));
+                  } else {
+                    const text = `I just completed the Memory Match game in ${moves} moves and earned ${getDealText()} at Royals Barber Shop! Can you beat my score? Play at ${window.location.origin}/memory-game`;
+                    navigator.clipboard.writeText(text).then(() => {
+                      toast({
+                        title: 'Copied!',
+                        description: 'Share link copied to clipboard'
+                      });
+                    });
+                  }
+                }}
+                className="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
+              >
+                <Share2 className="w-4 h-4" />
+                Share
               </button>
             </div>
             <p className="text-xs text-gray-400 mt-4">You can only play once per week</p>

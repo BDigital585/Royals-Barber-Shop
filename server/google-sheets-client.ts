@@ -462,18 +462,18 @@ export async function hasPlayedThisWeek(email: string, phone: string | null): Pr
 
     const rows = response.data.values || [];
     
-    // Get the start of the current week (Monday)
+    // Get the start of the current week (Sunday - resets every Sunday)
     const now = new Date();
     const dayOfWeek = now.getDay();
-    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-    const monday = new Date(now);
-    monday.setDate(now.getDate() + mondayOffset);
-    monday.setHours(0, 0, 0, 0);
+    const sundayOffset = dayOfWeek === 0 ? 0 : -dayOfWeek;
+    const sunday = new Date(now);
+    sunday.setDate(now.getDate() + sundayOffset);
+    sunday.setHours(0, 0, 0, 0);
 
     // Check if email or phone exists in this week's scores
     for (const row of rows) {
       const scoreDate = new Date(row[5]);
-      if (scoreDate >= monday) {
+      if (scoreDate >= sunday) {
         const rowEmail = row[2]?.toLowerCase();
         const rowPhone = row[3]?.replace(/\D/g, ''); // Strip non-digits for comparison
         const inputPhone = phone?.replace(/\D/g, '');

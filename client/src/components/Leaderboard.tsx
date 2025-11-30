@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'wouter';
-import { Trophy, Crown, Medal, Gamepad2, Calendar, Gift, Zap } from 'lucide-react';
+import { Trophy, Crown, Medal, Gamepad2, Calendar, Gift, Zap, Share2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 
 type LeaderboardScore = {
@@ -26,12 +27,37 @@ type LeaderboardResponse = {
 };
 
 export default function Leaderboard() {
+  const { toast } = useToast();
   const { data, isLoading } = useQuery<LeaderboardResponse>({
     queryKey: ['/api/memory-game/scores'],
   });
 
   const scores = data?.scores || [];
   const weekInfo = data?.weekInfo;
+
+  const handleShareLeaderboard = () => {
+    const top3 = scores.slice(0, 3);
+    let shareText = '🏆 Royals Barber Shop Memory Match Leaderboard - Top 3:\n\n';
+    top3.forEach((score, index) => {
+      shareText += `${index + 1}. ${score.playerName} - ${score.moves} moves\n`;
+    });
+    shareText += `\nCan you beat these scores? Play now at ${window.location.origin}/memory-game`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: 'Royals Barber Shop - Memory Match Leaderboard',
+        text: shareText,
+        url: window.location.origin
+      }).catch(err => console.log('Share cancelled'));
+    } else {
+      navigator.clipboard.writeText(shareText).then(() => {
+        toast({
+          title: 'Copied!',
+          description: 'Leaderboard copied to clipboard'
+        });
+      });
+    }
+  };
 
   const getReward = (rank: number, score: LeaderboardScore, allScores: LeaderboardScore[]) => {
     if (rank === 1) {
@@ -115,12 +141,23 @@ export default function Leaderboard() {
                         </p>
                       </div>
                     </div>
-                    <Link href="/memory-game">
-                      <button className="bg-white hover:bg-gray-100 text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2 animate-pulse">
-                        <Gamepad2 className="w-4 h-4" />
-                        Play Now
-                      </button>
-                    </Link>
+                    <div className="flex gap-2">
+                      <Link href="/memory-game">
+                        <button className="bg-white hover:bg-gray-100 text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2 animate-pulse">
+                          <Gamepad2 className="w-4 h-4" />
+                          Play Now
+                        </button>
+                      </Link>
+                      {scores.length > 0 && (
+                        <button
+                          onClick={handleShareLeaderboard}
+                          className="bg-white hover:bg-gray-100 text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2"
+                        >
+                          <Share2 className="w-4 h-4" />
+                          Share
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
