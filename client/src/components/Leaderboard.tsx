@@ -143,15 +143,13 @@ export default function Leaderboard() {
                           Play Now
                         </button>
                       </Link>
-                      {scores.length > 0 && (
-                        <button
-                          onClick={handleShareLeaderboard}
-                          className="bg-white hover:bg-gray-100 text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2"
-                        >
-                          <Share2 className="w-4 h-4" />
-                          Share
-                        </button>
-                      )}
+                      <button
+                        onClick={handleShareLeaderboard}
+                        className="bg-white hover:bg-gray-100 text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2"
+                      >
+                        <Share2 className="w-4 h-4" />
+                        Share
+                      </button>
                     </div>
                   </div>
                 </div>
