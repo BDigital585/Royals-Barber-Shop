@@ -380,7 +380,7 @@ export default function MemoryGame() {
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-6">
+          <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-6" style={{ perspective: '1200px' }}>
             {cards.map((card, index) => {
               const Icon = card.icon;
               const isFlipped = isCardFlipped(index);
@@ -389,23 +389,61 @@ export default function MemoryGame() {
                 <div
                   key={card.uniqueId}
                   onClick={() => handleCardClick(index)}
-                  className="aspect-square cursor-pointer"
+                  className="aspect-square cursor-pointer group"
+                  style={{
+                    perspective: '600px',
+                    transformStyle: 'preserve-3d',
+                  }}
                 >
                   <div
-                    className={`w-full h-full rounded-2xl shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden ${
-                      isFlipped
-                        ? 'bg-white border-2 border-gray-200'
-                        : 'bg-gradient-to-br from-gray-800 to-gray-900 hover:scale-105 p-1.5 sm:p-2'
+                    className={`memory-card-container w-full h-full transition-all duration-500 ${
+                      isFlipped ? 'scale-100' : 'hover:scale-110 hover:-translate-y-1'
                     }`}
+                    style={{
+                      transformStyle: 'preserve-3d',
+                      transform: isFlipped ? 'rotateY(0deg)' : 'rotateY(0deg)',
+                    }}
                   >
                     {isFlipped ? (
-                      <Icon className="w-10 h-10 sm:w-12 sm:h-12" style={{ color: card.color }} />
+                      <div className="w-full h-full rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 relative border-2 border-amber-300">
+                        {/* Glare effect */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-30 pointer-events-none"></div>
+                        {/* Inner shadow for depth */}
+                        <div className="absolute inset-0 rounded-2xl shadow-inner opacity-40 pointer-events-none"></div>
+                        {/* Icon container */}
+                        <div className="relative z-10 flex items-center justify-center">
+                          <Icon className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-lg" style={{ color: card.color }} />
+                        </div>
+                        {/* Bottom light accent */}
+                        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/10 to-transparent pointer-events-none rounded-b-2xl"></div>
+                      </div>
                     ) : (
-                      <img
-                        src="/royals-game-logo.jpg"
-                        alt="Royals"
-                        className="w-full h-full object-cover rounded-xl"
-                      />
+                      <div className="w-full h-full rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden relative group/card">
+                        {/* Base gradient background */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700"></div>
+                        
+                        {/* Animated gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-cyan-300/20 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
+                        
+                        {/* Card back image */}
+                        <img
+                          src="/royals-game-logo.jpg"
+                          alt="Royals"
+                          className="w-full h-full object-cover rounded-2xl group-hover/card:scale-110 transition-transform duration-500"
+                        />
+                        
+                        {/* Top glare effect */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/10 to-transparent opacity-60 group-hover/card:opacity-80 transition-opacity duration-500 pointer-events-none rounded-2xl"></div>
+                        
+                        {/* Shimmer effect on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover/card:opacity-100 group-hover/card:animate-shimmer pointer-events-none rounded-2xl"></div>
+                        
+                        {/* Corner accents */}
+                        <div className="absolute top-1 left-1 w-2 h-2 bg-cyan-300 rounded-full opacity-60 group-hover/card:opacity-100 transition-opacity"></div>
+                        <div className="absolute top-1 right-1 w-2 h-2 bg-purple-300 rounded-full opacity-60 group-hover/card:opacity-100 transition-opacity"></div>
+                        <div className="absolute bottom-1 left-1 w-2 h-2 bg-blue-300 rounded-full opacity-60 group-hover/card:opacity-100 transition-opacity"></div>
+                        <div className="absolute bottom-1 right-1 w-2 h-2 bg-cyan-300 rounded-full opacity-60 group-hover/card:opacity-100 transition-opacity"></div>
+                      </div>
                     )}
                   </div>
                 </div>
