@@ -32,7 +32,7 @@ export default function MemoryGame() {
   const [moves, setMoves] = useState(0);
   const [gameComplete, setGameComplete] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '' });
   const [submitted, setSubmitted] = useState(false);
   const [emailFailed, setEmailFailed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,7 +53,7 @@ export default function MemoryGame() {
     setShowForm(false);
     setSubmitted(false);
     setEmailFailed(false);
-    setFormData({ name: '', email: '', phone: '' });
+    setFormData({ firstName: '', lastName: '', email: '', phone: '' });
   };
 
   const handleCardClick = (index: number) => {
@@ -94,10 +94,10 @@ export default function MemoryGame() {
   };
 
   const handleSubmit = async () => {
-    if (!formData.email) {
+    if (!formData.firstName || !formData.email) {
       toast({
         title: 'Missing Information',
-        description: 'Please fill in your email',
+        description: 'Please fill in your first name and email',
         variant: 'destructive',
       });
       return;
@@ -106,10 +106,11 @@ export default function MemoryGame() {
     setIsSubmitting(true);
 
     try {
+      const playerName = formData.lastName ? `${formData.firstName} ${formData.lastName}` : formData.firstName;
       const response = await apiRequest('/api/memory-game/scores', {
         method: 'POST',
         data: {
-          playerName: formData.name,
+          playerName: playerName,
           email: formData.email,
           phone: formData.phone || null,
           moves: moves,
@@ -177,7 +178,7 @@ export default function MemoryGame() {
             </div>
             <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4 mb-6">
               <p className="text-sm text-green-800">
-                <strong>How to Redeem:</strong> Tell the barber your name <strong>({formData.name})</strong> and that you played the memory game. They'll check the leaderboard!
+                <strong>How to Redeem:</strong> Tell the barber your name <strong>({formData.firstName})</strong> and that you played the memory game. They'll check the leaderboard!
               </p>
             </div>
             <div className="flex gap-3">
@@ -267,14 +268,26 @@ export default function MemoryGame() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-gray-700 font-medium mb-2">Name</label>
+                <label className="block text-gray-700 font-medium mb-2">First Name *</label>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="firstName"
+                  value={formData.firstName}
                   onChange={handleFormChange}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-amber-500 focus:outline-none"
-                  placeholder="Your name"
+                  placeholder="John"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Last Name (optional)</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleFormChange}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-amber-500 focus:outline-none"
+                  placeholder="Doe"
                 />
                 <p className="text-xs text-gray-500 mt-1">Your name will be displayed on our leaderboard</p>
               </div>
