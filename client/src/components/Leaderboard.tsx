@@ -47,7 +47,7 @@ export default function Leaderboard() {
       navigator.share({
         title: 'Royals Barber Shop - Memory Match Leaderboard',
         text: shareText,
-        url: window.location.origin
+        url: window.location.origin + '/memory-game'
       }).catch(err => console.log('Share cancelled'));
     } else {
       navigator.clipboard.writeText(shareText).then(() => {

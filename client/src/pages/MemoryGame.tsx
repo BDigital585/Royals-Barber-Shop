@@ -226,6 +226,7 @@ export default function MemoryGame() {
         <MetaTags
           title="Deal Claimed! | Royals Barber Shop"
           description="You've earned a discount at Royals Barber Shop!"
+          imageUrl="/memory-game-share.png"
         />
         <Header />
         <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center p-4 pt-20">
@@ -295,6 +296,7 @@ export default function MemoryGame() {
         <MetaTags
           title="Claim Your Deal | Royals Barber Shop"
           description="Enter your info to claim your discount!"
+          imageUrl="/memory-game-share.png"
         />
         <Header />
         <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center p-4 pt-20">
@@ -387,6 +389,7 @@ export default function MemoryGame() {
         <MetaTags
           title="Game Complete! | Royals Barber Shop"
           description="You completed the memory game!"
+          imageUrl="/memory-game-share.png"
         />
         <Header />
         <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center p-4 pt-20">
@@ -415,6 +418,7 @@ export default function MemoryGame() {
       <MetaTags
         title="Memory Match Game | Royals Barber Shop"
         description="Play our memory match game and win discounts on your next haircut!"
+        imageUrl="/memory-game-share.png"
       />
       <Header />
       <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center p-4 pt-20">
