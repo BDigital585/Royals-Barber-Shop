@@ -36,16 +36,11 @@ export default function Leaderboard() {
   const weekInfo = data?.weekInfo;
 
   const handleShareLeaderboard = () => {
-    const top3 = scores.slice(0, 3);
-    let shareText = '🏆 Royals Barber Shop Memory Match Leaderboard - Top 3:\n\n';
-    top3.forEach((score, index) => {
-      shareText += `${index + 1}. ${score.playerName} - ${score.moves} moves\n`;
-    });
-    shareText += `\nCan you beat these scores? Play now at ${window.location.origin}/memory-game`;
+    const shareText = 'Play once a week to earn rewards at Royals Barber Shop Memory Match!';
 
     if (navigator.share) {
       navigator.share({
-        title: 'Royals Barber Shop - Memory Match Leaderboard',
+        title: 'Royals Barber Shop - Memory Match',
         text: shareText,
         url: window.location.origin + '/memory-game'
       }).catch(err => console.log('Share cancelled'));
@@ -53,7 +48,7 @@ export default function Leaderboard() {
       navigator.clipboard.writeText(shareText).then(() => {
         toast({
           title: 'Copied!',
-          description: 'Leaderboard copied to clipboard'
+          description: 'Share text copied to clipboard'
         });
       });
     }
