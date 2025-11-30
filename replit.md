@@ -17,6 +17,7 @@ A mobile-first responsive website for Royals Barbershop in Batavia, NY. The appl
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Contact Information: 317 Ellicott St, Batavia, NY | 585-536-6576
 
 ## System Architecture
 

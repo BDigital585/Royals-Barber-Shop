@@ -90,7 +90,7 @@ export async function sendDiscountEmail(
                 <p>Your Next Haircut!</p>
                 <div class="code">${discountCode}</div>
                 <p><strong>Show this email in person to redeem</strong></p>
-                <p style="color: #dc2626; font-weight: bold;">One-time use only. Expires: ${expiryDate}</p>
+                <p style="color: #dc2626; font-weight: bold;">Use by: ${expiryDate} (Saturday)</p>
               </div>
               
               <p><strong>How to Redeem:</strong></p>
@@ -100,13 +100,16 @@ export async function sendDiscountEmail(
                 <li>Cannot be combined with other offers</li>
               </ul>
               
-              <p>See you soon at Royals Barber Shop!</p>
+              <div style="text-align: center; margin: 30px 0; display: flex; gap: 10px; justify-content: center;">
+                <a href="https://royalsbarbershop.setmore.com" style="background: #f59e0b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Book Now</a>
+                <a href="tel:585-536-6576" style="background: #059669; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Call Now</a>
+              </div>
               
-              <p style="margin-top: 30px;">
-                <strong>Royals Barber Shop</strong><br>
-                Batavia, NY<br>
-                <a href="https://royalsbarbershop.com">royalsbarbershop.com</a>
-              </p>
+              <p><strong>Royals Barber Shop</strong><br>
+              317 Ellicott St<br>
+              Batavia, NY<br>
+              📞 <a href="tel:585-536-6576">585-536-6576</a><br>
+              🌐 <a href="https://royalsbatavia.com">royalsbatavia.com</a></p>
             </div>
             <div class="footer">
               <p>This is an automated email from Royals Barber Shop Memory Match Game.</p>
@@ -177,23 +180,30 @@ export async function sendWinnerEmail(
               </div>
               
               <div class="urgent">
-                <strong>⚠️ IMPORTANT: This offer expires in 5 business days!</strong><br>
+                <strong>⚠️ IMPORTANT: Use your free haircut by Saturday of this week!</strong><br>
                 Expiry Date: <strong>${expiryDate}</strong>
               </div>
               
               <p><strong>How to Redeem:</strong></p>
               <ul>
-                <li>Visit Royals Barber Shop within 5 business days</li>
+                <li>Visit Royals Barber Shop by Saturday of this week</li>
                 <li>Show this email on your phone</li>
                 <li>Enjoy your FREE haircut!</li>
               </ul>
+              
+              <div style="text-align: center; margin: 30px 0; display: flex; gap: 10px; justify-content: center;">
+                <a href="https://royalsbarbershop.setmore.com" style="background: #f59e0b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Book Now</a>
+                <a href="tel:585-536-6576" style="background: #059669; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Call Now</a>
+              </div>
               
               <p>Thank you for playing and being a valued customer!</p>
               
               <p style="margin-top: 30px;">
                 <strong>Royals Barber Shop</strong><br>
+                317 Ellicott St<br>
                 Batavia, NY<br>
-                <a href="https://royalsbarbershop.com">royalsbarbershop.com</a>
+                📞 <a href="tel:585-536-6576">585-536-6576</a><br>
+                🌐 <a href="https://royalsbatavia.com">royalsbatavia.com</a>
               </p>
             </div>
             <div class="footer">
@@ -229,10 +239,11 @@ function generateWinnerCode(email: string): string {
 function getWeekEndDate(): string {
   const now = new Date();
   const dayOfWeek = now.getDay();
-  const daysUntilSunday = dayOfWeek === 0 ? 0 : 7 - dayOfWeek;
-  const sunday = new Date(now);
-  sunday.setDate(now.getDate() + daysUntilSunday);
-  return sunday.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  // Calculate days until Saturday (day 6)
+  const daysUntilSaturday = dayOfWeek === 6 ? 0 : (6 - dayOfWeek + 7) % 7 || 6;
+  const saturday = new Date(now);
+  saturday.setDate(now.getDate() + daysUntilSaturday);
+  return saturday.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 function getBusinessDaysFromNow(days: number): string {

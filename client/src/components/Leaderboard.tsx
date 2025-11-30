@@ -135,7 +135,7 @@ export default function Leaderboard() {
                       </div>
                       <div>
                         <p className="text-blue-200 font-semibold text-sm">Weekly Discount</p>
-                        <p className="text-blue-300/80 text-xs">Play once/week for instant savings</p>
+                        <p className="text-blue-300/80 text-xs">Play once a week to keep your score up!</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 p-3 bg-amber-600/20 rounded-lg border border-amber-500/30">
