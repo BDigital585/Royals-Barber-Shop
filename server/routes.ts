@@ -1048,7 +1048,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: score.email,
         phone: score.phone,
         moves: score.score,
-        discountTier: score.score <= 10 ? 'premium' : 'standard',
+        discountTier: score.score <= 9 ? 'premium' : 'standard',
         createdAt: score.date,
       }));
 
@@ -1107,7 +1107,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Send discount email - this is critical, must succeed
-      const discountAmount = moves <= 10 ? 5 : 2;
+      const discountAmount = moves <= 9 ? 5 : 2;
       let emailSent = false;
       try {
         emailSent = await resendClient.sendDiscountEmail(email, playerName, moves, discountAmount);
@@ -1218,7 +1218,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: score.email,
         phone: score.phone,
         moves: score.score,
-        discountTier: score.score <= 10 ? 'premium' : 'standard',
+        discountTier: score.score <= 9 ? 'premium' : 'standard',
         createdAt: score.date,
       }));
 

@@ -98,6 +98,7 @@ export async function sendDiscountEmail(
                 <li>Show this email on your phone when you visit</li>
                 <li>Valid for one haircut only</li>
                 <li>Cannot be combined with other offers</li>
+                <li><strong>Not valid on Tuesdays</strong> with our $20 haircut promotion</li>
               </ul>
               
               <div style="text-align: center; margin: 30px 0; display: flex; gap: 10px; justify-content: center;">

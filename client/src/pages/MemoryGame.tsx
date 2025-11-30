@@ -459,7 +459,7 @@ export default function MemoryGame() {
                 {/* Inner shimmer effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover/discount:opacity-100 animate-shimmer pointer-events-none"></div>
                 <p className="text-sm font-bold text-white drop-shadow-md relative z-10">
-                  10 Moves or Fewer = $5 Off | 11+ Moves = $2 Off
+                  9 Moves or Fewer = $5 Off | 10+ Moves = $2 Off
                 </p>
               </div>
             </div>
