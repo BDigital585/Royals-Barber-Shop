@@ -60,7 +60,7 @@ function Router() {
           <Route path="/haircut/:category/:image" component={HaircutShare} />
           <Route path="/blog" component={Blog} />
           <Route path="/blog/:slug" component={BlogPost} />
-          <Route path="/game" component={MemoryGame} />
+          <Route path="/memory-game" component={MemoryGame} />
           <Route path="/admin/seo-audit" component={SeoAudit} />
           <Route component={NotFound} />
         </Switch>
