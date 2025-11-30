@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { Scissors, Droplet, SprayCan, Sparkles, Trophy, Mail } from 'lucide-react';
+import { Trophy, Mail } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MetaTags from '@/components/MetaTags';
@@ -9,19 +9,18 @@ import { apiRequest, queryClient } from '@/lib/queryClient';
 
 type CardType = {
   id: number;
-  icon: typeof Scissors;
+  image: string;
   name: string;
-  color: string;
   uniqueId: number;
 };
 
-const barberIcons = [
-  { id: 1, icon: Scissors, name: 'Scissors', color: '#d97706' },
-  { id: 2, icon: Droplet, name: 'Bottle', color: '#1d4ed8' },
-  { id: 3, icon: SprayCan, name: 'Spray', color: '#059669' },
-  { id: 4, icon: Sparkles, name: 'Polish', color: '#dc2626' },
-  { id: 5, icon: Trophy, name: 'Trophy', color: '#7c3aed' },
-  { id: 6, icon: Mail, name: 'Card', color: '#0891b2' },
+const barberImages = [
+  { id: 1, image: '/memory-game/face.png', name: 'Face' },
+  { id: 2, image: '/memory-game/razor.png', name: 'Razor' },
+  { id: 3, image: '/memory-game/scissors.png', name: 'Scissors' },
+  { id: 4, image: '/memory-game/clippers.png', name: 'Clippers' },
+  { id: 5, image: '/memory-game/pole.png', name: 'Pole' },
+  { id: 6, image: '/memory-game/chair.png', name: 'Chair' },
 ];
 
 export default function MemoryGame() {
@@ -43,7 +42,7 @@ export default function MemoryGame() {
   }, []);
 
   const initializeGame = () => {
-    const duplicatedCards: CardType[] = [...barberIcons, ...barberIcons]
+    const duplicatedCards: CardType[] = [...barberImages, ...barberImages]
       .map((card, index) => ({ ...card, uniqueId: index }))
       .sort(() => Math.random() - 0.5);
     setCards(duplicatedCards);
@@ -375,8 +374,8 @@ export default function MemoryGame() {
           {/* Content wrapper */}
           <div className="relative z-10">
             <div className="text-center mb-6">
-              <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2 drop-shadow-lg">✂️ Memory Match ✂️</h1>
-              <p className="text-white/90 mb-6 drop-shadow-md">Match the barber tools to win your deal!</p>
+              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3 drop-shadow-lg tracking-tight">Memory Match</h1>
+              <p className="text-white/90 mb-6 drop-shadow-md text-lg font-medium">Match pairs of barbershop icons to unlock your discount</p>
               
               {/* Stats container with gradient background */}
               <div className="flex justify-center gap-8 text-center mb-4 bg-gradient-to-r from-black/40 to-black/40 rounded-xl p-4 backdrop-blur-sm border border-white/10">
@@ -431,9 +430,13 @@ export default function MemoryGame() {
                         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-30 pointer-events-none"></div>
                         {/* Inner shadow for depth */}
                         <div className="absolute inset-0 rounded-2xl shadow-inner opacity-40 pointer-events-none"></div>
-                        {/* Icon container */}
-                        <div className="relative z-10 flex items-center justify-center">
-                          <Icon className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-lg" style={{ color: card.color }} />
+                        {/* Image container */}
+                        <div className="relative z-10 flex items-center justify-center w-full h-full">
+                          <img
+                            src={card.image}
+                            alt={card.name}
+                            className="w-4/5 h-4/5 object-contain drop-shadow-lg"
+                          />
                         </div>
                         {/* Bottom light accent */}
                         <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/10 to-transparent pointer-events-none rounded-b-2xl"></div>
