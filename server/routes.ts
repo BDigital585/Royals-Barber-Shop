@@ -1003,17 +1003,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Memory Game Routes
+  // Memory Game Routes - Using Google Sheets for leaderboard
+  const googleSheets = await import('./google-sheets-client');
+
+  // Get weekly leaderboard (resets every Monday)
   app.get(`${apiPrefix}/memory-game/scores`, async (req, res) => {
     try {
-      const scores = await db.query.memoryGameScores.findMany({
-        orderBy: (memoryGameScores, { asc }) => [asc(memoryGameScores.moves), asc(memoryGameScores.createdAt)],
-        limit: 50,
-      });
-      return res.status(200).json(scores);
+      // Get weekly scores from Google Sheets
+      const weeklyScores = await googleSheets.getWeeklyLeaderboard();
+      
+      // Transform to match expected format
+      const formattedScores = weeklyScores.map(score => ({
+        id: score.rank,
+        rank: score.rank,
+        playerName: score.name,
+        email: score.email,
+        phone: score.phone,
+        moves: score.score,
+        discountTier: score.score <= 10 ? 'premium' : 'standard',
+        createdAt: score.date,
+      }));
+
+      return res.status(200).json(formattedScores);
     } catch (error) {
-      console.error('Error fetching game scores:', error);
-      return res.status(500).json({ message: 'Failed to fetch scores' });
+      console.error('Error fetching game scores from Google Sheets:', error);
+      // Fallback to database if Google Sheets fails
+      try {
+        const scores = await db.query.memoryGameScores.findMany({
+          orderBy: (memoryGameScores, { asc }) => [asc(memoryGameScores.moves), asc(memoryGameScores.createdAt)],
+          limit: 50,
+        });
+        return res.status(200).json(scores.map((s, i) => ({ ...s, rank: i + 1 })));
+      } catch (dbError) {
+        console.error('Database fallback also failed:', dbError);
+        return res.status(500).json({ message: 'Failed to fetch scores' });
+      }
     }
   });
 
@@ -1025,6 +1049,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Missing required fields' });
       }
 
+      // Save to database (backup)
       const [newScore] = await db.insert(schema.memoryGameScores).values({
         playerName,
         email,
@@ -1033,7 +1058,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         discountTier: discountTier as any,
       }).returning();
 
-      return res.status(201).json(newScore);
+      // Save to Google Sheets leaderboard
+      try {
+        await googleSheets.addScoreToLeaderboard(playerName, email, phone || null, moves);
+        console.log('Score added to Google Sheets leaderboard');
+      } catch (sheetsError) {
+        console.error('Failed to add to Google Sheets leaderboard:', sheetsError);
+        // Continue even if Sheets fails - we have database backup
+      }
+
+      // Add to contacts if not duplicate
+      try {
+        const added = await googleSheets.addContactIfNotDuplicate(playerName, email, phone || null);
+        if (added) {
+          console.log('Contact added to barber shop Contacts sheet');
+        } else {
+          console.log('Contact already exists or sheet not found');
+        }
+      } catch (contactsError) {
+        console.error('Failed to add to contacts:', contactsError);
+        // Continue even if contacts fails
+      }
+
+      return res.status(201).json({ ...newScore, rank: 1 });
     } catch (error) {
       console.error('Error saving game score:', error);
       return res.status(500).json({ message: 'Failed to save score' });

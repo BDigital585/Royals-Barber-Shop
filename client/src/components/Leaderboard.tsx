@@ -1,16 +1,26 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'wouter';
-import { Trophy, Crown, Medal, Gamepad2 } from 'lucide-react';
+import { Trophy, Crown, Medal, Gamepad2, Calendar } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { MemoryGameScore } from '@shared/schema';
+
+type LeaderboardScore = {
+  id: number;
+  rank: number;
+  playerName: string;
+  email: string;
+  phone: string | null;
+  moves: number;
+  discountTier: string;
+  createdAt: string;
+};
 
 export default function Leaderboard() {
-  const { data: scores, isLoading } = useQuery<MemoryGameScore[]>({
+  const { data: scores, isLoading } = useQuery<LeaderboardScore[]>({
     queryKey: ['/api/memory-game/scores'],
   });
 
-  const getReward = (index: number, score: MemoryGameScore, allScores: MemoryGameScore[]) => {
-    if (index === 0) {
+  const getReward = (rank: number, score: LeaderboardScore, allScores: LeaderboardScore[]) => {
+    if (rank === 1) {
       const hasSecondPlace = allScores.length > 1;
       const isTied = hasSecondPlace && allScores[1].moves === score.moves;
       if (isTied) {
@@ -24,11 +34,11 @@ export default function Leaderboard() {
     return null;
   };
 
-  const getRankIcon = (index: number) => {
-    if (index === 0) return <Crown className="w-5 h-5 text-amber-500" />;
-    if (index === 1) return <Medal className="w-5 h-5 text-gray-400" />;
-    if (index === 2) return <Medal className="w-5 h-5 text-amber-700" />;
-    return <span className="w-5 h-5 flex items-center justify-center text-sm font-bold text-gray-500">{index + 1}</span>;
+  const getRankDisplay = (rank: number) => {
+    if (rank === 1) return <Crown className="w-5 h-5 text-amber-500" />;
+    if (rank === 2) return <Medal className="w-5 h-5 text-gray-400" />;
+    if (rank === 3) return <Medal className="w-5 h-5 text-amber-700" />;
+    return null;
   };
 
   return (
@@ -41,8 +51,11 @@ export default function Leaderboard() {
                 <div className="flex items-center gap-3">
                   <Trophy className="w-6 h-6" />
                   <div>
-                    <h2 className="text-lg font-bold">Memory Match Leaderboard</h2>
-                    <p className="text-amber-100 text-sm">Win a FREE haircut!</p>
+                    <h2 className="text-lg font-bold">Weekly Leaderboard</h2>
+                    <p className="text-amber-100 text-sm flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      Resets every Monday - Win a FREE haircut!
+                    </p>
                   </div>
                 </div>
                 <Link href="/game">
@@ -63,17 +76,20 @@ export default function Leaderboard() {
                 </div>
               ) : scores && scores.length > 0 ? (
                 <div className="space-y-2">
-                  {scores.slice(0, 10).map((score, index) => {
-                    const reward = getReward(index, score, scores);
+                  {scores.slice(0, 10).map((score) => {
+                    const rank = score.rank || 1;
+                    const reward = getReward(rank, score, scores);
                     return (
                       <div
                         key={score.id}
                         className={`flex items-center justify-between p-3 rounded-lg ${
-                          index === 0 ? 'bg-amber-50 border border-amber-200' : 'bg-gray-50'
+                          rank === 1 ? 'bg-amber-50 border border-amber-200' : 'bg-gray-50'
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          {getRankIcon(index)}
+                          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-700">
+                            {getRankDisplay(rank) || rank}
+                          </div>
                           <span className="font-medium text-gray-900">{score.playerName}</span>
                         </div>
                         <div className="flex items-center gap-3">
@@ -91,7 +107,7 @@ export default function Leaderboard() {
               ) : (
                 <div className="text-center py-8">
                   <Gamepad2 className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <p className="text-gray-600 mb-2">No scores yet!</p>
+                  <p className="text-gray-600 mb-2">No scores this week!</p>
                   <p className="text-sm text-gray-500">Be the first to play and win a FREE haircut!</p>
                 </div>
               )}
