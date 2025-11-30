@@ -35,6 +35,7 @@ export default function MemoryGame() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [emailFailed, setEmailFailed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -52,6 +53,7 @@ export default function MemoryGame() {
     setGameComplete(false);
     setShowForm(false);
     setSubmitted(false);
+    setEmailFailed(false);
     setFormData({ name: '', email: '', phone: '' });
   };
 
@@ -105,7 +107,7 @@ export default function MemoryGame() {
     setIsSubmitting(true);
 
     try {
-      await apiRequest('/api/memory-game/scores', {
+      const response = await apiRequest('/api/memory-game/scores', {
         method: 'POST',
         data: {
           playerName: formData.name,
@@ -119,15 +121,26 @@ export default function MemoryGame() {
       queryClient.invalidateQueries({ queryKey: ['/api/memory-game/scores'] });
       setSubmitted(true);
       toast({
-        title: 'Score Submitted!',
-        description: 'Check your position on the leaderboard!',
+        title: 'Deal Email Sent!',
+        description: `Check ${formData.email} for your discount code!`,
       });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to submit score. Please try again.',
-        variant: 'destructive',
-      });
+    } catch (error: any) {
+      const errorData = error?.response?.data || error?.data;
+      if (errorData?.alreadyPlayed) {
+        toast({
+          title: 'Already Played This Week',
+          description: 'You can only play once per week. Come back next Monday!',
+          variant: 'destructive',
+        });
+      } else if (errorData?.emailFailed) {
+        setEmailFailed(true);
+      } else {
+        toast({
+          title: 'Error',
+          description: errorData?.message || 'Failed to submit score. Please try again.',
+          variant: 'destructive',
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -136,6 +149,53 @@ export default function MemoryGame() {
   const isCardFlipped = (index: number) => {
     return flipped.includes(index) || matched.includes(cards[index].id);
   };
+
+  if (emailFailed) {
+    return (
+      <>
+        <MetaTags
+          title="Score Saved! | Royals Barber Shop"
+          description="Your score was saved. Claim your discount in person!"
+        />
+        <Header />
+        <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center p-4 pt-20">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+            <div className="w-20 h-20 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Trophy className="w-12 h-12 text-white" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">Score Saved!</h2>
+            <p className="text-gray-600 mb-2">
+              You earned <span className="font-bold text-amber-600">{getDealText()}</span>
+            </p>
+            <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4 mb-6">
+              <p className="text-sm text-red-800">
+                <strong>Email Issue:</strong> We couldn't send your discount code by email, but your score was saved!
+              </p>
+            </div>
+            <div className="bg-amber-50 border-2 border-amber-200 rounded-lg p-4 mb-6">
+              <p className="font-semibold text-amber-900">Your Score: {moves} moves</p>
+              <p className="text-sm text-amber-700 mt-2">You're on the leaderboard for this month's FREE HAIRCUT!</p>
+            </div>
+            <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4 mb-6">
+              <p className="text-sm text-green-800">
+                <strong>How to Redeem:</strong> Tell the barber your name <strong>({formData.name})</strong> and that you played the memory game. They'll check the leaderboard!
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => navigate('/')}
+                className="flex-1 bg-amber-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-600 transition-all"
+              >
+                View Leaderboard
+              </button>
+            </div>
+            <p className="text-xs text-gray-400 mt-4">You can only play once per week</p>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   if (submitted) {
     return (
@@ -148,24 +208,25 @@ export default function MemoryGame() {
         <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center p-4 pt-20">
           <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
             <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Trophy className="w-12 h-12 text-white" />
+              <Mail className="w-12 h-12 text-white" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">Deal Claimed!</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">Check Your Email!</h2>
+            <p className="text-gray-600 mb-2">
               You earned <span className="font-bold text-amber-600">{getDealText()}</span>
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              We sent your discount code to <strong>{formData.email}</strong>
             </p>
             <div className="bg-amber-50 border-2 border-amber-200 rounded-lg p-4 mb-6">
               <p className="font-semibold text-amber-900">Your Score: {moves} moves</p>
               <p className="text-sm text-amber-700 mt-2">Compete for this month's FREE HAIRCUT!</p>
             </div>
-            <p className="text-gray-500 text-sm mb-6">Show this screen at checkout to redeem your discount!</p>
+            <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4 mb-6">
+              <p className="text-sm text-green-800">
+                <strong>How to Redeem:</strong> Show the email on your phone when you visit the shop. One-time use only!
+              </p>
+            </div>
             <div className="flex gap-3">
-              <button
-                onClick={initializeGame}
-                className="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all"
-              >
-                Play Again
-              </button>
               <button
                 onClick={() => navigate('/')}
                 className="flex-1 bg-amber-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-600 transition-all"
@@ -173,6 +234,7 @@ export default function MemoryGame() {
                 View Leaderboard
               </button>
             </div>
+            <p className="text-xs text-gray-400 mt-4">You can only play once per week</p>
           </div>
         </main>
         <Footer />

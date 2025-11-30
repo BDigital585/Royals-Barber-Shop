@@ -383,3 +383,174 @@ export async function getWeeklyLeaderboard(): Promise<Array<{
     return [];
   }
 }
+
+// Check if email or phone has already played this week
+export async function hasPlayedThisWeek(email: string, phone: string | null): Promise<boolean> {
+  try {
+    const sheets = await getUncachableGoogleSheetClient();
+    const spreadsheetId = await getLeaderboardSpreadsheetId();
+
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Leaderboard!A2:F',
+    });
+
+    const rows = response.data.values || [];
+    
+    // Get the start of the current week (Monday)
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + mondayOffset);
+    monday.setHours(0, 0, 0, 0);
+
+    // Check if email or phone exists in this week's scores
+    for (const row of rows) {
+      const scoreDate = new Date(row[5]);
+      if (scoreDate >= monday) {
+        const rowEmail = row[2]?.toLowerCase();
+        const rowPhone = row[3]?.replace(/\D/g, ''); // Strip non-digits for comparison
+        const inputPhone = phone?.replace(/\D/g, '');
+        
+        if (rowEmail === email.toLowerCase()) {
+          return true;
+        }
+        if (inputPhone && rowPhone && rowPhone === inputPhone) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  } catch (error) {
+    console.error('Error checking weekly play limit:', error);
+    return false; // Allow play if check fails
+  }
+}
+
+// Get all scores for the current month (for monthly winner determination)
+export async function getMonthlyLeaderboard(): Promise<Array<{
+  rank: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  score: number;
+  date: string;
+}>> {
+  try {
+    const sheets = await getUncachableGoogleSheetClient();
+    const spreadsheetId = await getLeaderboardSpreadsheetId();
+
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Leaderboard!A2:F',
+    });
+
+    const rows = response.data.values || [];
+    
+    // Get the start of the current month
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    monthStart.setHours(0, 0, 0, 0);
+
+    // Filter to only this month's scores
+    const monthlyScores = rows
+      .filter(row => {
+        const scoreDate = new Date(row[5]);
+        return scoreDate >= monthStart;
+      })
+      .map(row => ({
+        rank: parseInt(row[0]),
+        name: row[1],
+        email: row[2],
+        phone: row[3] || null,
+        score: parseInt(row[4]),
+        date: row[5],
+      }))
+      .sort((a, b) => a.score - b.score);
+
+    // Recalculate ranks for monthly view
+    return monthlyScores.map((score, index) => ({
+      ...score,
+      rank: index + 1,
+    }));
+  } catch (error) {
+    console.error('Error getting monthly leaderboard:', error);
+    return [];
+  }
+}
+
+// Get the monthly winner (lowest score this month)
+export async function getMonthlyWinner(): Promise<{
+  name: string;
+  email: string;
+  phone: string | null;
+  score: number;
+  date: string;
+} | null> {
+  const monthlyScores = await getMonthlyLeaderboard();
+  if (monthlyScores.length === 0) return null;
+  
+  return monthlyScores[0]; // First place (lowest moves)
+}
+
+// Clear all scores from the leaderboard (monthly reset)
+export async function clearLeaderboard(): Promise<boolean> {
+  try {
+    const sheets = await getUncachableGoogleSheetClient();
+    const spreadsheetId = await getLeaderboardSpreadsheetId();
+
+    // Clear all data except headers
+    await sheets.spreadsheets.values.clear({
+      spreadsheetId,
+      range: 'Leaderboard!A2:F',
+    });
+
+    console.log('Leaderboard cleared successfully');
+    return true;
+  } catch (error) {
+    console.error('Error clearing leaderboard:', error);
+    return false;
+  }
+}
+
+// Get all scores (no date filter) for archiving
+export async function getAllScores(): Promise<Array<{
+  rank: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  score: number;
+  date: string;
+}>> {
+  try {
+    const sheets = await getUncachableGoogleSheetClient();
+    const spreadsheetId = await getLeaderboardSpreadsheetId();
+
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Leaderboard!A2:F',
+    });
+
+    const rows = response.data.values || [];
+    
+    return rows
+      .map(row => ({
+        rank: parseInt(row[0]),
+        name: row[1],
+        email: row[2],
+        phone: row[3] || null,
+        score: parseInt(row[4]),
+        date: row[5],
+      }))
+      .sort((a, b) => a.score - b.score)
+      .map((score, index) => ({
+        ...score,
+        rank: index + 1,
+      }));
+  } catch (error) {
+    console.error('Error getting all scores:', error);
+    return [];
+  }
+}

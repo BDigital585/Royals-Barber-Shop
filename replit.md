@@ -114,6 +114,21 @@ Preferred communication style: Simple, everyday language.
 - Leaderboard spreadsheet: "memory match leaderboard" (auto-created if missing)
 - Contacts spreadsheet: "barber shop Contacts" (must exist, no auto-creation)
 - Weekly leaderboard filtering (Monday reset) with cumulative data persistence
+- One play per week per email/phone number
+
+**Resend Email Integration**
+- Connected via Replit's Resend connector (royalbarber585@gmail.com)
+- Discount emails: Sent after game completion with discount code ($2 or $5 off)
+- Winner emails: Sent on 28th of each month for free haircut (expires in 5 business days)
+- Email templates include: discount code, expiry date, redemption instructions
+- One-time use codes generated with unique identifiers
+
+**Memory Game Rules**
+- 10 or fewer moves = $5 off haircut (premium tier)
+- 11+ moves = $2 off haircut (standard tier)
+- Monthly winner = FREE haircut
+- One play per week per email/phone number
+- Monthly winner selected on 28th, leaderboard resets after winner email sent
 
 **Third-Party Services**
 - Setmore booking system (external link integration)

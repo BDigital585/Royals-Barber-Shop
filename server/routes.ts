@@ -1005,6 +1005,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Memory Game Routes - Using Google Sheets as primary data source
   const googleSheets = await import('./google-sheets-client');
+  const resendClient = await import('./resend-client');
+
+  // Check if email/phone has already played this week
+  app.post(`${apiPrefix}/memory-game/check-eligibility`, async (req, res) => {
+    try {
+      const { email, phone } = req.body;
+
+      if (!email) {
+        return res.status(400).json({ message: 'Email is required' });
+      }
+
+      const hasPlayed = await googleSheets.hasPlayedThisWeek(email, phone || null);
+      
+      return res.status(200).json({ 
+        eligible: !hasPlayed,
+        message: hasPlayed ? 'You have already played this week. Come back next Monday!' : 'You are eligible to play!'
+      });
+    } catch (error) {
+      console.error('Error checking eligibility:', error);
+      return res.status(200).json({ eligible: true, message: 'Unable to verify - you may play' });
+    }
+  });
 
   // Get weekly leaderboard (resets every Monday)
   app.get(`${apiPrefix}/memory-game/scores`, async (req, res) => {
@@ -1043,6 +1065,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Missing required fields' });
       }
 
+      // Check if already played this week
+      const hasPlayed = await googleSheets.hasPlayedThisWeek(email, phone || null);
+      if (hasPlayed) {
+        return res.status(400).json({ 
+          message: 'You have already played this week. Come back next Monday!',
+          alreadyPlayed: true
+        });
+      }
+
       // Save to Google Sheets leaderboard (primary data source)
       try {
         await googleSheets.addScoreToLeaderboard(playerName, email, phone || null, moves);
@@ -1065,6 +1096,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Continue even if contacts fails - leaderboard was saved
       }
 
+      // Send discount email - this is critical, must succeed
+      const discountAmount = moves <= 10 ? 5 : 2;
+      let emailSent = false;
+      try {
+        emailSent = await resendClient.sendDiscountEmail(email, playerName, moves, discountAmount);
+        if (emailSent) {
+          console.log(`Discount email sent to ${email} for $${discountAmount} off`);
+        } else {
+          console.error(`Failed to send discount email to ${email}`);
+        }
+      } catch (emailError) {
+        console.error('Failed to send discount email:', emailError);
+        emailSent = false;
+      }
+
+      // If email failed, return error so user knows
+      if (!emailSent) {
+        return res.status(500).json({ 
+          message: 'Your score was saved but we could not send your discount email. Please contact the shop to claim your discount.',
+          emailFailed: true,
+          playerName,
+          moves,
+          discountAmount
+        });
+      }
+
       // Return success response with the saved data
       const response = {
         success: true,
@@ -1073,6 +1130,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         phone: phone || null,
         moves,
         discountTier,
+        discountAmount,
         createdAt: new Date().toISOString(),
       };
 
@@ -1080,6 +1138,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error saving game score:', error);
       return res.status(500).json({ message: 'Failed to save score' });
+    }
+  });
+
+  // Monthly winner endpoint - call on the 28th of each month
+  app.post(`${apiPrefix}/memory-game/monthly-winner`, async (req, res) => {
+    try {
+      // Get the monthly winner
+      const winner = await googleSheets.getMonthlyWinner();
+      
+      if (!winner) {
+        return res.status(200).json({ 
+          success: false, 
+          message: 'No scores this month' 
+        });
+      }
+
+      // Get current month name
+      const monthName = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+      // Send winner email
+      try {
+        await resendClient.sendWinnerEmail(winner.email, winner.name, winner.score, monthName);
+        console.log(`Winner email sent to ${winner.email}`);
+      } catch (emailError) {
+        console.error('Failed to send winner email:', emailError);
+        return res.status(500).json({ 
+          success: false, 
+          message: 'Failed to send winner email',
+          winner 
+        });
+      }
+
+      // Clear the leaderboard for the new month
+      try {
+        await googleSheets.clearLeaderboard();
+        console.log('Leaderboard cleared for new month');
+      } catch (clearError) {
+        console.error('Failed to clear leaderboard:', clearError);
+        // Winner email was sent, so partially successful
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: `Winner email sent to ${winner.name}`,
+        winner: {
+          name: winner.name,
+          email: winner.email,
+          score: winner.score,
+        },
+        month: monthName,
+        leaderboardCleared: true,
+      });
+    } catch (error) {
+      console.error('Error processing monthly winner:', error);
+      return res.status(500).json({ message: 'Failed to process monthly winner' });
+    }
+  });
+
+  // Get monthly leaderboard (for admin viewing)
+  app.get(`${apiPrefix}/memory-game/monthly-scores`, async (req, res) => {
+    try {
+      const monthlyScores = await googleSheets.getMonthlyLeaderboard();
+      
+      const formattedScores = monthlyScores.map((score, index) => ({
+        id: index + 1,
+        rank: index + 1,
+        playerName: score.name,
+        email: score.email,
+        phone: score.phone,
+        moves: score.score,
+        discountTier: score.score <= 10 ? 'premium' : 'standard',
+        createdAt: score.date,
+      }));
+
+      return res.status(200).json(formattedScores);
+    } catch (error) {
+      console.error('Error fetching monthly scores:', error);
+      return res.status(200).json([]);
     }
   });
 
