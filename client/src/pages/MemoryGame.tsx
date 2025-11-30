@@ -359,26 +359,47 @@ export default function MemoryGame() {
       />
       <Header />
       <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center p-4 pt-20">
-        <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 max-w-lg w-full">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">✂️ Memory Match ✂️</h1>
-            <p className="text-gray-600 mb-4">Match the barber tools to win your deal!</p>
-            <div className="flex justify-center gap-8 text-center">
-              <div>
-                <p className="text-3xl font-bold text-amber-600">{moves}</p>
-                <p className="text-sm text-gray-600">Moves</p>
+        <div className="relative rounded-3xl shadow-2xl p-6 sm:p-8 max-w-lg w-full overflow-hidden group">
+          {/* Base gradient background - royal blue with black accents */}
+          <div className="absolute inset-0 bg-gradient-to-br from-royalblue via-black to-gray-900"></div>
+          
+          {/* Shimmer overlay effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 animate-shimmer pointer-events-none"></div>
+          
+          {/* Top accent line */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent"></div>
+          
+          {/* Bottom accent line */}
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent"></div>
+          
+          {/* Content wrapper */}
+          <div className="relative z-10">
+            <div className="text-center mb-6">
+              <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2 drop-shadow-lg">✂️ Memory Match ✂️</h1>
+              <p className="text-white/90 mb-6 drop-shadow-md">Match the barber tools to win your deal!</p>
+              
+              {/* Stats container with gradient background */}
+              <div className="flex justify-center gap-8 text-center mb-4 bg-gradient-to-r from-black/40 to-black/40 rounded-xl p-4 backdrop-blur-sm border border-white/10">
+                <div>
+                  <p className="text-3xl font-bold text-red-500 drop-shadow-md">{moves}</p>
+                  <p className="text-sm text-white/80">Moves</p>
+                </div>
+                <div className="w-px bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+                <div>
+                  <p className="text-3xl font-bold text-blue-300 drop-shadow-md">{matched.length}/6</p>
+                  <p className="text-sm text-white/80">Matched</p>
+                </div>
               </div>
-              <div>
-                <p className="text-3xl font-bold text-green-600">{matched.length}/6</p>
-                <p className="text-sm text-gray-600">Matched</p>
+              
+              {/* Discount tier box - premium styling */}
+              <div className="mt-4 p-4 bg-gradient-to-r from-red-600 to-red-700 border-2 border-red-400 rounded-xl shadow-lg relative overflow-hidden group/discount">
+                {/* Inner shimmer effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover/discount:opacity-100 animate-shimmer pointer-events-none"></div>
+                <p className="text-sm font-bold text-white drop-shadow-md relative z-10">
+                  ≤10 moves = $5 Off | 11+ moves = $2 Off
+                </p>
               </div>
             </div>
-            <div className="mt-4 p-3 bg-amber-50 border-2 border-amber-200 rounded-lg">
-              <p className="text-sm font-semibold text-amber-800">
-                ≤10 moves = $5 Off | 11+ moves = $2 Off
-              </p>
-            </div>
-          </div>
 
           <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-6" style={{ perspective: '1200px' }}>
             {cards.map((card, index) => {
@@ -419,11 +440,11 @@ export default function MemoryGame() {
                       </div>
                     ) : (
                       <div className="w-full h-full rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden relative group/card">
-                        {/* Base gradient background */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700"></div>
+                        {/* Base gradient background - royal blue with black */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-royalblue via-blue-900 to-black"></div>
                         
-                        {/* Animated gradient overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-cyan-300/20 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
+                        {/* Animated red gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-red-600/15 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
                         
                         {/* Card back image */}
                         <img
@@ -438,11 +459,11 @@ export default function MemoryGame() {
                         {/* Shimmer effect on hover */}
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover/card:opacity-100 group-hover/card:animate-shimmer pointer-events-none rounded-2xl"></div>
                         
-                        {/* Corner accents */}
-                        <div className="absolute top-1 left-1 w-2 h-2 bg-cyan-300 rounded-full opacity-60 group-hover/card:opacity-100 transition-opacity"></div>
-                        <div className="absolute top-1 right-1 w-2 h-2 bg-purple-300 rounded-full opacity-60 group-hover/card:opacity-100 transition-opacity"></div>
-                        <div className="absolute bottom-1 left-1 w-2 h-2 bg-blue-300 rounded-full opacity-60 group-hover/card:opacity-100 transition-opacity"></div>
-                        <div className="absolute bottom-1 right-1 w-2 h-2 bg-cyan-300 rounded-full opacity-60 group-hover/card:opacity-100 transition-opacity"></div>
+                        {/* Corner accents - on brand red and white */}
+                        <div className="absolute top-1 left-1 w-2 h-2 bg-red-600 rounded-full opacity-60 group-hover/card:opacity-100 transition-opacity shadow-lg"></div>
+                        <div className="absolute top-1 right-1 w-2 h-2 bg-white rounded-full opacity-60 group-hover/card:opacity-100 transition-opacity shadow-lg"></div>
+                        <div className="absolute bottom-1 left-1 w-2 h-2 bg-white rounded-full opacity-60 group-hover/card:opacity-100 transition-opacity shadow-lg"></div>
+                        <div className="absolute bottom-1 right-1 w-2 h-2 bg-red-600 rounded-full opacity-60 group-hover/card:opacity-100 transition-opacity shadow-lg"></div>
                       </div>
                     )}
                   </div>
@@ -451,13 +472,14 @@ export default function MemoryGame() {
             })}
           </div>
 
-          <div className="text-center">
-            <button
-              onClick={initializeGame}
-              className="text-gray-600 hover:text-gray-800 underline text-sm"
-            >
-              Reset Game
-            </button>
+            <div className="text-center">
+              <button
+                onClick={initializeGame}
+                className="text-white/70 hover:text-white underline text-sm transition-colors"
+              >
+                Reset Game
+              </button>
+            </div>
           </div>
         </div>
       </main>
