@@ -116,7 +116,7 @@ export default function Leaderboard() {
                       </div>
                     </div>
                     <Link href="/memory-game">
-                      <button className="bg-white hover:bg-gray-100 text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2">
+                      <button className="bg-white hover:bg-gray-100 text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2 animate-pulse">
                         <Gamepad2 className="w-4 h-4" />
                         Play Now
                       </button>
@@ -160,7 +160,7 @@ export default function Leaderboard() {
                     ))}
                   </div>
                 ) : scores && scores.length > 0 ? (
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 max-h-80 overflow-y-auto pr-2 leaderboard-scroll">
                     {scores.slice(0, 10).map((score) => {
                       const rank = score.rank || 1;
                       const reward = getReward(rank, score, scores);
@@ -215,26 +215,6 @@ export default function Leaderboard() {
                   </div>
                 )}
 
-                {/* Legend - Weekly Discounts */}
-                <div className="mt-6 pt-5 border-t border-white/10">
-                  <p className="text-center text-white font-semibold text-sm mb-3">Weekly Discount Tiers</p>
-                  <div className="flex flex-col sm:flex-row justify-center items-center gap-3 text-sm">
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600/20 rounded-xl border border-emerald-500/30">
-                      <span className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 shadow-sm shadow-emerald-500/50"></span>
-                      <span className="text-emerald-300 font-semibold">≤10 moves = $5 off</span>
-                    </div>
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-amber-600/20 rounded-xl border border-amber-500/30">
-                      <span className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 shadow-sm shadow-amber-500/50"></span>
-                      <span className="text-amber-300 font-semibold">11+ moves = $2 off</span>
-                    </div>
-                  </div>
-                  <p className="text-center text-gray-400 text-xs mt-4">
-                    Play once per week to earn your discount via email
-                  </p>
-                  <p className="text-center text-amber-400 text-xs mt-2 font-medium">
-                    Monthly winner announced on the 28th - FREE haircut prize!
-                  </p>
-                </div>
               </div>
             </div>
           </div>

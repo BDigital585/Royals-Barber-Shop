@@ -424,21 +424,15 @@ export default function MemoryGame() {
                     }}
                   >
                     {isFlipped ? (
-                      <div className="w-full h-full rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 relative border-2 border-amber-300">
-                        {/* Glare effect */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-30 pointer-events-none"></div>
-                        {/* Inner shadow for depth */}
-                        <div className="absolute inset-0 rounded-2xl shadow-inner opacity-40 pointer-events-none"></div>
-                        {/* Image container */}
-                        <div className="relative z-10 flex items-center justify-center w-full h-full">
-                          <img
-                            src={card.image}
-                            alt={card.name}
-                            className="w-4/5 h-4/5 object-contain drop-shadow-lg"
-                          />
-                        </div>
-                        {/* Bottom light accent */}
-                        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/10 to-transparent pointer-events-none rounded-b-2xl"></div>
+                      <div className="w-full h-full rounded-2xl shadow-2xl overflow-hidden relative">
+                        {/* Full-bleed image */}
+                        <img
+                          src={card.image}
+                          alt={card.name}
+                          className="w-full h-full object-cover"
+                        />
+                        {/* Subtle glare overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none"></div>
                       </div>
                     ) : (
                       <div className="w-full h-full rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden relative group/card">
