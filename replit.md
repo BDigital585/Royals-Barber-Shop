@@ -2,9 +2,9 @@
 
 ## Overview
 
-A mobile-first responsive website for Royals Barbershop in Batavia, NY. The application serves as a complete digital presence for the barbershop, featuring content management, haircut galleries, blog functionality, and business services including screen advertising sales.
+A mobile-first responsive website for Royals Barbershop in Batavia, NY. The application serves as a complete digital presence for the barbershop, featuring content management, haircut galleries, blog functionality, and an interactive memory matching game with discount rewards.
 
-**Primary Purpose:** Provide customers with service information, appointment booking, haircut galleries, and enable business-to-business screen advertising sales.
+**Primary Purpose:** Provide customers with service information, appointment booking, haircut galleries, and engage customers with a fun memory game that rewards discounts on haircuts.
 
 **Tech Stack:**
 - Frontend: React with TypeScript, Vite build system
@@ -35,8 +35,8 @@ Preferred communication style: Simple, everyday language.
 
 **Component Organization**
 - Layout components: Header, Footer, MobileMenu
-- Page components: Home, BrowseHaircuts, HaircutShare, Blog, BlogPost, ScreenAdvertising
-- Feature components: ChatBot, ImageCarousel, LedTicker, ShareButton
+- Page components: Home, BrowseHaircuts, HaircutShare, Blog, BlogPost, MemoryGame
+- Feature components: ChatBot, ImageCarousel, LedTicker, ShareButton, Leaderboard
 - UI components from shadcn/ui library for consistent design system
 
 **Performance Optimizations**
@@ -58,7 +58,7 @@ Preferred communication style: Simple, everyday language.
 - `/api/chat` - OpenAI chatbot integration
 - `/api/shop-images` - Server-side file system scanning for gallery images
 - `/api/newsletter/subscribe` - Newsletter subscription handling
-- `/api/screen-advertising/*` - Screen advertising service and order management
+- `/api/memory-game/scores` - Memory game leaderboard (GET/POST)
 
 **Middleware Stack**
 - JSON body parsing
@@ -73,8 +73,8 @@ Preferred communication style: Simple, everyday language.
 - `galleryItems` - Haircut gallery images with categories
 - `blogPosts` - Blog content (supplementary to Contentful)
 - `services` - Service offerings and pricing
-- `newsletterSubscribers` - Email subscription list
-- `screenAdvertisingOrders` - Screen advertising purchase records
+- `subscribers` - Newsletter email subscription list
+- `memoryGameScores` - Memory game leaderboard with player names, moves, and discount tiers
 
 **Database Choice Rationale**
 - PostgreSQL via Neon serverless for scalability and Replit integration
@@ -101,13 +101,6 @@ Preferred communication style: Simple, everyday language.
 - System prompt configured for barbershop-specific knowledge
 - Environment variable: `OPENAI_API_KEY`
 - Dynamic client initialization to allow runtime API key updates
-
-**Stripe Payment Processing**
-- Checkout Sessions for screen advertising package sales
-- Product catalog: three tier pricing ($50, $70, $100/year)
-- File upload handling for customer-provided images (Multer middleware)
-- Webhook support for payment confirmation (scaffolded)
-- Environment variable: `STRIPE_SECRET_KEY`
 
 **Third-Party Services**
 - Setmore booking system (external link integration)

@@ -98,42 +98,6 @@ export const servicesSelectSchema = createSelectSchema(services);
 export type Service = typeof services.$inferSelect;
 export type InsertService = z.infer<typeof servicesInsertSchema>;
 
-// Screen advertising enums
-export const packageTypeEnum = pgEnum("package_type", ["bring-your-own", "image-package", "video-package"]);
-export const orderStatusEnum = pgEnum("order_status", ["pending", "paid", "completed", "cancelled"]);
-
-// Screen advertising orders
-export const screenAdvertisingOrders = pgTable("screen_advertising_orders", {
-  id: serial("id").primaryKey(),
-  customerName: text("customer_name").notNull(),
-  customerEmail: text("customer_email").notNull(),
-  businessName: text("business_name").notNull(),
-  packageType: packageTypeEnum("package_type").notNull(),
-  amount: integer("amount").notNull(), // 50, 70, or 100
-  stripePaymentIntentId: text("stripe_payment_intent_id"),
-  stripeSessionId: text("stripe_session_id").unique(),
-  uploadedFileStorageKey: text("uploaded_file_storage_key"), // S3/storage key for bring-your-own package
-  uploadedFileName: text("uploaded_file_name"), // Original filename
-  status: orderStatusEnum("status").notNull().default("pending"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const screenAdvertisingOrdersInsertSchema = createInsertSchema(screenAdvertisingOrders, {
-  customerName: (schema) => schema.min(2, "Name must be at least 2 characters"),
-  customerEmail: (schema) => schema.email("Must provide a valid email"),
-  businessName: (schema) => schema.min(2, "Business name must be at least 2 characters"),
-  amount: (schema) => schema.min(50, "Amount must be at least 50").max(100, "Amount must not exceed 100"),
-}).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const screenAdvertisingOrdersSelectSchema = createSelectSchema(screenAdvertisingOrders);
-export type ScreenAdvertisingOrder = typeof screenAdvertisingOrders.$inferSelect;
-export type InsertScreenAdvertisingOrder = z.infer<typeof screenAdvertisingOrdersInsertSchema>;
-
 // Memory game scores for leaderboard
 export const discountTierEnum = pgEnum("discount_tier", ["premium", "standard"]);
 
