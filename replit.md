@@ -114,23 +114,29 @@ Contact Information: 317 Ellicott St, Batavia, NY | 585-536-6576
 - Connected via Replit's Google Sheets connector for OAuth authentication
 - Leaderboard spreadsheet: "memory match leaderboard" (auto-created if missing)
 - Contacts spreadsheet: "barber shop Contacts" (must exist, no auto-creation)
-- Monthly cumulative scores displayed (all scores from current month)
-- One play per week per email/phone number (play limit still enforced weekly)
-- Week indicator shows "Month - Week X of Y" based on Monday-aligned weeks
+- 4-week cycle cumulative scores displayed (scores add up over the cycle)
+- One play per week per email/phone number (play limit enforced weekly within each cycle)
+- Cycle indicator shows "Cycle X - Week Y of 4 • Z days left"
 
 **Resend Email Integration**
 - Connected via Replit's Resend connector (royalbarber585@gmail.com)
 - Discount emails: Sent after game completion with discount code ($2 or $5 off)
-- Winner emails: Sent on 28th of each month for free haircut (expires in 5 business days)
-- Email templates include: discount code, expiry date, redemption instructions
+- Winner emails: Tiered based on ties (see below)
+- Email templates include: discount code, expiry date, redemption instructions, Tuesday exclusion notice
 - One-time use codes generated with unique identifiers
 
-**Memory Game Rules**
-- 10 or fewer moves = $5 off haircut (premium tier)
-- 11+ moves = $2 off haircut (standard tier)
-- Monthly winner = FREE haircut
+**Memory Game Rules - 4-Week Cycle System (starts December 1, 2025)**
+- 9 or fewer moves = $5 off haircut (premium tier)
+- 10+ moves = $2 off haircut (standard tier)
+- Discounts NOT valid on Tuesdays with $20 haircut promotion
 - One play per week per email/phone number
-- Monthly winner selected on 28th, leaderboard resets after winner email sent
+- Scores are CUMULATIVE: each week's score adds to player's total for the cycle
+- 4-week cycles reset automatically after 28 days
+
+**Cycle Winner Prizes (at end of each 4-week cycle)**
+- 1 winner (sole lowest cumulative score) = FREE haircut
+- 2-way tie for lowest = 50% off haircut for both
+- 3+ way tie for lowest = $10 off haircut for all tied players
 
 **Third-Party Services**
 - Setmore booking system (external link integration)

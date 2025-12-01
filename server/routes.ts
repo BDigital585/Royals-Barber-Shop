@@ -1028,42 +1028,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get weekly leaderboard (resets every Monday)
+  // Get leaderboard with cumulative scores for current 4-week cycle
   app.get(`${apiPrefix}/memory-game/scores`, async (req, res) => {
     try {
-      // Get monthly scores from Google Sheets (cumulative, not reset weekly)
-      const monthlyScores = await googleSheets.getWeeklyLeaderboard();
+      // Get cumulative scores from Google Sheets for current 4-week cycle
+      const cycleScores = await googleSheets.getWeeklyLeaderboard();
       
-      // Get week info for display
-      const weekInfo = googleSheets.getWeekOfMonthInfo();
+      // Get cycle info for display
+      const cycleInfo = googleSheets.getCurrentCycleInfo();
       
-      // Sort by moves (lower is better) and assign sequential ranks
-      const sortedScores = [...monthlyScores].sort((a, b) => a.score - b.score);
-      
-      // Transform to match expected format with normalized sequential ranks
-      const formattedScores = sortedScores.map((score, index) => ({
+      // Transform to match expected format (scores are already sorted and ranked)
+      const formattedScores = cycleScores.map((score, index) => ({
         id: index + 1,
-        rank: index + 1,
+        rank: score.rank,
         playerName: score.name,
         email: score.email,
         phone: score.phone,
-        moves: score.score,
+        moves: score.score, // This is now cumulative score
+        weeksPlayed: score.weeksPlayed,
         discountTier: score.score <= 9 ? 'premium' : 'standard',
-        createdAt: score.date,
+        createdAt: score.lastPlayDate,
       }));
+
+      // Format cycle dates for display
+      const cycleEndDate = cycleInfo.cycleEnd.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric' 
+      });
 
       return res.status(200).json({
         scores: formattedScores,
-        weekInfo: {
-          currentWeek: weekInfo.currentWeek,
-          totalWeeks: weekInfo.totalWeeks,
-          monthName: weekInfo.monthName,
+        cycleInfo: {
+          cycleNumber: cycleInfo.cycleNumber,
+          currentWeek: cycleInfo.currentWeek,
+          totalWeeks: 4,
+          daysRemaining: cycleInfo.daysRemaining,
+          cycleEndDate: cycleEndDate,
         }
       });
     } catch (error) {
       console.error('Error fetching game scores from Google Sheets:', error);
       // Return empty array if Google Sheets fails - no database fallback needed
-      return res.status(200).json({ scores: [], weekInfo: null });
+      return res.status(200).json({ scores: [], cycleInfo: null });
     }
   });
 
@@ -1151,80 +1157,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Monthly winner endpoint - call on the 28th of each month
-  app.post(`${apiPrefix}/memory-game/monthly-winner`, async (req, res) => {
+  // Cycle winner endpoint - call at the end of each 4-week cycle
+  app.post(`${apiPrefix}/memory-game/cycle-winner`, async (req, res) => {
     try {
-      // Get the monthly winner
-      const winner = await googleSheets.getMonthlyWinner();
+      // Get cycle winners with tie handling
+      const result = await googleSheets.getCycleWinners();
+      const cycleInfo = googleSheets.getCurrentCycleInfo();
       
-      if (!winner) {
+      if (result.type === 'no_players') {
         return res.status(200).json({ 
           success: false, 
-          message: 'No scores this month' 
+          message: 'No scores this cycle' 
         });
       }
 
-      // Get current month name
-      const monthName = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      const emailResults: Array<{ email: string; success: boolean }> = [];
 
-      // Send winner email
-      try {
-        await resendClient.sendWinnerEmail(winner.email, winner.name, winner.score, monthName);
-        console.log(`Winner email sent to ${winner.email}`);
-      } catch (emailError) {
-        console.error('Failed to send winner email:', emailError);
-        return res.status(500).json({ 
-          success: false, 
-          message: 'Failed to send winner email',
-          winner 
-        });
-      }
-
-      // Clear the leaderboard for the new month
-      try {
-        await googleSheets.clearLeaderboard();
-        console.log('Leaderboard cleared for new month');
-      } catch (clearError) {
-        console.error('Failed to clear leaderboard:', clearError);
-        // Winner email was sent, so partially successful
+      // Send appropriate emails based on tie type
+      for (const winner of result.winners) {
+        let success = false;
+        try {
+          if (result.type === 'sole_winner') {
+            // Single winner - FREE haircut
+            success = await resendClient.sendWinnerEmail(
+              winner.email, 
+              winner.name, 
+              winner.score, 
+              `Cycle ${cycleInfo.cycleNumber}`
+            );
+          } else if (result.type === 'two_way_tie') {
+            // 2-way tie - 50% off
+            success = await resendClient.sendHalfOffWinnerEmail(
+              winner.email, 
+              winner.name, 
+              winner.score, 
+              cycleInfo.cycleNumber
+            );
+          } else {
+            // 3+ way tie - $10 off
+            success = await resendClient.sendTenDollarsOffWinnerEmail(
+              winner.email, 
+              winner.name, 
+              winner.score, 
+              cycleInfo.cycleNumber,
+              result.winners.length
+            );
+          }
+          console.log(`Winner email sent to ${winner.email} (${result.type})`);
+        } catch (emailError) {
+          console.error(`Failed to send winner email to ${winner.email}:`, emailError);
+        }
+        emailResults.push({ email: winner.email, success });
       }
 
       return res.status(200).json({
         success: true,
-        message: `Winner email sent to ${winner.name}`,
-        winner: {
-          name: winner.name,
-          email: winner.email,
-          score: winner.score,
-        },
-        month: monthName,
-        leaderboardCleared: true,
+        message: `Winner emails processed for ${result.winners.length} player(s)`,
+        winnerType: result.type,
+        lowestScore: result.lowestScore,
+        winners: result.winners.map(w => ({
+          name: w.name,
+          email: w.email,
+          score: w.score,
+          weeksPlayed: w.weeksPlayed,
+        })),
+        emailResults,
+        cycleNumber: cycleInfo.cycleNumber,
       });
     } catch (error) {
-      console.error('Error processing monthly winner:', error);
-      return res.status(500).json({ message: 'Failed to process monthly winner' });
+      console.error('Error processing cycle winner:', error);
+      return res.status(500).json({ message: 'Failed to process cycle winner' });
     }
   });
 
-  // Get monthly leaderboard (for admin viewing)
-  app.get(`${apiPrefix}/memory-game/monthly-scores`, async (req, res) => {
+  // Get cycle leaderboard (for admin viewing)
+  app.get(`${apiPrefix}/memory-game/cycle-scores`, async (req, res) => {
     try {
-      const monthlyScores = await googleSheets.getMonthlyLeaderboard();
+      const cycleScores = await googleSheets.getMonthlyLeaderboard();
       
-      const formattedScores = monthlyScores.map((score, index) => ({
+      const formattedScores = cycleScores.map((score, index) => ({
         id: index + 1,
         rank: index + 1,
         playerName: score.name,
         email: score.email,
         phone: score.phone,
         moves: score.score,
+        weeksPlayed: score.weeksPlayed,
         discountTier: score.score <= 9 ? 'premium' : 'standard',
-        createdAt: score.date,
+        createdAt: score.lastPlayDate,
       }));
 
       return res.status(200).json(formattedScores);
     } catch (error) {
-      console.error('Error fetching monthly scores:', error);
+      console.error('Error fetching cycle scores:', error);
       return res.status(200).json([]);
     }
   });

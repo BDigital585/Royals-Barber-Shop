@@ -224,7 +224,184 @@ export async function sendWinnerEmail(
   }
 }
 
+// Send half-off email for 2-way tie winners
+export async function sendHalfOffWinnerEmail(
+  toEmail: string,
+  playerName: string,
+  moves: number,
+  cycleNumber: number
+): Promise<boolean> {
+  try {
+    const { client, fromEmail } = await getUncachableResendClient();
+    
+    const discountCode = generateTieCode(toEmail, 'HALFOFF');
+    const expiryDate = getWeekEndDate();
+    
+    const result = await client.emails.send({
+      from: `Royals Barber Shop <${fromEmail}>`,
+      to: toEmail,
+      subject: `You Tied for 1st Place - 50% Off Your Next Haircut!`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+            .discount-box { background: white; border: 3px solid #f59e0b; padding: 20px; text-align: center; margin: 20px 0; border-radius: 10px; }
+            .discount-amount { font-size: 48px; font-weight: bold; color: #f59e0b; }
+            .code { background: #1f2937; color: #fbbf24; padding: 15px 30px; border-radius: 5px; font-family: monospace; font-size: 20px; display: inline-block; margin: 10px 0; }
+            .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Congratulations, ${playerName}!</h1>
+              <p>You Tied for 1st Place in Cycle ${cycleNumber}!</p>
+            </div>
+            <div class="content">
+              <p>Amazing work! With a cumulative score of <strong>${moves} moves</strong>, you tied for first place on our Memory Match Leaderboard!</p>
+              
+              <div class="discount-box">
+                <div class="discount-amount">50% OFF</div>
+                <p>Your Next Haircut!</p>
+                <div class="code">${discountCode}</div>
+                <p><strong>Show this email in person to redeem</strong></p>
+                <p style="color: #dc2626; font-weight: bold;">Use by: ${expiryDate} (Saturday)</p>
+              </div>
+              
+              <p><strong>How to Redeem:</strong></p>
+              <ul>
+                <li>Show this email on your phone when you visit</li>
+                <li>Valid for one haircut only</li>
+                <li>Cannot be combined with other offers</li>
+                <li><strong>Not valid on Tuesdays</strong> with our $20 haircut promotion</li>
+              </ul>
+              
+              <div style="text-align: center; margin: 30px 0; display: flex; gap: 10px; justify-content: center;">
+                <a href="https://royalsbarbershop.setmore.com" style="background: #f59e0b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Book Now</a>
+                <a href="tel:585-536-6576" style="background: #059669; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Call Now</a>
+              </div>
+              
+              <p><strong>Royals Barber Shop</strong><br>
+              317 Ellicott St<br>
+              Batavia, NY<br>
+              📞 <a href="tel:585-536-6576">585-536-6576</a><br>
+              🌐 <a href="https://royalsbatavia.com">royalsbatavia.com</a></p>
+            </div>
+            <div class="footer">
+              <p>This is an automated email from Royals Barber Shop Memory Match Game.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    });
+    
+    console.log('Half-off winner email sent:', result);
+    return true;
+  } catch (error) {
+    console.error('Failed to send half-off winner email:', error);
+    return false;
+  }
+}
+
+// Send $10 off email for 3+ way tie winners
+export async function sendTenDollarsOffWinnerEmail(
+  toEmail: string,
+  playerName: string,
+  moves: number,
+  cycleNumber: number,
+  numberOfTiedPlayers: number
+): Promise<boolean> {
+  try {
+    const { client, fromEmail } = await getUncachableResendClient();
+    
+    const discountCode = generateTieCode(toEmail, 'TEN');
+    const expiryDate = getWeekEndDate();
+    
+    const result = await client.emails.send({
+      from: `Royals Barber Shop <${fromEmail}>`,
+      to: toEmail,
+      subject: `You Tied for 1st Place - $10 Off Your Next Haircut!`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+            .discount-box { background: white; border: 3px solid #6366f1; padding: 20px; text-align: center; margin: 20px 0; border-radius: 10px; }
+            .discount-amount { font-size: 48px; font-weight: bold; color: #6366f1; }
+            .code { background: #1f2937; color: #a5b4fc; padding: 15px 30px; border-radius: 5px; font-family: monospace; font-size: 20px; display: inline-block; margin: 10px 0; }
+            .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Congratulations, ${playerName}!</h1>
+              <p>You're One of ${numberOfTiedPlayers} Players Tied for 1st in Cycle ${cycleNumber}!</p>
+            </div>
+            <div class="content">
+              <p>Great job! With a cumulative score of <strong>${moves} moves</strong>, you tied for first place with ${numberOfTiedPlayers - 1} other player(s) on our Memory Match Leaderboard!</p>
+              
+              <div class="discount-box">
+                <div class="discount-amount">$10 OFF</div>
+                <p>Your Next Haircut!</p>
+                <div class="code">${discountCode}</div>
+                <p><strong>Show this email in person to redeem</strong></p>
+                <p style="color: #dc2626; font-weight: bold;">Use by: ${expiryDate} (Saturday)</p>
+              </div>
+              
+              <p><strong>How to Redeem:</strong></p>
+              <ul>
+                <li>Show this email on your phone when you visit</li>
+                <li>Valid for one haircut only</li>
+                <li>Cannot be combined with other offers</li>
+                <li><strong>Not valid on Tuesdays</strong> with our $20 haircut promotion</li>
+              </ul>
+              
+              <div style="text-align: center; margin: 30px 0; display: flex; gap: 10px; justify-content: center;">
+                <a href="https://royalsbarbershop.setmore.com" style="background: #f59e0b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Book Now</a>
+                <a href="tel:585-536-6576" style="background: #059669; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Call Now</a>
+              </div>
+              
+              <p><strong>Royals Barber Shop</strong><br>
+              317 Ellicott St<br>
+              Batavia, NY<br>
+              📞 <a href="tel:585-536-6576">585-536-6576</a><br>
+              🌐 <a href="https://royalsbatavia.com">royalsbatavia.com</a></p>
+            </div>
+            <div class="footer">
+              <p>This is an automated email from Royals Barber Shop Memory Match Game.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    });
+    
+    console.log('$10 off winner email sent:', result);
+    return true;
+  } catch (error) {
+    console.error('Failed to send $10 off winner email:', error);
+    return false;
+  }
+}
+
 // Helper functions
+function generateTieCode(email: string, type: string): string {
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const emailHash = email.split('@')[0].slice(0, 3).toUpperCase();
+  return `${type}-${emailHash}${timestamp}`;
+}
+
 function generateDiscountCode(email: string, amount: number): string {
   const timestamp = Date.now().toString(36).toUpperCase();
   const emailHash = email.split('@')[0].slice(0, 3).toUpperCase();

@@ -10,20 +10,23 @@ type LeaderboardScore = {
   playerName: string;
   email: string;
   phone: string | null;
-  moves: number;
+  moves: number; // This is now cumulative score
+  weeksPlayed?: number;
   discountTier: string;
   createdAt: string;
 };
 
-type WeekInfo = {
+type CycleInfo = {
+  cycleNumber: number;
   currentWeek: number;
   totalWeeks: number;
-  monthName: string;
+  daysRemaining: number;
+  cycleEndDate: string;
 };
 
 type LeaderboardResponse = {
   scores: LeaderboardScore[];
-  weekInfo: WeekInfo | null;
+  cycleInfo: CycleInfo | null;
 };
 
 export default function Leaderboard() {
@@ -33,7 +36,7 @@ export default function Leaderboard() {
   });
 
   const scores = data?.scores || [];
-  const weekInfo = data?.weekInfo;
+  const cycleInfo = data?.cycleInfo;
 
   const handleShareLeaderboard = () => {
     const shareText = 'Play once a week to earn rewards at Royals Barber Shop Memory Match!';
@@ -55,16 +58,23 @@ export default function Leaderboard() {
   };
 
   const getReward = (rank: number, score: LeaderboardScore, allScores: LeaderboardScore[]) => {
-    if (rank === 1) {
-      const hasSecondPlace = allScores.length > 1;
-      const isTied = hasSecondPlace && allScores[1].moves === score.moves;
-      if (isTied) {
-        return { text: 'Half Off Haircut', color: 'text-amber-200', bg: 'bg-gradient-to-r from-amber-600/30 to-amber-700/20', border: 'border-amber-500/50' };
+    // Find all players with the lowest score (potential winners)
+    const lowestScore = allScores[0]?.moves;
+    const tiedForFirst = allScores.filter(s => s.moves === lowestScore);
+    const tieCount = tiedForFirst.length;
+    
+    // Check if this player is tied for first
+    if (score.moves === lowestScore) {
+      if (tieCount === 1) {
+        // Sole winner - FREE haircut
+        return { text: 'FREE Haircut!', color: 'text-emerald-300', bg: 'bg-gradient-to-r from-emerald-600/30 to-emerald-700/20', border: 'border-emerald-500/50' };
+      } else if (tieCount === 2) {
+        // 2-way tie - 50% off
+        return { text: '50% Off Haircut', color: 'text-amber-200', bg: 'bg-gradient-to-r from-amber-600/30 to-amber-700/20', border: 'border-amber-500/50' };
+      } else {
+        // 3+ way tie - $10 off
+        return { text: '$10 Off Haircut', color: 'text-indigo-200', bg: 'bg-gradient-to-r from-indigo-600/30 to-indigo-700/20', border: 'border-indigo-500/50' };
       }
-      return { text: 'FREE Haircut!', color: 'text-emerald-300', bg: 'bg-gradient-to-r from-emerald-600/30 to-emerald-700/20', border: 'border-emerald-500/50' };
-    }
-    if (allScores[0] && score.moves === allScores[0].moves) {
-      return { text: 'Half Off Haircut', color: 'text-amber-200', bg: 'bg-gradient-to-r from-amber-600/30 to-amber-700/20', border: 'border-amber-500/50' };
     }
     return null;
   };
@@ -126,9 +136,9 @@ export default function Leaderboard() {
                         </h2>
                         <p className="text-red-100 text-sm flex items-center gap-2 mt-1">
                           <Calendar className="w-3.5 h-3.5" />
-                          {weekInfo ? (
+                          {cycleInfo ? (
                             <span className="font-medium">
-                              {weekInfo.monthName} - Week {weekInfo.currentWeek} of {weekInfo.totalWeeks}
+                              Cycle {cycleInfo.cycleNumber} - Week {cycleInfo.currentWeek} of {cycleInfo.totalWeeks} • {cycleInfo.daysRemaining} days left
                             </span>
                           ) : (
                             <span>Compete for prizes!</span>
@@ -158,14 +168,23 @@ export default function Leaderboard() {
               {/* Rewards Info Banner */}
               <div className="px-5 pt-5">
                 <div className="bg-gradient-to-r from-black/40 to-black/40 rounded-xl p-4 backdrop-blur-sm border border-white/10">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="flex items-center gap-3 p-3 bg-blue-600/20 rounded-lg border border-blue-500/30">
                       <div className="p-2 bg-blue-500/30 rounded-lg">
                         <Zap className="w-5 h-5 text-blue-300" />
                       </div>
                       <div>
-                        <p className="text-blue-200 font-semibold text-sm">Weekly Discount</p>
-                        <p className="text-blue-300/80 text-xs">Play once a week to keep your score up!</p>
+                        <p className="text-blue-200 font-semibold text-sm">Cumulative Score</p>
+                        <p className="text-blue-300/80 text-xs">Play weekly - scores add up!</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-emerald-600/20 rounded-lg border border-emerald-500/30">
+                      <div className="p-2 bg-emerald-500/30 rounded-lg">
+                        <Crown className="w-5 h-5 text-emerald-300" />
+                      </div>
+                      <div>
+                        <p className="text-emerald-200 font-semibold text-sm">Winner Prize</p>
+                        <p className="text-emerald-300/80 text-xs">Lowest score = FREE haircut!</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 p-3 bg-amber-600/20 rounded-lg border border-amber-500/30">
@@ -173,8 +192,8 @@ export default function Leaderboard() {
                         <Gift className="w-5 h-5 text-amber-300" />
                       </div>
                       <div>
-                        <p className="text-amber-200 font-semibold text-sm">Monthly Prize</p>
-                        <p className="text-amber-300/80 text-xs">Top scorer wins FREE haircut!</p>
+                        <p className="text-amber-200 font-semibold text-sm">Tie Prizes</p>
+                        <p className="text-amber-300/80 text-xs">2-way: 50% off • 3+: $10 off</p>
                       </div>
                     </div>
                   </div>
@@ -240,8 +259,8 @@ export default function Leaderboard() {
                     <div className="w-16 h-16 bg-gradient-to-br from-blue-800 to-blue-900 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border border-blue-700/30">
                       <Gamepad2 className="w-8 h-8 text-blue-400" />
                     </div>
-                    <p className="text-white font-medium mb-2">No scores yet this month!</p>
-                    <p className="text-sm text-gray-400">Be the first to play and win a FREE haircut!</p>
+                    <p className="text-white font-medium mb-2">No scores yet this cycle!</p>
+                    <p className="text-sm text-gray-400">Be the first to play and compete for a FREE haircut!</p>
                   </div>
                 )}
 

@@ -67,6 +67,68 @@ export async function getUncachableGoogleDriveClient() {
 const LEADERBOARD_SHEET_NAME = 'memory match leaderboard';
 const CONTACTS_SHEET_NAME = 'barber shop Contacts';
 
+// 4-week cycle system - starts December 1, 2025
+const CYCLE_START_DATE_MS = new Date('2025-12-01T00:00:00').getTime();
+const CYCLE_LENGTH_WEEKS = 4;
+const CYCLE_LENGTH_DAYS = CYCLE_LENGTH_WEEKS * 7; // 28 days
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// Calculate current 4-week cycle info
+// Returns fresh Date instances - never mutates shared state
+export function getCurrentCycleInfo(): {
+  cycleNumber: number;
+  cycleStart: Date;
+  cycleEnd: Date;
+  currentWeek: number;
+  daysRemaining: number;
+} {
+  const now = new Date();
+  const todayMs = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  
+  // Calculate days since the first cycle started
+  const daysSinceStart = Math.floor((todayMs - CYCLE_START_DATE_MS) / DAY_MS);
+  
+  // If we're before the start date, we're in cycle 1 (pre-cycle period)
+  if (daysSinceStart < 0) {
+    const cycleStart = new Date(CYCLE_START_DATE_MS);
+    const cycleEnd = new Date(CYCLE_START_DATE_MS + (CYCLE_LENGTH_DAYS - 1) * DAY_MS);
+    return {
+      cycleNumber: 1,
+      cycleStart,
+      cycleEnd,
+      currentWeek: 1,
+      daysRemaining: CYCLE_LENGTH_DAYS + daysSinceStart,
+    };
+  }
+  
+  // Calculate which cycle we're in (0-indexed, then add 1)
+  const cycleNumber = Math.floor(daysSinceStart / CYCLE_LENGTH_DAYS) + 1;
+  
+  // Calculate the start of the current cycle (fresh Date instance)
+  const cycleStartDays = (cycleNumber - 1) * CYCLE_LENGTH_DAYS;
+  const cycleStartMs = CYCLE_START_DATE_MS + cycleStartDays * DAY_MS;
+  const cycleStart = new Date(cycleStartMs);
+  
+  // Calculate the end of the current cycle (fresh Date instance)
+  const cycleEndMs = cycleStartMs + (CYCLE_LENGTH_DAYS - 1) * DAY_MS;
+  const cycleEnd = new Date(cycleEndMs);
+  
+  // Calculate which week of the cycle we're in (1-4)
+  const daysIntoCycle = daysSinceStart - cycleStartDays;
+  const currentWeek = Math.floor(daysIntoCycle / 7) + 1;
+  
+  // Calculate days remaining in the cycle
+  const daysRemaining = CYCLE_LENGTH_DAYS - daysIntoCycle - 1;
+  
+  return {
+    cycleNumber,
+    cycleStart,
+    cycleEnd,
+    currentWeek: Math.min(currentWeek, 4),
+    daysRemaining: Math.max(0, daysRemaining),
+  };
+}
+
 // Cache for spreadsheet IDs
 let leaderboardSpreadsheetId: string | null = null;
 let contactsSpreadsheetId: string | null = null;
@@ -397,14 +459,16 @@ export function getWeekOfMonthInfo(): { currentWeek: number; totalWeeks: number;
   return { currentWeek, totalWeeks, monthName };
 }
 
-// Get monthly leaderboard scores (cumulative for the whole month)
+// Get cumulative leaderboard scores for the current 4-week cycle
+// Each player's scores from multiple weeks are added together
 export async function getWeeklyLeaderboard(): Promise<Array<{
   rank: number;
   name: string;
   email: string;
   phone: string | null;
-  score: number;
-  date: string;
+  score: number; // This is now CUMULATIVE score (sum of all plays in cycle)
+  weeksPlayed: number;
+  lastPlayDate: string;
 }>> {
   try {
     const sheets = await getUncachableGoogleSheetClient();
@@ -417,39 +481,87 @@ export async function getWeeklyLeaderboard(): Promise<Array<{
 
     const rows = response.data.values || [];
     
-    // Get the start of the current month
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    monthStart.setHours(0, 0, 0, 0);
+    // Get current cycle boundaries (fresh Date instances, no mutation)
+    const cycleInfo = getCurrentCycleInfo();
+    const cycleStartMs = cycleInfo.cycleStart.getTime();
+    const cycleEndMs = cycleInfo.cycleEnd.getTime() + DAY_MS - 1; // End of day on cycle end date
 
-    // Filter to only this month's scores (cumulative, not reset weekly)
-    const monthlyScores = rows
-      .filter(row => {
-        const scoreDate = new Date(row[5]);
-        return scoreDate >= monthStart;
-      })
-      .map(row => ({
-        rank: parseInt(row[0]),
-        name: row[1],
-        email: row[2],
-        phone: row[3] || null,
-        score: parseInt(row[4]),
-        date: row[5],
-      }))
-      .sort((a, b) => a.score - b.score);
+    // Filter to only this cycle's scores
+    // For the first cycle, include ALL pre-existing scores (any score before or during cycle 1)
+    const cycleScores = rows.filter(row => {
+      const scoreDateStr = row[5];
+      if (!scoreDateStr) return false;
+      const scoreDateMs = new Date(scoreDateStr).getTime();
+      
+      if (cycleInfo.cycleNumber === 1) {
+        // First cycle includes all historical scores up to and including cycle end
+        return scoreDateMs <= cycleEndMs;
+      }
+      // Later cycles only include scores within the cycle boundaries
+      return scoreDateMs >= cycleStartMs && scoreDateMs <= cycleEndMs;
+    });
 
-    // Recalculate ranks for monthly view
-    return monthlyScores.map((score, index) => ({
-      ...score,
+    // Aggregate scores by player (using email as unique identifier)
+    const playerScores = new Map<string, {
+      name: string;
+      email: string;
+      phone: string | null;
+      totalScore: number;
+      weeksPlayed: number;
+      lastPlayDate: string;
+    }>();
+
+    for (const row of cycleScores) {
+      const email = row[2]?.toLowerCase();
+      if (!email) continue;
+      
+      const existing = playerScores.get(email);
+      const scoreValue = parseInt(row[4]) || 0;
+      const playDate = row[5];
+      
+      if (existing) {
+        // Add to cumulative total
+        existing.totalScore += scoreValue;
+        existing.weeksPlayed += 1;
+        // Keep most recent date
+        if (new Date(playDate) > new Date(existing.lastPlayDate)) {
+          existing.lastPlayDate = playDate;
+          existing.name = row[1]; // Use most recent name
+          existing.phone = row[3] || existing.phone;
+        }
+      } else {
+        playerScores.set(email, {
+          name: row[1],
+          email: row[2],
+          phone: row[3] || null,
+          totalScore: scoreValue,
+          weeksPlayed: 1,
+          lastPlayDate: playDate,
+        });
+      }
+    }
+
+    // Convert to array and sort by cumulative score (lowest is best)
+    const sortedScores = Array.from(playerScores.values())
+      .sort((a, b) => a.totalScore - b.totalScore);
+
+    // Assign ranks
+    return sortedScores.map((player, index) => ({
       rank: index + 1,
+      name: player.name,
+      email: player.email,
+      phone: player.phone,
+      score: player.totalScore,
+      weeksPlayed: player.weeksPlayed,
+      lastPlayDate: player.lastPlayDate,
     }));
   } catch (error) {
-    console.error('Error getting monthly leaderboard:', error);
+    console.error('Error getting cycle leaderboard:', error);
     return [];
   }
 }
 
-// Check if email or phone has already played this week
+// Check if email or phone has already played this week (within the current cycle)
 export async function hasPlayedThisWeek(email: string, phone: string | null): Promise<boolean> {
   try {
     const sheets = await getUncachableGoogleSheetClient();
@@ -462,18 +574,24 @@ export async function hasPlayedThisWeek(email: string, phone: string | null): Pr
 
     const rows = response.data.values || [];
     
-    // Get the start of the current week (Sunday - resets every Sunday)
+    // Get current cycle info (fresh Date instances)
+    const cycleInfo = getCurrentCycleInfo();
+    const cycleStartMs = cycleInfo.cycleStart.getTime();
+    
+    // Calculate the start of the current week within the cycle
     const now = new Date();
-    const dayOfWeek = now.getDay();
-    const sundayOffset = dayOfWeek === 0 ? 0 : -dayOfWeek;
-    const sunday = new Date(now);
-    sunday.setDate(now.getDate() + sundayOffset);
-    sunday.setHours(0, 0, 0, 0);
+    const todayMs = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const daysIntoCycle = Math.max(0, Math.floor((todayMs - cycleStartMs) / DAY_MS));
+    const weekNumber = Math.floor(daysIntoCycle / 7);
+    const currentWeekStartMs = cycleStartMs + (weekNumber * 7 * DAY_MS);
 
     // Check if email or phone exists in this week's scores
     for (const row of rows) {
-      const scoreDate = new Date(row[5]);
-      if (scoreDate >= sunday) {
+      const scoreDateStr = row[5];
+      if (!scoreDateStr) continue;
+      const scoreDateMs = new Date(scoreDateStr).getTime();
+      
+      if (scoreDateMs >= currentWeekStartMs) {
         const rowEmail = row[2]?.toLowerCase();
         const rowPhone = row[3]?.replace(/\D/g, ''); // Strip non-digits for comparison
         const inputPhone = phone?.replace(/\D/g, '');
@@ -494,70 +612,55 @@ export async function hasPlayedThisWeek(email: string, phone: string | null): Pr
   }
 }
 
-// Get all scores for the current month (for monthly winner determination)
-export async function getMonthlyLeaderboard(): Promise<Array<{
-  rank: number;
-  name: string;
-  email: string;
-  phone: string | null;
-  score: number;
-  date: string;
-}>> {
-  try {
-    const sheets = await getUncachableGoogleSheetClient();
-    const spreadsheetId = await getLeaderboardSpreadsheetId();
-
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId,
-      range: 'Leaderboard!A2:F',
-    });
-
-    const rows = response.data.values || [];
-    
-    // Get the start of the current month
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    monthStart.setHours(0, 0, 0, 0);
-
-    // Filter to only this month's scores
-    const monthlyScores = rows
-      .filter(row => {
-        const scoreDate = new Date(row[5]);
-        return scoreDate >= monthStart;
-      })
-      .map(row => ({
-        rank: parseInt(row[0]),
-        name: row[1],
-        email: row[2],
-        phone: row[3] || null,
-        score: parseInt(row[4]),
-        date: row[5],
-      }))
-      .sort((a, b) => a.score - b.score);
-
-    // Recalculate ranks for monthly view
-    return monthlyScores.map((score, index) => ({
-      ...score,
-      rank: index + 1,
-    }));
-  } catch (error) {
-    console.error('Error getting monthly leaderboard:', error);
-    return [];
-  }
+// Get cumulative leaderboard for the current 4-week cycle (alias for consistency)
+export async function getMonthlyLeaderboard() {
+  return getWeeklyLeaderboard();
 }
 
-// Get the monthly winner (lowest score this month)
-export async function getMonthlyWinner(): Promise<{
-  name: string;
-  email: string;
-  phone: string | null;
-  score: number;
-  date: string;
-} | null> {
-  const monthlyScores = await getMonthlyLeaderboard();
-  if (monthlyScores.length === 0) return null;
+// Determine cycle winners with tie handling
+// Returns: { type: 'sole_winner' | 'two_way_tie' | 'three_plus_tie', winners: Player[] }
+export async function getCycleWinners(): Promise<{
+  type: 'sole_winner' | 'two_way_tie' | 'three_plus_tie' | 'no_players';
+  winners: Array<{
+    name: string;
+    email: string;
+    phone: string | null;
+    score: number;
+    weeksPlayed: number;
+  }>;
+  lowestScore: number;
+}> {
+  const leaderboard = await getWeeklyLeaderboard();
   
-  return monthlyScores[0]; // First place (lowest moves)
+  if (leaderboard.length === 0) {
+    return { type: 'no_players', winners: [], lowestScore: 0 };
+  }
+  
+  // Find the lowest score
+  const lowestScore = leaderboard[0].score;
+  
+  // Find all players with the lowest score
+  const winners = leaderboard
+    .filter(player => player.score === lowestScore)
+    .map(player => ({
+      name: player.name,
+      email: player.email,
+      phone: player.phone,
+      score: player.score,
+      weeksPlayed: player.weeksPlayed,
+    }));
+  
+  // Determine the type of win
+  let type: 'sole_winner' | 'two_way_tie' | 'three_plus_tie' | 'no_players';
+  if (winners.length === 1) {
+    type = 'sole_winner';
+  } else if (winners.length === 2) {
+    type = 'two_way_tie';
+  } else {
+    type = 'three_plus_tie';
+  }
+  
+  return { type, winners, lowestScore };
 }
 
 // Clear all scores from the leaderboard (monthly reset)
