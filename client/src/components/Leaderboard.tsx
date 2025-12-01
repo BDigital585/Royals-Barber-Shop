@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'wouter';
-import { Trophy, Crown, Medal, Gamepad2, Calendar, Gift, Zap, Share2 } from 'lucide-react';
+import { Trophy, Crown, Medal, Gamepad2, Gift, Zap, Share2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -135,14 +135,7 @@ export default function Leaderboard() {
                           Memory Match Leaderboard
                         </h2>
                         <p className="text-red-100 text-sm flex items-center gap-2 mt-1">
-                          <Calendar className="w-3.5 h-3.5" />
-                          {cycleInfo ? (
-                            <span className="font-medium">
-                              Cycle {cycleInfo.cycleNumber} - Week {cycleInfo.currentWeek} of {cycleInfo.totalWeeks} • {cycleInfo.daysRemaining} days left
-                            </span>
-                          ) : (
-                            <span>Compete for prizes!</span>
-                          )}
+                          Compete for prizes!
                         </p>
                       </div>
                     </div>
