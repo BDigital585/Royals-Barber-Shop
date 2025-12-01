@@ -208,8 +208,43 @@ export async function getLeaderboardSpreadsheetId(): Promise<string> {
   return leaderboardSpreadsheetId;
 }
 
-// Get contacts spreadsheet ID
-export async function getContactsSpreadsheetId(): Promise<string | null> {
+// Create contacts spreadsheet
+async function createContactsSpreadsheet(): Promise<string> {
+  const sheets = await getUncachableGoogleSheetClient();
+  
+  const response = await sheets.spreadsheets.create({
+    requestBody: {
+      properties: {
+        title: CONTACTS_SHEET_NAME,
+      },
+      sheets: [
+        {
+          properties: {
+            title: 'Contacts',
+          },
+        },
+      ],
+    },
+  });
+
+  const spreadsheetId = response.data.spreadsheetId!;
+
+  // Add headers
+  await sheets.spreadsheets.values.update({
+    spreadsheetId,
+    range: 'Contacts!A1:D1',
+    valueInputOption: 'RAW',
+    requestBody: {
+      values: [['Name', 'Email', 'Phone', 'Date Added']],
+    },
+  });
+
+  console.log(`[ClientTracker] Created contacts spreadsheet: ${spreadsheetId}`);
+  return spreadsheetId;
+}
+
+// Get or create contacts spreadsheet ID
+export async function getContactsSpreadsheetId(): Promise<string> {
   console.log(`[ClientTracker] Looking for contacts spreadsheet: "${CONTACTS_SHEET_NAME}"`);
   if (contactsSpreadsheetId) {
     console.log(`[ClientTracker] Using cached contacts spreadsheet ID: ${contactsSpreadsheetId}`);
@@ -223,10 +258,10 @@ export async function getContactsSpreadsheetId(): Promise<string | null> {
     return existingId;
   }
   
-  console.log(`[ClientTracker] WARNING: Contacts spreadsheet "${CONTACTS_SHEET_NAME}" not found!`);
-
-  console.warn(`Contacts spreadsheet "${CONTACTS_SHEET_NAME}" not found`);
-  return null;
+  // Auto-create contacts spreadsheet if it doesn't exist
+  console.log(`[ClientTracker] Contacts spreadsheet not found, creating...`);
+  contactsSpreadsheetId = await createContactsSpreadsheet();
+  return contactsSpreadsheetId;
 }
 
 // Create a new spreadsheet for new clients
@@ -467,21 +502,18 @@ async function recalculateRanks(spreadsheetId: string): Promise<void> {
 export async function emailExistsInContacts(email: string): Promise<boolean> {
   try {
     const spreadsheetId = await getContactsSpreadsheetId();
-    if (!spreadsheetId) {
-      return false;
-    }
 
     const sheets = await getUncachableGoogleSheetClient();
     
-    // Get all emails from contacts (assuming email is in column B or search all columns)
+    // Get all emails from contacts sheet
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: 'A:Z', // Check all columns
+      range: 'Contacts!A:D',
     });
 
     const rows = response.data.values || [];
     
-    // Check if email exists in any cell
+    // Check if email exists in any cell (column B is email)
     for (const row of rows) {
       for (const cell of row) {
         if (typeof cell === 'string' && cell.toLowerCase() === email.toLowerCase()) {
@@ -492,7 +524,7 @@ export async function emailExistsInContacts(email: string): Promise<boolean> {
 
     return false;
   } catch (error) {
-    console.error('Error checking contacts:', error);
+    console.error('[ClientTracker] Error checking contacts:', error);
     return false;
   }
 }
@@ -506,10 +538,6 @@ export async function addContactIfNotDuplicate(
   console.log(`[ClientTracker] addContactIfNotDuplicate called for: ${email}`);
   try {
     const spreadsheetId = await getContactsSpreadsheetId();
-    if (!spreadsheetId) {
-      console.warn('[ClientTracker] Contacts spreadsheet not found, skipping contact add');
-      return false;
-    }
 
     // Check if email already exists
     const exists = await emailExistsInContacts(email);
@@ -520,11 +548,11 @@ export async function addContactIfNotDuplicate(
 
     const sheets = await getUncachableGoogleSheetClient();
 
-    // Add new contact
+    // Add new contact - use Contacts sheet since that's what we create
     console.log(`[ClientTracker] Appending contact to spreadsheet ${spreadsheetId}...`);
     await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: 'A:D',
+      range: 'Contacts!A:D',
       valueInputOption: 'RAW',
       requestBody: {
         values: [[name, email, phone || '', new Date().toISOString().split('T')[0]]],
