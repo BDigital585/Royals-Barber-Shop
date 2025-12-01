@@ -114,9 +114,10 @@ Contact Information: 317 Ellicott St, Batavia, NY | 585-536-6576
 - Connected via Replit's Google Sheets connector for OAuth authentication
 - Leaderboard spreadsheet: "memory match leaderboard" (auto-created if missing)
 - Contacts spreadsheet: "barber shop Contacts" (must exist, no auto-creation)
+- New clients spreadsheet: "New Barber Shop Clients" (auto-created if missing) - tracks first-time players
 - 4-week cycle cumulative scores displayed (scores add up over the cycle)
 - One play per week per email/phone number (play limit enforced weekly within each cycle)
-- Cycle indicator shows "Cycle X - Week Y of 4 • Z days left"
+- New client tracking: When a player submits their score, if their email is not in "barber shop Contacts", they are added to both Contacts and "New Barber Shop Clients" sheet
 
 **Resend Email Integration**
 - Connected via Replit's Resend connector (royalbarber585@gmail.com)

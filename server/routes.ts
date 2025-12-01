@@ -1099,17 +1099,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ message: 'Failed to save score to leaderboard' });
       }
 
-      // Add to contacts if not duplicate
+      // Track new client - adds to both Contacts and New Clients sheets if new
       try {
-        const added = await googleSheets.addContactIfNotDuplicate(playerName, email, phone || null);
-        if (added) {
-          console.log('Contact added to barber shop Contacts sheet');
+        const { isNew } = await googleSheets.ensureClientTracked(playerName, email, phone || null, discountTier);
+        if (isNew) {
+          console.log('New client tracked: added to barber shop Contacts and New Barber Shop Clients sheets');
         } else {
-          console.log('Contact already exists or sheet not found');
+          console.log('Existing client - already in contacts');
         }
       } catch (contactsError) {
-        console.error('Failed to add to contacts:', contactsError);
-        // Continue even if contacts fails - leaderboard was saved
+        console.error('Failed to track client:', contactsError);
+        // Continue even if tracking fails - leaderboard was saved
       }
 
       // Send discount email - this is critical, must succeed

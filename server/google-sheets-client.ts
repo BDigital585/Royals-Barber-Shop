@@ -66,6 +66,7 @@ export async function getUncachableGoogleDriveClient() {
 // Sheet names
 const LEADERBOARD_SHEET_NAME = 'memory match leaderboard';
 const CONTACTS_SHEET_NAME = 'barber shop Contacts';
+const NEW_CLIENTS_SHEET_NAME = 'New Barber Shop Clients';
 
 // 4-week cycle system - starts December 1, 2025
 const CYCLE_START_DATE_MS = new Date('2025-12-01T00:00:00').getTime();
@@ -132,6 +133,7 @@ export function getCurrentCycleInfo(): {
 // Cache for spreadsheet IDs
 let leaderboardSpreadsheetId: string | null = null;
 let contactsSpreadsheetId: string | null = null;
+let newClientsSpreadsheetId: string | null = null;
 
 // Find spreadsheet by name
 async function findSpreadsheetByName(name: string): Promise<string | null> {
@@ -220,6 +222,129 @@ export async function getContactsSpreadsheetId(): Promise<string | null> {
 
   console.warn(`Contacts spreadsheet "${CONTACTS_SHEET_NAME}" not found`);
   return null;
+}
+
+// Create a new spreadsheet for new clients
+async function createNewClientsSpreadsheet(): Promise<string> {
+  const sheets = await getUncachableGoogleSheetClient();
+  
+  const response = await sheets.spreadsheets.create({
+    requestBody: {
+      properties: {
+        title: NEW_CLIENTS_SHEET_NAME,
+      },
+      sheets: [
+        {
+          properties: {
+            title: 'New Clients',
+          },
+        },
+      ],
+    },
+  });
+
+  const spreadsheetId = response.data.spreadsheetId!;
+
+  // Add headers
+  await sheets.spreadsheets.values.update({
+    spreadsheetId,
+    range: 'New Clients!A1:F1',
+    valueInputOption: 'RAW',
+    requestBody: {
+      values: [['Name', 'Email', 'Phone', 'Discount Tier', 'Submitted At', 'Source']],
+    },
+  });
+
+  console.log(`Created new clients spreadsheet: ${spreadsheetId}`);
+  return spreadsheetId;
+}
+
+// Get or create new clients spreadsheet
+export async function getNewClientsSpreadsheetId(): Promise<string> {
+  if (newClientsSpreadsheetId) {
+    return newClientsSpreadsheetId;
+  }
+
+  // Try to find existing spreadsheet
+  const existingId = await findSpreadsheetByName(NEW_CLIENTS_SHEET_NAME);
+  if (existingId) {
+    newClientsSpreadsheetId = existingId;
+    return existingId;
+  }
+
+  // Create new spreadsheet
+  newClientsSpreadsheetId = await createNewClientsSpreadsheet();
+  return newClientsSpreadsheetId;
+}
+
+// Add a new client to the New Clients spreadsheet
+async function addToNewClientsSheet(
+  name: string,
+  email: string,
+  phone: string | null,
+  discountTier: string
+): Promise<void> {
+  try {
+    const sheets = await getUncachableGoogleSheetClient();
+    const spreadsheetId = await getNewClientsSpreadsheetId();
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range: 'New Clients!A:F',
+      valueInputOption: 'RAW',
+      requestBody: {
+        values: [[
+          name,
+          email,
+          phone || '',
+          discountTier,
+          new Date().toISOString(),
+          'Memory Match Game'
+        ]],
+      },
+    });
+
+    console.log(`Added to New Clients sheet: ${name} - ${email}`);
+  } catch (error) {
+    console.error('Error adding to new clients sheet:', error);
+    // Don't throw - this is a secondary tracking feature
+  }
+}
+
+// Track a new client - checks contacts, adds to both sheets if new
+// Returns true if client was new (added), false if already existed
+export async function ensureClientTracked(
+  name: string,
+  email: string,
+  phone: string | null,
+  discountTier: string
+): Promise<{ isNew: boolean }> {
+  try {
+    // Check if email already exists in contacts
+    const exists = await emailExistsInContacts(email);
+    
+    if (exists) {
+      console.log(`Client already exists in contacts: ${email}`);
+      return { isNew: false };
+    }
+
+    // New client - add to both sheets
+    // 1. Add to barber shop Contacts
+    const addedToContacts = await addContactIfNotDuplicate(name, email, phone);
+    
+    // 2. Add to New Barber Shop Clients (for tracking new clients specifically)
+    if (addedToContacts) {
+      await addToNewClientsSheet(name, email, phone, discountTier);
+      console.log(`New client tracked: ${name} - ${email}`);
+      return { isNew: true };
+    }
+
+    return { isNew: false };
+  } catch (error) {
+    console.error('Error tracking client:', error);
+    // Don't block the main flow if tracking fails
+    return { isNew: false };
+  }
 }
 
 // Add score to leaderboard spreadsheet
