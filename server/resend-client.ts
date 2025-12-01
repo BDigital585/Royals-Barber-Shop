@@ -50,8 +50,10 @@ export async function sendDiscountEmail(
   moves: number,
   discountAmount: number
 ): Promise<boolean> {
+  console.log(`[Resend] Attempting to send discount email to ${toEmail} for $${discountAmount} off`);
   try {
     const { client, fromEmail } = await getUncachableResendClient();
+    console.log(`[Resend] Got client, fromEmail: ${fromEmail}`);
     
     const discountCode = generateDiscountCode(toEmail, discountAmount);
     const expiryDate = getWeekEndDate();
@@ -121,10 +123,11 @@ export async function sendDiscountEmail(
       `
     });
     
-    console.log('Discount email sent:', result);
+    console.log('[Resend] Discount email sent successfully:', JSON.stringify(result));
     return true;
-  } catch (error) {
-    console.error('Failed to send discount email:', error);
+  } catch (error: any) {
+    console.error('[Resend] Failed to send discount email:', error?.message || error);
+    console.error('[Resend] Full error:', JSON.stringify(error, null, 2));
     return false;
   }
 }

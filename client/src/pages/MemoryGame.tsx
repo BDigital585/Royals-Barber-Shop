@@ -82,11 +82,11 @@ export default function MemoryGame() {
   };
 
   const getDealType = () => {
-    return moves <= 10 ? 'premium' : 'standard';
+    return moves <= 9 ? 'premium' : 'standard';
   };
 
   const getDealText = () => {
-    return moves <= 10 ? '$5 Off Next Haircut!' : '$2 Off Next Haircut!';
+    return moves <= 9 ? '$5 Off Next Haircut!' : '$2 Off Next Haircut!';
   };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
