@@ -210,15 +210,20 @@ export async function getLeaderboardSpreadsheetId(): Promise<string> {
 
 // Get contacts spreadsheet ID
 export async function getContactsSpreadsheetId(): Promise<string | null> {
+  console.log(`[ClientTracker] Looking for contacts spreadsheet: "${CONTACTS_SHEET_NAME}"`);
   if (contactsSpreadsheetId) {
+    console.log(`[ClientTracker] Using cached contacts spreadsheet ID: ${contactsSpreadsheetId}`);
     return contactsSpreadsheetId;
   }
 
   const existingId = await findSpreadsheetByName(CONTACTS_SHEET_NAME);
   if (existingId) {
+    console.log(`[ClientTracker] Found contacts spreadsheet: ${existingId}`);
     contactsSpreadsheetId = existingId;
     return existingId;
   }
+  
+  console.log(`[ClientTracker] WARNING: Contacts spreadsheet "${CONTACTS_SHEET_NAME}" not found!`);
 
   console.warn(`Contacts spreadsheet "${CONTACTS_SHEET_NAME}" not found`);
   return null;
@@ -261,19 +266,24 @@ async function createNewClientsSpreadsheet(): Promise<string> {
 
 // Get or create new clients spreadsheet
 export async function getNewClientsSpreadsheetId(): Promise<string> {
+  console.log(`[ClientTracker] Looking for new clients spreadsheet: "${NEW_CLIENTS_SHEET_NAME}"`);
   if (newClientsSpreadsheetId) {
+    console.log(`[ClientTracker] Using cached new clients spreadsheet ID: ${newClientsSpreadsheetId}`);
     return newClientsSpreadsheetId;
   }
 
   // Try to find existing spreadsheet
   const existingId = await findSpreadsheetByName(NEW_CLIENTS_SHEET_NAME);
   if (existingId) {
+    console.log(`[ClientTracker] Found existing new clients spreadsheet: ${existingId}`);
     newClientsSpreadsheetId = existingId;
     return existingId;
   }
 
   // Create new spreadsheet
+  console.log(`[ClientTracker] Creating new clients spreadsheet...`);
   newClientsSpreadsheetId = await createNewClientsSpreadsheet();
+  console.log(`[ClientTracker] Created new clients spreadsheet: ${newClientsSpreadsheetId}`);
   return newClientsSpreadsheetId;
 }
 
@@ -284,9 +294,11 @@ async function addToNewClientsSheet(
   phone: string | null,
   discountTier: string
 ): Promise<void> {
+  console.log(`[ClientTracker] Adding to new clients sheet: ${name} - ${email}`);
   try {
     const sheets = await getUncachableGoogleSheetClient();
     const spreadsheetId = await getNewClientsSpreadsheetId();
+    console.log(`[ClientTracker] Got new clients spreadsheet ID: ${spreadsheetId}`);
 
     await sheets.spreadsheets.values.append({
       spreadsheetId,
@@ -304,9 +316,9 @@ async function addToNewClientsSheet(
       },
     });
 
-    console.log(`Added to New Clients sheet: ${name} - ${email}`);
-  } catch (error) {
-    console.error('Error adding to new clients sheet:', error);
+    console.log(`[ClientTracker] SUCCESS: Added to New Clients sheet: ${name} - ${email}`);
+  } catch (error: any) {
+    console.error('[ClientTracker] ERROR adding to new clients sheet:', error?.message || error);
     // Don't throw - this is a secondary tracking feature
   }
 }
@@ -319,29 +331,38 @@ export async function ensureClientTracked(
   phone: string | null,
   discountTier: string
 ): Promise<{ isNew: boolean }> {
+  console.log(`[ClientTracker] Starting client tracking for: ${email}`);
   try {
     // Check if email already exists in contacts
+    console.log(`[ClientTracker] Checking if email exists in contacts...`);
     const exists = await emailExistsInContacts(email);
     
     if (exists) {
-      console.log(`Client already exists in contacts: ${email}`);
+      console.log(`[ClientTracker] Client already exists in contacts: ${email}`);
       return { isNew: false };
     }
 
+    console.log(`[ClientTracker] Email not found in contacts - this is a new client!`);
+    
     // New client - add to both sheets
     // 1. Add to barber shop Contacts
+    console.log(`[ClientTracker] Adding to barber shop Contacts...`);
     const addedToContacts = await addContactIfNotDuplicate(name, email, phone);
+    console.log(`[ClientTracker] Added to contacts: ${addedToContacts}`);
     
     // 2. Add to New Barber Shop Clients (for tracking new clients specifically)
     if (addedToContacts) {
+      console.log(`[ClientTracker] Adding to New Barber Shop Clients...`);
       await addToNewClientsSheet(name, email, phone, discountTier);
-      console.log(`New client tracked: ${name} - ${email}`);
+      console.log(`[ClientTracker] New client fully tracked: ${name} - ${email}`);
       return { isNew: true };
+    } else {
+      console.log(`[ClientTracker] Failed to add to contacts, not adding to new clients sheet`);
     }
 
     return { isNew: false };
   } catch (error) {
-    console.error('Error tracking client:', error);
+    console.error('[ClientTracker] Error tracking client:', error);
     // Don't block the main flow if tracking fails
     return { isNew: false };
   }
@@ -482,23 +503,25 @@ export async function addContactIfNotDuplicate(
   email: string,
   phone: string | null
 ): Promise<boolean> {
+  console.log(`[ClientTracker] addContactIfNotDuplicate called for: ${email}`);
   try {
     const spreadsheetId = await getContactsSpreadsheetId();
     if (!spreadsheetId) {
-      console.warn('Contacts spreadsheet not found, skipping contact add');
+      console.warn('[ClientTracker] Contacts spreadsheet not found, skipping contact add');
       return false;
     }
 
     // Check if email already exists
     const exists = await emailExistsInContacts(email);
     if (exists) {
-      console.log(`Contact already exists: ${email}`);
+      console.log(`[ClientTracker] Contact already exists: ${email}`);
       return false;
     }
 
     const sheets = await getUncachableGoogleSheetClient();
 
     // Add new contact
+    console.log(`[ClientTracker] Appending contact to spreadsheet ${spreadsheetId}...`);
     await sheets.spreadsheets.values.append({
       spreadsheetId,
       range: 'A:D',
@@ -508,10 +531,10 @@ export async function addContactIfNotDuplicate(
       },
     });
 
-    console.log(`Added new contact: ${name} - ${email}`);
+    console.log(`[ClientTracker] SUCCESS: Added new contact: ${name} - ${email}`);
     return true;
-  } catch (error) {
-    console.error('Error adding contact:', error);
+  } catch (error: any) {
+    console.error('[ClientTracker] ERROR adding contact:', error?.message || error);
     return false;
   }
 }
