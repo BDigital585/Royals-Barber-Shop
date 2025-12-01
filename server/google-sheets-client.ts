@@ -130,10 +130,12 @@ export function getCurrentCycleInfo(): {
   };
 }
 
-// Cache for spreadsheet IDs
+// Cache for spreadsheet ID (all tabs will be in the same spreadsheet)
 let leaderboardSpreadsheetId: string | null = null;
-let contactsSpreadsheetId: string | null = null;
-let newClientsSpreadsheetId: string | null = null;
+
+// Track which tabs have been verified/created
+let contactsTabCreated = false;
+let newClientsTabCreated = false;
 
 // Find spreadsheet by name
 async function findSpreadsheetByName(name: string): Promise<string | null> {
@@ -153,6 +155,85 @@ async function findSpreadsheetByName(name: string): Promise<string | null> {
     console.error(`Error finding spreadsheet "${name}":`, error);
     return null;
   }
+}
+
+// Check if a tab exists in the spreadsheet
+async function tabExists(spreadsheetId: string, tabName: string): Promise<boolean> {
+  try {
+    const sheets = await getUncachableGoogleSheetClient();
+    const response = await sheets.spreadsheets.get({
+      spreadsheetId,
+      fields: 'sheets.properties.title',
+    });
+    
+    const existingTabs = response.data.sheets?.map(s => s.properties?.title) || [];
+    return existingTabs.includes(tabName);
+  } catch (error) {
+    console.error(`Error checking if tab "${tabName}" exists:`, error);
+    return false;
+  }
+}
+
+// Create a new tab in the spreadsheet
+async function createTab(spreadsheetId: string, tabName: string, headers: string[]): Promise<void> {
+  try {
+    const sheets = await getUncachableGoogleSheetClient();
+    
+    // Add the new tab
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      requestBody: {
+        requests: [
+          {
+            addSheet: {
+              properties: {
+                title: tabName,
+              },
+            },
+          },
+        ],
+      },
+    });
+    
+    // Add headers to the new tab
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: `${tabName}!A1:${String.fromCharCode(64 + headers.length)}1`,
+      valueInputOption: 'RAW',
+      requestBody: {
+        values: [headers],
+      },
+    });
+    
+    console.log(`[ClientTracker] Created tab "${tabName}" with headers`);
+  } catch (error: any) {
+    console.error(`[ClientTracker] Error creating tab "${tabName}":`, error?.message || error);
+    throw error;
+  }
+}
+
+// Ensure Contacts tab exists in the leaderboard spreadsheet
+async function ensureContactsTab(spreadsheetId: string): Promise<void> {
+  if (contactsTabCreated) return;
+  
+  const exists = await tabExists(spreadsheetId, 'Contacts');
+  if (!exists) {
+    console.log('[ClientTracker] Creating Contacts tab...');
+    await createTab(spreadsheetId, 'Contacts', ['Name', 'Email', 'Phone', 'Date Added']);
+  }
+  contactsTabCreated = true;
+}
+
+// Ensure New Clients tab exists in the leaderboard spreadsheet
+async function ensureNewClientsTab(spreadsheetId: string): Promise<void> {
+  if (newClientsTabCreated) return;
+  
+  const exists = await tabExists(spreadsheetId, 'New Clients');
+  if (!exists) {
+    console.log('[ClientTracker] Creating New Clients tab...');
+    await createTab(spreadsheetId, 'New Clients', ['Name', 'Email', 'Phone', 'Discount Tier', 'Submitted At', 'Source']);
+  }
+  newClientsTabCreated = true;
 }
 
 // Create a new spreadsheet with headers
@@ -208,132 +289,21 @@ export async function getLeaderboardSpreadsheetId(): Promise<string> {
   return leaderboardSpreadsheetId;
 }
 
-// Create contacts spreadsheet
-async function createContactsSpreadsheet(): Promise<string> {
-  const sheets = await getUncachableGoogleSheetClient();
-  
-  const response = await sheets.spreadsheets.create({
-    requestBody: {
-      properties: {
-        title: CONTACTS_SHEET_NAME,
-      },
-      sheets: [
-        {
-          properties: {
-            title: 'Contacts',
-          },
-        },
-      ],
-    },
-  });
-
-  const spreadsheetId = response.data.spreadsheetId!;
-
-  // Add headers
-  await sheets.spreadsheets.values.update({
-    spreadsheetId,
-    range: 'Contacts!A1:D1',
-    valueInputOption: 'RAW',
-    requestBody: {
-      values: [['Name', 'Email', 'Phone', 'Date Added']],
-    },
-  });
-
-  console.log(`[ClientTracker] Created contacts spreadsheet: ${spreadsheetId}`);
-  return spreadsheetId;
-}
-
-// Get or create contacts spreadsheet ID
-export async function getContactsSpreadsheetId(): Promise<string> {
-  console.log(`[ClientTracker] Looking for contacts spreadsheet: "${CONTACTS_SHEET_NAME}"`);
-  if (contactsSpreadsheetId) {
-    console.log(`[ClientTracker] Using cached contacts spreadsheet ID: ${contactsSpreadsheetId}`);
-    return contactsSpreadsheetId;
-  }
-
-  const existingId = await findSpreadsheetByName(CONTACTS_SHEET_NAME);
-  if (existingId) {
-    console.log(`[ClientTracker] Found contacts spreadsheet: ${existingId}`);
-    contactsSpreadsheetId = existingId;
-    return existingId;
-  }
-  
-  // Auto-create contacts spreadsheet if it doesn't exist
-  console.log(`[ClientTracker] Contacts spreadsheet not found, creating...`);
-  contactsSpreadsheetId = await createContactsSpreadsheet();
-  return contactsSpreadsheetId;
-}
-
-// Create a new spreadsheet for new clients
-async function createNewClientsSpreadsheet(): Promise<string> {
-  const sheets = await getUncachableGoogleSheetClient();
-  
-  const response = await sheets.spreadsheets.create({
-    requestBody: {
-      properties: {
-        title: NEW_CLIENTS_SHEET_NAME,
-      },
-      sheets: [
-        {
-          properties: {
-            title: 'New Clients',
-          },
-        },
-      ],
-    },
-  });
-
-  const spreadsheetId = response.data.spreadsheetId!;
-
-  // Add headers
-  await sheets.spreadsheets.values.update({
-    spreadsheetId,
-    range: 'New Clients!A1:F1',
-    valueInputOption: 'RAW',
-    requestBody: {
-      values: [['Name', 'Email', 'Phone', 'Discount Tier', 'Submitted At', 'Source']],
-    },
-  });
-
-  console.log(`Created new clients spreadsheet: ${spreadsheetId}`);
-  return spreadsheetId;
-}
-
-// Get or create new clients spreadsheet
-export async function getNewClientsSpreadsheetId(): Promise<string> {
-  console.log(`[ClientTracker] Looking for new clients spreadsheet: "${NEW_CLIENTS_SHEET_NAME}"`);
-  if (newClientsSpreadsheetId) {
-    console.log(`[ClientTracker] Using cached new clients spreadsheet ID: ${newClientsSpreadsheetId}`);
-    return newClientsSpreadsheetId;
-  }
-
-  // Try to find existing spreadsheet
-  const existingId = await findSpreadsheetByName(NEW_CLIENTS_SHEET_NAME);
-  if (existingId) {
-    console.log(`[ClientTracker] Found existing new clients spreadsheet: ${existingId}`);
-    newClientsSpreadsheetId = existingId;
-    return existingId;
-  }
-
-  // Create new spreadsheet
-  console.log(`[ClientTracker] Creating new clients spreadsheet...`);
-  newClientsSpreadsheetId = await createNewClientsSpreadsheet();
-  console.log(`[ClientTracker] Created new clients spreadsheet: ${newClientsSpreadsheetId}`);
-  return newClientsSpreadsheetId;
-}
-
-// Add a new client to the New Clients spreadsheet
-async function addToNewClientsSheet(
+// Add a new client to the New Clients tab (in leaderboard spreadsheet)
+async function addToNewClientsTab(
   name: string,
   email: string,
   phone: string | null,
   discountTier: string
 ): Promise<void> {
-  console.log(`[ClientTracker] Adding to new clients sheet: ${name} - ${email}`);
+  console.log(`[ClientTracker] Adding to New Clients tab: ${name} - ${email}`);
   try {
     const sheets = await getUncachableGoogleSheetClient();
-    const spreadsheetId = await getNewClientsSpreadsheetId();
-    console.log(`[ClientTracker] Got new clients spreadsheet ID: ${spreadsheetId}`);
+    const spreadsheetId = await getLeaderboardSpreadsheetId();
+    
+    // Ensure the tab exists
+    await ensureNewClientsTab(spreadsheetId);
+    console.log(`[ClientTracker] Using spreadsheet: ${spreadsheetId}`);
 
     await sheets.spreadsheets.values.append({
       spreadsheetId,
@@ -351,9 +321,9 @@ async function addToNewClientsSheet(
       },
     });
 
-    console.log(`[ClientTracker] SUCCESS: Added to New Clients sheet: ${name} - ${email}`);
+    console.log(`[ClientTracker] SUCCESS: Added to New Clients tab: ${name} - ${email}`);
   } catch (error: any) {
-    console.error('[ClientTracker] ERROR adding to new clients sheet:', error?.message || error);
+    console.error('[ClientTracker] ERROR adding to New Clients tab:', error?.message || error);
     // Don't throw - this is a secondary tracking feature
   }
 }
@@ -385,10 +355,10 @@ export async function ensureClientTracked(
     const addedToContacts = await addContactIfNotDuplicate(name, email, phone);
     console.log(`[ClientTracker] Added to contacts: ${addedToContacts}`);
     
-    // 2. Add to New Barber Shop Clients (for tracking new clients specifically)
+    // 2. Add to New Clients tab (for tracking new clients specifically)
     if (addedToContacts) {
-      console.log(`[ClientTracker] Adding to New Barber Shop Clients...`);
-      await addToNewClientsSheet(name, email, phone, discountTier);
+      console.log(`[ClientTracker] Adding to New Clients tab...`);
+      await addToNewClientsTab(name, email, phone, discountTier);
       console.log(`[ClientTracker] New client fully tracked: ${name} - ${email}`);
       return { isNew: true };
     } else {
@@ -498,14 +468,17 @@ async function recalculateRanks(spreadsheetId: string): Promise<void> {
   }
 }
 
-// Check if email exists in contacts spreadsheet
+// Check if email exists in Contacts tab (within leaderboard spreadsheet)
 export async function emailExistsInContacts(email: string): Promise<boolean> {
   try {
-    const spreadsheetId = await getContactsSpreadsheetId();
+    const spreadsheetId = await getLeaderboardSpreadsheetId();
+    
+    // Ensure the Contacts tab exists
+    await ensureContactsTab(spreadsheetId);
 
     const sheets = await getUncachableGoogleSheetClient();
     
-    // Get all emails from contacts sheet
+    // Get all emails from contacts tab
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: 'Contacts!A:D',
@@ -529,7 +502,7 @@ export async function emailExistsInContacts(email: string): Promise<boolean> {
   }
 }
 
-// Add contact to contacts spreadsheet if not duplicate
+// Add contact to Contacts tab (within leaderboard spreadsheet) if not duplicate
 export async function addContactIfNotDuplicate(
   name: string,
   email: string,
@@ -537,7 +510,10 @@ export async function addContactIfNotDuplicate(
 ): Promise<boolean> {
   console.log(`[ClientTracker] addContactIfNotDuplicate called for: ${email}`);
   try {
-    const spreadsheetId = await getContactsSpreadsheetId();
+    const spreadsheetId = await getLeaderboardSpreadsheetId();
+    
+    // Ensure the Contacts tab exists
+    await ensureContactsTab(spreadsheetId);
 
     // Check if email already exists
     const exists = await emailExistsInContacts(email);
@@ -548,8 +524,8 @@ export async function addContactIfNotDuplicate(
 
     const sheets = await getUncachableGoogleSheetClient();
 
-    // Add new contact - use Contacts sheet since that's what we create
-    console.log(`[ClientTracker] Appending contact to spreadsheet ${spreadsheetId}...`);
+    // Add new contact to Contacts tab
+    console.log(`[ClientTracker] Appending contact to Contacts tab...`);
     await sheets.spreadsheets.values.append({
       spreadsheetId,
       range: 'Contacts!A:D',
