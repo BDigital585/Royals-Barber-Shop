@@ -874,3 +874,116 @@ export async function getAllScores(): Promise<Array<{
     return [];
   }
 }
+
+// Clean up Contacts tab - remove duplicate emails
+export async function cleanupContactsTab(): Promise<{ removed: number }> {
+  try {
+    const sheets = await getUncachableGoogleSheetClient();
+    const spreadsheetId = await getLeaderboardSpreadsheetId();
+
+    // Get all data from Contacts tab
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Contacts!A:D',
+    });
+
+    const rows = response.data.values || [];
+    if (rows.length <= 1) return { removed: 0 }; // Only headers
+
+    // First row is headers
+    const headers = rows[0];
+    const dataRows = rows.slice(1);
+
+    // Remove empty rows and duplicates (by email in column B - index 1)
+    const seen = new Set<string>();
+    const cleanedRows = dataRows.filter(row => {
+      if (!row || row.length === 0 || !row[1]) return false; // Skip empty rows
+      const email = (row[1] as string).toLowerCase();
+      if (seen.has(email)) return false; // Skip duplicates
+      seen.add(email);
+      return true;
+    });
+
+    const removed = dataRows.length - cleanedRows.length;
+
+    // Clear and rewrite with cleaned data
+    await sheets.spreadsheets.values.clear({
+      spreadsheetId,
+      range: 'Contacts!A2:D',
+    });
+
+    if (cleanedRows.length > 0) {
+      await sheets.spreadsheets.values.update({
+        spreadsheetId,
+        range: 'Contacts!A2:D',
+        valueInputOption: 'RAW',
+        requestBody: {
+          values: cleanedRows,
+        },
+      });
+    }
+
+    console.log(`[Cleanup] Contacts tab cleaned - removed ${removed} duplicate/empty rows`);
+    return { removed };
+  } catch (error: any) {
+    console.error('[Cleanup] Error cleaning contacts tab:', error?.message || error);
+    throw error;
+  }
+}
+
+// Clean up Leaderboard tab - remove empty rows and consolidate
+export async function cleanupLeaderboardTab(): Promise<{ removed: number }> {
+  try {
+    const sheets = await getUncachableGoogleSheetClient();
+    const spreadsheetId = await getLeaderboardSpreadsheetId();
+
+    // Get all data from Leaderboard tab
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Leaderboard!A:F',
+    });
+
+    const rows = response.data.values || [];
+    if (rows.length <= 1) return { removed: 0 }; // Only headers
+
+    // First row is headers
+    const headers = rows[0];
+    const dataRows = rows.slice(1);
+
+    // Remove empty rows
+    const cleanedRows = dataRows.filter(row => {
+      return row && row.length >= 2 && row[1]; // Keep if has name (column B)
+    });
+
+    // Re-rank from 1 to length
+    const rerankedRows = cleanedRows.map((row, index) => {
+      row[0] = index + 1; // Update rank
+      return row;
+    });
+
+    const removed = dataRows.length - cleanedRows.length;
+
+    // Clear and rewrite with cleaned, re-ranked data
+    await sheets.spreadsheets.values.clear({
+      spreadsheetId,
+      range: 'Leaderboard!A2:F',
+    });
+
+    if (rerankedRows.length > 0) {
+      await sheets.spreadsheets.values.update({
+        spreadsheetId,
+        range: 'Leaderboard!A2:F',
+        valueInputOption: 'RAW',
+        requestBody: {
+          values: rerankedRows,
+        },
+      });
+    }
+
+    console.log(`[Cleanup] Leaderboard tab cleaned - removed ${removed} empty rows`);
+    return { removed };
+  } catch (error: any) {
+    console.error('[Cleanup] Error cleaning leaderboard tab:', error?.message || error);
+    throw error;
+  }
+}

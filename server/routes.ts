@@ -10,6 +10,7 @@ import path from "path";
 import fs from "fs";
 import express from "express";
 import OpenAI from "openai";
+import { cleanupContactsTab, cleanupLeaderboardTab } from "./google-sheets-client";
 
 // Function to initialize or reinitialize the OpenAI client
 // This allows us to update the API key without restarting the server
@@ -1154,6 +1155,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error saving game score:', error);
       return res.status(500).json({ message: 'Failed to save score' });
+    }
+  });
+
+  // Cleanup endpoint - remove duplicate contacts and fix leaderboard gaps
+  app.post(`${apiPrefix}/admin/cleanup-sheets`, async (req, res) => {
+    try {
+      const contactsResult = await cleanupContactsTab();
+      const leaderboardResult = await cleanupLeaderboardTab();
+      
+      return res.status(200).json({
+        success: true,
+        contactsRemoved: contactsResult.removed,
+        leaderboardRemoved: leaderboardResult.removed,
+        message: 'Cleanup completed'
+      });
+    } catch (error: any) {
+      console.error('Cleanup error:', error?.message || error);
+      return res.status(500).json({ 
+        success: false,
+        message: 'Cleanup failed: ' + (error?.message || 'Unknown error')
+      });
     }
   });
 
