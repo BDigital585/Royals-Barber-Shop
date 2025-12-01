@@ -133,11 +133,21 @@ Contact Information: 317 Ellicott St, Batavia, NY | 585-536-6576
 - One play per week per email/phone number
 - Scores are CUMULATIVE: each week's score adds to player's total for the cycle
 - 4-week cycles reset automatically after 28 days
+- **WEEKLY PLAY ENFORCEMENT:** Players MUST play every week to stay on the leaderboard and qualify for cycle prizes. Missing even one week = automatic disqualification and removal from leaderboard
+
+**Weekly Play Enforcement System**
+- Saturday reminders: Urgent emails sent to all leaderboard players who haven't played that week, warning of disqualification (deadline: Sunday 11:59 PM)
+- Monday cleanup: Players who didn't play the previous week are automatically removed from the leaderboard
+- Admin endpoints:
+  - `POST /api/admin/weekly-reminders` - Send urgent Saturday reminder emails to non-playing leaderboard members
+  - `POST /api/admin/weekly-cleanup` - Remove players who didn't play from leaderboard (call Monday morning)
+  - `POST /api/admin/cleanup-sheets` - Remove duplicate emails from Contacts tab and fix leaderboard gaps
 
 **Cycle Winner Prizes (at end of each 4-week cycle)**
 - 1 winner (sole lowest cumulative score) = FREE haircut
 - 2-way tie for lowest = 50% off haircut for both
 - 3+ way tie for lowest = $10 off haircut for all tied players
+- **Qualification:** Must have played every single week of the cycle (no missing weeks)
 
 **Third-Party Services**
 - Setmore booking system (external link integration)

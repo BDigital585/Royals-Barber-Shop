@@ -10,7 +10,8 @@ import path from "path";
 import fs from "fs";
 import express from "express";
 import OpenAI from "openai";
-import { cleanupContactsTab, cleanupLeaderboardTab } from "./google-sheets-client";
+import { cleanupContactsTab, cleanupLeaderboardTab, getPlayersWhoHaventPlayedThisWeek, removePlayerFromLeaderboard } from "./google-sheets-client";
+import { sendWeeklyReminderEmail } from "./resend-client";
 
 // Function to initialize or reinitialize the OpenAI client
 // This allows us to update the API key without restarting the server
@@ -1175,6 +1176,120 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(500).json({ 
         success: false,
         message: 'Cleanup failed: ' + (error?.message || 'Unknown error')
+      });
+    }
+  });
+
+  // Saturday reminder endpoint - send urgent emails to players who haven't played this week
+  // Call this on Saturday to warn players they'll be disqualified if they don't play
+  app.post(`${apiPrefix}/admin/weekly-reminders`, async (req, res) => {
+    try {
+      const playersToRemind = await getPlayersWhoHaventPlayedThisWeek();
+      
+      if (playersToRemind.length === 0) {
+        return res.status(200).json({
+          success: true,
+          message: 'No reminders needed - all players have played this week',
+          emailsSent: 0
+        });
+      }
+
+      const emailResults: Array<{ email: string; name: string; success: boolean }> = [];
+
+      // Send reminder emails in parallel
+      const reminderPromises = playersToRemind.map(async (player) => {
+        try {
+          const sent = await sendWeeklyReminderEmail(player.email, player.name);
+          emailResults.push({ 
+            email: player.email, 
+            name: player.name, 
+            success: sent 
+          });
+          return { email: player.email, sent };
+        } catch (error) {
+          console.error(`Failed to send reminder to ${player.email}:`, error);
+          emailResults.push({ 
+            email: player.email, 
+            name: player.name, 
+            success: false 
+          });
+          return { email: player.email, sent: false };
+        }
+      });
+
+      await Promise.all(reminderPromises);
+
+      const successCount = emailResults.filter(r => r.success).length;
+
+      return res.status(200).json({
+        success: true,
+        message: `Reminder emails sent to ${successCount}/${playersToRemind.length} players`,
+        emailsSent: successCount,
+        totalPlayers: playersToRemind.length,
+        results: emailResults
+      });
+    } catch (error: any) {
+      console.error('Weekly reminders error:', error?.message || error);
+      return res.status(500).json({ 
+        success: false,
+        message: 'Weekly reminders failed: ' + (error?.message || 'Unknown error')
+      });
+    }
+  });
+
+  // Weekly cleanup endpoint - remove players from leaderboard who didn't play this week
+  // Call this on Monday morning to enforce weekly play requirement
+  app.post(`${apiPrefix}/admin/weekly-cleanup`, async (req, res) => {
+    try {
+      const playersToRemove = await getPlayersWhoHaventPlayedThisWeek();
+      
+      if (playersToRemove.length === 0) {
+        return res.status(200).json({
+          success: true,
+          message: 'No cleanup needed - all active players played this week',
+          playersRemoved: 0
+        });
+      }
+
+      const removalResults: Array<{ email: string; name: string; removed: boolean }> = [];
+
+      // Remove players in parallel
+      const removalPromises = playersToRemove.map(async (player) => {
+        try {
+          const removed = await removePlayerFromLeaderboard(player.email);
+          removalResults.push({ 
+            email: player.email, 
+            name: player.name, 
+            removed 
+          });
+          return { email: player.email, removed };
+        } catch (error) {
+          console.error(`Failed to remove ${player.email}:`, error);
+          removalResults.push({ 
+            email: player.email, 
+            name: player.name, 
+            removed: false 
+          });
+          return { email: player.email, removed: false };
+        }
+      });
+
+      await Promise.all(removalPromises);
+
+      const successCount = removalResults.filter(r => r.removed).length;
+
+      return res.status(200).json({
+        success: true,
+        message: `Disqualified ${successCount}/${playersToRemove.length} players for not playing this week`,
+        playersRemoved: successCount,
+        totalDisqualified: playersToRemove.length,
+        results: removalResults
+      });
+    } catch (error: any) {
+      console.error('Weekly cleanup error:', error?.message || error);
+      return res.status(500).json({ 
+        success: false,
+        message: 'Weekly cleanup failed: ' + (error?.message || 'Unknown error')
       });
     }
   });

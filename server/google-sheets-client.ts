@@ -987,3 +987,120 @@ export async function cleanupLeaderboardTab(): Promise<{ removed: number }> {
     throw error;
   }
 }
+
+// Get all current leaderboard players (for weekly reminders)
+export async function getAllLeaderboardPlayers(): Promise<Array<{
+  name: string;
+  email: string;
+  phone: string | null;
+}>> {
+  try {
+    const sheets = await getUncachableGoogleSheetClient();
+    const spreadsheetId = await getLeaderboardSpreadsheetId();
+
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Leaderboard!A2:D',
+    });
+
+    const rows = response.data.values || [];
+    const players = new Map<string, { name: string; email: string; phone: string | null }>();
+
+    // Deduplicate by email
+    for (const row of rows) {
+      if (row && row.length >= 3 && row[2]) {
+        const email = (row[2] as string).toLowerCase();
+        if (!players.has(email)) {
+          players.set(email, {
+            name: row[1] as string,
+            email: row[2] as string,
+            phone: row[3] || null,
+          });
+        }
+      }
+    }
+
+    return Array.from(players.values());
+  } catch (error: any) {
+    console.error('[Weekly] Error getting all leaderboard players:', error?.message || error);
+    return [];
+  }
+}
+
+// Get players who haven't played this week (for reminders)
+export async function getPlayersWhoHaventPlayedThisWeek(): Promise<Array<{
+  name: string;
+  email: string;
+  phone: string | null;
+}>> {
+  try {
+    const allPlayers = await getAllLeaderboardPlayers();
+    const playersNotPlayedThisWeek: Array<{
+      name: string;
+      email: string;
+      phone: string | null;
+    }> = [];
+
+    for (const player of allPlayers) {
+      const hasPlayed = await hasPlayedThisWeek(player.email, player.phone);
+      if (!hasPlayed) {
+        playersNotPlayedThisWeek.push(player);
+      }
+    }
+
+    return playersNotPlayedThisWeek;
+  } catch (error: any) {
+    console.error('[Weekly] Error getting non-playing players:', error?.message || error);
+    return [];
+  }
+}
+
+// Remove player from leaderboard (for weekly enforcement)
+export async function removePlayerFromLeaderboard(email: string): Promise<boolean> {
+  try {
+    const sheets = await getUncachableGoogleSheetClient();
+    const spreadsheetId = await getLeaderboardSpreadsheetId();
+
+    // Get all data
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Leaderboard!A2:F',
+    });
+
+    const rows = response.data.values || [];
+    
+    // Filter out the player's email
+    const filteredRows = rows.filter(row => {
+      return row && row[2] && (row[2] as string).toLowerCase() !== email.toLowerCase();
+    });
+
+    // Re-rank
+    const rerankedRows = filteredRows.map((row, index) => {
+      row[0] = index + 1;
+      return row;
+    });
+
+    // Rewrite leaderboard
+    await sheets.spreadsheets.values.clear({
+      spreadsheetId,
+      range: 'Leaderboard!A2:F',
+    });
+
+    if (rerankedRows.length > 0) {
+      await sheets.spreadsheets.values.update({
+        spreadsheetId,
+        range: 'Leaderboard!A2:F',
+        valueInputOption: 'RAW',
+        requestBody: {
+          values: rerankedRows,
+        },
+      });
+    }
+
+    console.log(`[Weekly] Removed player ${email} from leaderboard`);
+    return true;
+  } catch (error: any) {
+    console.error('[Weekly] Error removing player from leaderboard:', error?.message || error);
+    return false;
+  }
+}

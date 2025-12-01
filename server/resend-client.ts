@@ -441,3 +441,84 @@ function getBusinessDaysFromNow(days: number): string {
   
   return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
+
+// Send Saturday reminder email - warns player they'll be disqualified if they don't play
+export async function sendWeeklyReminderEmail(toEmail: string, playerName: string): Promise<boolean> {
+  console.log(`[Resend] Sending weekly reminder email to ${toEmail}`);
+  try {
+    const { client, fromEmail } = await getUncachableResendClient();
+    
+    const result = await client.emails.send({
+      from: `Royals Barber Shop <${fromEmail}>`,
+      to: toEmail,
+      subject: `⚠️ URGENT: Play the Memory Game or Lose Your Leaderboard Ranking!`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #dc2626, #991b1b); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #fef2f2; padding: 30px; border-radius: 0 0 10px 10px; border: 2px solid #dc2626; }
+            .warning { background: #fee2e2; border-left: 5px solid #dc2626; padding: 15px; margin: 20px 0; }
+            .deadline { font-size: 20px; font-weight: bold; color: #991b1b; text-align: center; margin: 20px 0; }
+            .game-link { display: inline-block; background: #dc2626; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 15px 0; }
+            .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Don't Lose Your Leaderboard Spot!</h1>
+              <p>Action Required This Weekend</p>
+            </div>
+            <div class="content">
+              <p>Hi ${playerName},</p>
+              
+              <div class="warning">
+                <strong>⚠️ DISQUALIFICATION WARNING:</strong> You haven't played the Memory Match Game this week. If you don't play by end of day Sunday, you'll be removed from the leaderboard and lose your qualifying status for the cycle.
+              </div>
+              
+              <p><strong>The Rule:</strong> To qualify for the 4-week cycle prizes, you MUST play every week. Missing even one week means automatic disqualification from the leaderboard.</p>
+              
+              <div class="deadline">
+                Play by: Sunday 11:59 PM
+              </div>
+              
+              <p><strong>Prizes You Could Win at the End of the Cycle:</strong></p>
+              <ul>
+                <li><strong>1st Place (Lowest Score):</strong> FREE Haircut!</li>
+                <li><strong>2-Way Tie:</strong> 50% Off Haircut for Both</li>
+                <li><strong>3+ Way Tie:</strong> $10 Off Haircut for All Tied Players</li>
+              </ul>
+              
+              <p style="text-align: center;">
+                <a href="https://royalsbatavia.com" class="game-link">Play Now</a>
+              </p>
+              
+              <p style="color: #666; font-size: 14px;">Quick reminder: You can play once per week. Each week's score adds to your cumulative total. Stay in the game to qualify for amazing prizes!</p>
+              
+              <p><strong>Need help?</strong> Call us at 585-536-6576</p>
+              
+              <p><strong>Royals Barber Shop</strong><br>
+              317 Ellicott St<br>
+              Batavia, NY<br>
+              📞 <a href="tel:585-536-6576">585-536-6576</a></p>
+            </div>
+            <div class="footer">
+              <p>This is an automated email from Royals Barber Shop Memory Match Game.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    });
+    
+    console.log('Weekly reminder email sent:', result);
+    return true;
+  } catch (error) {
+    console.error('Failed to send weekly reminder email:', error);
+    return false;
+  }
+}
