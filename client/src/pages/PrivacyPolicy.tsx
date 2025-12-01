@@ -7,8 +7,8 @@ export default function PrivacyPolicy() {
   return (
     <Layout>
       <MetaTags 
-        title="Privacy Policy | Royals Barber & Shave"
-        description="Learn how Royals Barber & Shave collects, uses, and protects your personal information including SMS/text messaging compliance."
+        title="Privacy Policy | Royals Barber Shop"
+        description="Learn how Royals Barber Shop collects, uses, and protects your personal information including SMS/text messaging compliance."
       />
       
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -31,7 +31,7 @@ export default function PrivacyPolicy() {
                   Introduction
                 </h2>
                 <p className="text-gray-700 leading-relaxed">
-                  Royals Barber & Shave ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with us through our scheduling system and Memory Match game. Please read this policy carefully. By using our services, you agree to the collection and use of information in accordance with this policy.
+                  Royals Barber Shop ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with us through our scheduling system and Memory Match game. Please read this policy carefully. By using our services, you agree to the collection and use of information in accordance with this policy.
                 </p>
               </section>
 
@@ -101,7 +101,7 @@ export default function PrivacyPolicy() {
                 </h2>
                 <div className="bg-white rounded-lg p-4 border border-blue-200">
                   <p className="text-gray-800 leading-relaxed font-medium">
-                    We are committed to protecting your privacy. We will not share, sell, or rent your mobile phone number to any unaffiliated third parties for marketing purposes. Data collected is used solely for the purpose of appointment reminders, promotional offers, and service updates from Royals Barber & Shave. Message and data rates may apply. Reply HELP for assistance, and STOP to cancel.
+                    We are committed to protecting your privacy. We will not share, sell, or rent your mobile phone number to any unaffiliated third parties for marketing purposes. Data collected is used solely for the purpose of appointment reminders, promotional offers, and service updates from Royals Barber Shop. Message and data rates may apply. Reply HELP for assistance, and STOP to cancel.
                   </p>
                 </div>
                 <div className="mt-4 space-y-2 text-sm text-gray-700">

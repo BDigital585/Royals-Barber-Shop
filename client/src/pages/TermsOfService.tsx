@@ -7,8 +7,8 @@ export default function TermsOfService() {
   return (
     <Layout>
       <MetaTags 
-        title="Terms of Service | Royals Barber & Shave"
-        description="Read the terms and conditions for using Royals Barber & Shave website, booking services, and SMS text message program."
+        title="Terms of Service | Royals Barber Shop"
+        description="Read the terms and conditions for using Royals Barber Shop website, booking services, and SMS text message program."
       />
       
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -31,7 +31,7 @@ export default function TermsOfService() {
                   Acceptance of Terms
                 </h2>
                 <p className="text-gray-700 leading-relaxed">
-                  Welcome to Royals Barber & Shave. By accessing or using our website, booking services, or participating in any of our programs, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use our services. We reserve the right to modify these Terms at any time, and your continued use of our services constitutes acceptance of any changes.
+                  Welcome to Royals Barber Shop. By accessing or using our website, booking services, or participating in any of our programs, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use our services. We reserve the right to modify these Terms at any time, and your continued use of our services constitutes acceptance of any changes.
                 </p>
               </section>
 
@@ -88,7 +88,7 @@ export default function TermsOfService() {
                 </h2>
                 <div className="bg-white rounded-lg p-4 border border-blue-200 mb-4">
                   <p className="text-gray-800 leading-relaxed font-medium">
-                    By opting into the Royals Barber & Shave text message program, you consent to receive recurring mobile messages regarding appointment reminders, promotional offers, and service updates. Message frequency varies. Standard message and data rates may apply. For support, text HELP to our number. To cancel the service at any time, text STOP to our number. You understand that this service is subject to these Terms and Conditions.
+                    By opting into the Royals Barber Shop text message program, you consent to receive recurring mobile messages regarding appointment reminders, promotional offers, and service updates. Message frequency varies. Standard message and data rates may apply. For support, text HELP to our number. To cancel the service at any time, text STOP to our number. You understand that this service is subject to these Terms and Conditions.
                   </p>
                 </div>
                 <div className="space-y-3 text-sm text-gray-700">
