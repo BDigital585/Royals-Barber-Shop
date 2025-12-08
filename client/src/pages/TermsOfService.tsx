@@ -1,7 +1,7 @@
 import Layout from '../components/Layout';
 import MetaTags from '../components/MetaTags';
 import { Link } from 'wouter';
-import { FileText, Phone, Mail, MapPin, MessageSquare, Scissors, Gamepad2 } from 'lucide-react';
+import { FileText, Phone, Mail, MapPin, MessageSquare, Scissors } from 'lucide-react';
 
 export default function TermsOfService() {
   return (
@@ -93,10 +93,10 @@ export default function TermsOfService() {
                 </div>
                 <div className="space-y-3 text-sm text-gray-700">
                   <div className="bg-white rounded-lg p-3 border border-blue-100">
-                    <p><strong>Consent:</strong> By providing your mobile phone number and opting in, you expressly consent to receive text messages from Royals Barber & Shave.</p>
+                    <p><strong>Consent:</strong> By providing your mobile phone number and opting in, you expressly consent to receive text messages from Royals Barber Shop.</p>
                   </div>
                   <div className="bg-white rounded-lg p-3 border border-blue-100">
-                    <p><strong>Message Types:</strong> Messages may include appointment reminders, promotional offers, discount codes, service updates, and Memory Match game notifications.</p>
+                    <p><strong>Message Types:</strong> Messages may include appointment reminders, promotional offers, discount codes, and service updates.</p>
                   </div>
                   <div className="bg-white rounded-lg p-3 border border-blue-100">
                     <p><strong>Opt-Out:</strong> You may opt out at any time by texting STOP. After opting out, you will receive a confirmation message and will no longer receive messages from us.</p>
@@ -110,46 +110,13 @@ export default function TermsOfService() {
                 </div>
               </section>
 
-              <section className="bg-amber-50 rounded-xl p-6 border border-amber-100">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Gamepad2 className="w-6 h-6 text-amber-600" />
-                  Memory Match Game Terms
-                </h2>
-                <div className="space-y-4 text-gray-700 leading-relaxed text-sm">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Eligibility</h3>
-                    <p>
-                      The Memory Match game is open to all website visitors. To receive discount rewards and participate in the leaderboard competition, you must provide valid contact information.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Play Limits</h3>
-                    <p>
-                      Each participant may play once per week (Monday through Sunday). Multiple plays within the same week are not permitted and may result in disqualification.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Discount Rewards</h3>
-                    <p>
-                      Discount codes earned through the game are for single use only, have expiration dates, and are not valid on Tuesdays during the $20 haircut promotion. Discounts cannot be combined with other offers.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Leaderboard Competition</h3>
-                    <p>
-                      The 4-week cycle leaderboard competition requires weekly participation. Players who miss a week may be removed from the leaderboard. Prizes are awarded at the end of each cycle based on cumulative scores.
-                    </p>
-                  </div>
-                </div>
-              </section>
-
               <section>
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <span className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold text-sm">3</span>
                   Intellectual Property
                 </h2>
                 <p className="text-gray-700 leading-relaxed">
-                  All content on this website, including but not limited to text, graphics, logos, images, and software, is the property of Royals Barber & Shave or its content suppliers and is protected by copyright and other intellectual property laws. You may not reproduce, distribute, modify, or create derivative works from any content without our express written permission.
+                  All content on this website, including but not limited to text, graphics, logos, images, and software, is the property of Royals Barber Shop or its content suppliers and is protected by copyright and other intellectual property laws. You may not reproduce, distribute, modify, or create derivative works from any content without our express written permission.
                 </p>
               </section>
 
@@ -169,7 +136,7 @@ export default function TermsOfService() {
                   Limitation of Liability
                 </h2>
                 <p className="text-gray-700 leading-relaxed">
-                  To the fullest extent permitted by law, Royals Barber & Shave shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or relating to your use of our website or services, including but not limited to loss of data, revenue, or profits.
+                  To the fullest extent permitted by law, Royals Barber Shop shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or relating to your use of our website or services, including but not limited to loss of data, revenue, or profits.
                 </p>
               </section>
 
@@ -179,7 +146,7 @@ export default function TermsOfService() {
                   Indemnification
                 </h2>
                 <p className="text-gray-700 leading-relaxed">
-                  You agree to indemnify and hold harmless Royals Barber & Shave, its owners, employees, and affiliates from any claims, damages, losses, or expenses arising from your use of our website or services, your violation of these Terms, or your violation of any rights of a third party.
+                  You agree to indemnify and hold harmless Royals Barber Shop, its owners, employees, and affiliates from any claims, damages, losses, or expenses arising from your use of our website or services, your violation of these Terms, or your violation of any rights of a third party.
                 </p>
               </section>
 

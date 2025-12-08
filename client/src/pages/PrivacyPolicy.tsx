@@ -31,7 +31,7 @@ export default function PrivacyPolicy() {
                   Introduction
                 </h2>
                 <p className="text-gray-700 leading-relaxed">
-                  Royals Barber Shop ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with us through our scheduling system and Memory Match game. Please read this policy carefully. By using our services, you agree to the collection and use of information in accordance with this policy.
+                  Royals Barber Shop ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with us through our scheduling system. Please read this policy carefully. By using our services, you agree to the collection and use of information in accordance with this policy.
                 </p>
               </section>
 
@@ -54,19 +54,6 @@ export default function PrivacyPolicy() {
                   </div>
                   
                   <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <h3 className="font-semibold text-gray-900 mb-2">Memory Match Game Opt-In</h3>
-                    <p className="text-gray-700 text-sm leading-relaxed">
-                      When you participate in our Memory Match game and opt-in for rewards, we collect:
-                    </p>
-                    <ul className="list-disc list-inside text-gray-700 text-sm mt-2 space-y-1">
-                      <li>Your name</li>
-                      <li>Email address</li>
-                      <li>Phone number (optional)</li>
-                      <li>Game performance data (for leaderboard purposes)</li>
-                    </ul>
-                  </div>
-
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
                     <h3 className="font-semibold text-gray-900 mb-2">Automatically Collected Information</h3>
                     <p className="text-gray-700 text-sm leading-relaxed">
                       We may automatically collect certain information when you visit our website, including your IP address, browser type, operating system, referring URLs, and information about how you interact with our website.
@@ -87,7 +74,6 @@ export default function PrivacyPolicy() {
                   <li>Schedule and manage your appointments</li>
                   <li>Send appointment reminders and confirmations</li>
                   <li>Provide promotional offers and service updates</li>
-                  <li>Administer the Memory Match game and leaderboard</li>
                   <li>Send discount codes and reward notifications</li>
                   <li>Improve our website and services</li>
                   <li>Respond to your inquiries and requests</li>

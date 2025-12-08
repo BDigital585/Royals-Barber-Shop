@@ -13,7 +13,6 @@ const HaircutShare = lazy(() => import("@/pages/HaircutShare"));
 const Blog = lazy(() => import("@/pages/Blog"));
 const BlogPost = lazy(() => import("@/pages/BlogPost"));
 const SeoAudit = lazy(() => import("@/pages/SeoAudit"));
-const MemoryGame = lazy(() => import("@/pages/MemoryGame"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("@/pages/TermsOfService"));
 
@@ -62,7 +61,6 @@ function Router() {
           <Route path="/haircut/:category/:image" component={HaircutShare} />
           <Route path="/blog" component={Blog} />
           <Route path="/blog/:slug" component={BlogPost} />
-          <Route path="/memory-game" component={MemoryGame} />
           <Route path="/privacy-policy" component={PrivacyPolicy} />
           <Route path="/terms-of-service" component={TermsOfService} />
           <Route path="/admin/seo-audit" component={SeoAudit} />
