@@ -1,10 +1,10 @@
-# Royals Barbershop Website
+# Royals Barber Shop Website
 
 ## Overview
 
-A mobile-first responsive website for Royals Barbershop in Batavia, NY. The application serves as a complete digital presence for the barbershop, featuring content management, haircut galleries, blog functionality, and an interactive memory matching game with discount rewards.
+A mobile-first responsive website for Royals Barber Shop in Batavia, NY. The application serves as a complete digital presence for the barbershop, featuring content management, haircut galleries, blog functionality, and an AI-powered chatbot assistant.
 
-**Primary Purpose:** Provide customers with service information, appointment booking, haircut galleries, and engage customers with a fun memory game that rewards discounts on haircuts.
+**Primary Purpose:** Provide customers with service information, appointment booking, and haircut galleries.
 
 **Tech Stack:**
 - Frontend: React with TypeScript, Vite build system
@@ -18,6 +18,7 @@ A mobile-first responsive website for Royals Barbershop in Batavia, NY. The appl
 
 Preferred communication style: Simple, everyday language.
 Contact Information: 317 Ellicott St, Batavia, NY | 585-536-6576
+Business Name: Royals Barber Shop (not "Royals Barber & Shave")
 
 ## System Architecture
 
@@ -36,8 +37,8 @@ Contact Information: 317 Ellicott St, Batavia, NY | 585-536-6576
 
 **Component Organization**
 - Layout components: Header, Footer, MobileMenu
-- Page components: Home, BrowseHaircuts, HaircutShare, Blog, BlogPost, MemoryGame
-- Feature components: ChatBot, ImageCarousel, LedTicker, ShareButton, Leaderboard
+- Page components: Home, BrowseHaircuts, HaircutShare, Blog, BlogPost, PrivacyPolicy, TermsOfService
+- Feature components: ChatBot, ImageCarousel, LedTicker, ShareButton
 - UI components from shadcn/ui library for consistent design system
 
 **Performance Optimizations**
@@ -56,10 +57,9 @@ Contact Information: 317 Ellicott St, Batavia, NY | 585-536-6576
 
 **Key API Routes**
 - `/api/contentful/*` - Proxy endpoints for Contentful CMS data
-- `/api/chat` - OpenAI chatbot integration
+- `/api/chatbot` - OpenAI chatbot integration
 - `/api/shop-images` - Server-side file system scanning for gallery images
 - `/api/newsletter/subscribe` - Newsletter subscription handling
-- `/api/memory-game/scores` - Memory game leaderboard (GET/POST) with Google Sheets integration
 
 **Middleware Stack**
 - JSON body parsing
@@ -76,22 +76,14 @@ Contact Information: 317 Ellicott St, Batavia, NY | 585-536-6576
 - `services` - Service offerings and pricing
 - `subscribers` - Newsletter email subscription list
 
-**Google Sheets Integration (Memory Game)**
-- "memory match leaderboard" - Cumulative game scores with weekly display filtering
-- "barber shop Contacts" - Customer contacts with email deduplication
-- Weekly reset logic: Scores display from current week (Monday-Sunday) while full history persists
-- Connected via Replit's Google Sheets connector (server/google-sheets-client.ts)
-
 **Database Choice Rationale**
 - PostgreSQL via Neon serverless for scalability and Replit integration
 - Drizzle ORM for type-safe database queries and migrations
 - Connection pooling for efficient resource usage
-- Google Sheets for memory game data (accessible to business owner)
 
 **Content Storage Strategy**
 - Contentful CMS for blog posts, hero content, and marketing copy (allows non-technical content updates)
 - PostgreSQL for transactional data (orders, subscriptions)
-- Google Sheets for memory game leaderboard and customer contacts (easy business owner access)
 - File system for haircut gallery images organized by category folders
 - Static assets in `/public` directory for images, videos, logos
 
@@ -104,55 +96,28 @@ Contact Information: 317 Ellicott St, Batavia, NY | 585-536-6576
 - Environment variables: `CONTENTFUL_SPACE_ID`, `CONTENTFUL_ACCESS_TOKEN`, `CONTENTFUL_ENVIRONMENT`
 
 **OpenAI Integration**
-- GPT-4 Turbo via chat completions endpoint
+- GPT-4o via chat completions endpoint
 - Chatbot assistant for customer inquiries
 - System prompt configured for barbershop-specific knowledge
 - Environment variable: `OPENAI_API_KEY`
 - Dynamic client initialization to allow runtime API key updates
 
-**Google Sheets Integration**
-- Connected via Replit's Google Sheets connector for OAuth authentication
-- Leaderboard spreadsheet: "memory match leaderboard" (auto-created if missing)
-- Contacts spreadsheet: "barber shop Contacts" (must exist, no auto-creation)
-- New clients spreadsheet: "New Barber Shop Clients" (auto-created if missing) - tracks first-time players
-- 4-week cycle cumulative scores displayed (scores add up over the cycle)
-- One play per week per email/phone number (play limit enforced weekly within each cycle)
-- New client tracking: When a player submits their score, if their email is not in "barber shop Contacts", they are added to both Contacts and "New Barber Shop Clients" sheet
-
-**Resend Email Integration**
-- Connected via Replit's Resend connector (royalbarber585@gmail.com)
-- Discount emails: Sent after game completion with discount code ($2 or $5 off)
-- Winner emails: Tiered based on ties (see below)
-- Email templates include: discount code, expiry date, redemption instructions, Tuesday exclusion notice
-- One-time use codes generated with unique identifiers
-
-**Memory Game Rules - 4-Week Cycle System (starts December 1, 2025)**
-- 9 or fewer moves = $5 off haircut (premium tier)
-- 10+ moves = $2 off haircut (standard tier)
-- Discounts NOT valid on Tuesdays with $20 haircut promotion
-- One play per week per email/phone number
-- Scores are CUMULATIVE: each week's score adds to player's total for the cycle
-- 4-week cycles reset automatically after 28 days
-- **WEEKLY PLAY ENFORCEMENT:** Players MUST play every week to stay on the leaderboard and qualify for cycle prizes. Missing even one week = automatic disqualification and removal from leaderboard
-
-**Weekly Play Enforcement System**
-- Saturday reminders: Urgent emails sent to all leaderboard players who haven't played that week, warning of disqualification (deadline: Sunday 11:59 PM)
-- Monday cleanup: Players who didn't play the previous week are automatically removed from the leaderboard
-- Admin endpoints:
-  - `POST /api/admin/weekly-reminders` - Send urgent Saturday reminder emails to non-playing leaderboard members
-  - `POST /api/admin/weekly-cleanup` - Remove players who didn't play from leaderboard (call Monday morning)
-  - `POST /api/admin/cleanup-sheets` - Remove duplicate emails from Contacts tab and fix leaderboard gaps
-
-**Cycle Winner Prizes (at end of each 4-week cycle)**
-- 1 winner (sole lowest cumulative score) = FREE haircut
-- 2-way tie for lowest = 50% off haircut for both
-- 3+ way tie for lowest = $10 off haircut for all tied players
-- **Qualification:** Must have played every single week of the cycle (no missing weeks)
-
 **Third-Party Services**
 - Setmore booking system (external link integration)
 - Google Maps integration for location
 - Social media integrations (Instagram, Facebook, Google Reviews)
+
+### Legal Pages
+
+**Privacy Policy** (`/privacy-policy`)
+- SMS/Text messaging compliance language
+- Data collection and usage policies
+- User rights and opt-out instructions
+
+**Terms of Service** (`/terms-of-service`)
+- Website usage terms
+- Text message program terms
+- Intellectual property and liability disclaimers
 
 ### SEO and Schema Markup
 
