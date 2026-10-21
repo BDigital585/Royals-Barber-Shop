@@ -106,9 +106,6 @@ const Header = () => {
             Book Now
           </a>
           
-          <ScrollToTopLink href="/#newsletter" className="font-medium nav-link">
-            Newsletter
-          </ScrollToTopLink>
           <ScrollToTopLink href="/contact" className="font-medium nav-link">
             Contact
           </ScrollToTopLink>
