@@ -7,7 +7,6 @@ import HaircutPreviewSection from '@/components/HaircutPreviewSection';
 import CommunitySection from '@/components/CommunitySection';
 import ContactSection from '@/components/ContactSection';
 import SocialSection from '@/components/SocialSection';
-import NewsletterSection from '@/components/NewsletterSection';
 import Footer from '@/components/Footer';
 import SimpleImageCarousel from '@/components/SimpleImageCarousel';
 import SchemaMarkup from '@/components/SchemaMarkup';
@@ -96,7 +95,6 @@ const Home = () => {
         </section>
         
         <SocialSection />
-        <NewsletterSection />
       </main>
       <Footer />
     </>
