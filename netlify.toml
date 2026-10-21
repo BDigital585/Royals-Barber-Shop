@@ -1,8 +1,37 @@
 [build]
-  command = "npm run build"
-    publish = "dist/public"
+  command = "npm run build:netlify"
+  publish = "dist/public"
 
-    [[redirects]]
-      from = "/*"
-        to = "/index.html"
-          status = 200
+# Photo lists written at build time by scripts/build-static-api.mjs
+[[redirects]]
+  from = "/api/shop-images"
+  to = "/api/shop-images.json"
+  status = 200
+
+[[redirects]]
+  from = "/api/haircut-images"
+  to = "/api/haircut-images.json"
+  status = 200
+
+# The old Contentful blog posts were deleted; send old links home
+[[redirects]]
+  from = "/blog"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/blog/*"
+  to = "/"
+  status = 301
+
+# Any other /api route belonged to the Replit server; return a real 404
+# instead of the HTML page so the site's error handling kicks in
+[[redirects]]
+  from = "/api/*"
+  to = "/api/404.json"
+  status = 404
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

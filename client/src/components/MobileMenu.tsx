@@ -53,9 +53,6 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
           Browse Haircuts
         </ScrollToTopLink>
         
-        <ScrollToTopLink href="/blog" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
-          Blog
-        </ScrollToTopLink>
         <ScrollToTopLink href="/#newsletter" onClick={onClose} className="text-white text-xl font-medium nav-link text-center">
           Newsletter
         </ScrollToTopLink>
