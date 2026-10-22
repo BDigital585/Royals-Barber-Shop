@@ -1,6 +1,9 @@
 [build]
   command = "npm run build:netlify"
   publish = "dist/public"
+  # The site moved to Cloudflare Pages; skip every Netlify build so pushes
+  # to main don't use up Netlify credits
+  ignore = "exit 0"
 
 # Photo lists written at build time by scripts/build-static-api.mjs
 [[redirects]]
