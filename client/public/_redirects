@@ -1,0 +1,6 @@
+# Cloudflare Pages reads this file (Netlify uses netlify.toml).
+# Unmatched routes fall back to index.html automatically on Pages.
+/api/shop-images     /api/shop-images.json     200
+/api/haircut-images  /api/haircut-images.json  200
+/blog                /                         301
+/blog/*              /                         301

@@ -21,7 +21,8 @@ export default function ContentfulHeroSection() {
             muted 
             loop 
             playsInline
-            preload="auto"
+            preload="metadata"
+            poster="/hero-poster.webp"
             controls={false}
             className="absolute inset-0 w-full h-full object-cover"
             style={{ 
@@ -38,7 +39,7 @@ export default function ContentfulHeroSection() {
               video.play().catch(() => {});
             }}
           >
-            <source src="/thisone.mp4" type="video/mp4" />
+            <source src="/hero.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
