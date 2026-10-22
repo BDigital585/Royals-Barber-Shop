@@ -1,0 +1,14 @@
+# Cloudflare Pages: let browsers and the CDN cache heavy files instead of
+# re-downloading them on every visit
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+/hero.mp4
+  Cache-Control: public, max-age=2592000
+/hero-poster.webp
+  Cache-Control: public, max-age=2592000
+/images/*
+  Cache-Control: public, max-age=604800
+/shop/*
+  Cache-Control: public, max-age=604800
+/haircuts/*
+  Cache-Control: public, max-age=604800

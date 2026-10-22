@@ -14,7 +14,6 @@ import MetaTags from '@/components/MetaTags';
 import ChatBot from '@/components/ChatBot';
 import WebsiteShareButton from '@/components/WebsiteShareButton';
 import { usePreloadImages } from '@/hooks/usePreloadImages';
-import { useEffect } from 'react';
 
 const Home = () => {
   // Preload critical resources for better performance
@@ -28,20 +27,6 @@ const Home = () => {
   ];
 
   usePreloadImages(criticalImages, { priority: 'high' });
-
-  // Preload hero video with high priority
-  useEffect(() => {
-    const link = document.createElement('link');
-    link.rel = 'preload';
-    link.as = 'video';
-    link.href = '/superhero-mobile-hq.mp4';
-    link.setAttribute('fetchpriority', 'high');
-    document.head.appendChild(link);
-
-    return () => {
-      document.head.removeChild(link);
-    };
-  }, []);
 
   return (
     <>

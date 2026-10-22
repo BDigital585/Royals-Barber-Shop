@@ -27,7 +27,7 @@ export default function BrowseHaircutsHeroSection() {
       <div className="absolute inset-0 z-0">
         {/* Fast-loading hero image with preload optimization */}
         <img 
-          src="/images/2page.png"
+          src="/images/2page.webp"
           alt="Browse Haircuts"
           className="absolute object-cover w-full h-full"
           style={{ 
